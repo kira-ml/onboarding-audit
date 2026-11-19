@@ -45,22 +45,21 @@ on the public **BAF account-opening benchmark** with known ground truth.
 ## The problem in one picture
 
 ```mermaid
-flowchart LR
+flowchart TD
     A["New application"] --> B{"Incumbent policy"}
     B -->|"Approve"| C["Late / incomplete label"]
     B -->|"Review"| D["Fast label"]
     B -->|"Reject"| E["No outcome"]
     C --> F["Selected, delayed sample"]
     D --> F
-    E --> G["Reject margin<br/>not identified"]
-    F --> H["Naive backtest<br/>biased"]
-    F --> I["IPW / DR / audit-only"]
-    I --> J["P0 policy value"]
-    G --> K["Partial-identification bounds"]
+    F --> G["Naive backtest<br/>biased"]
+    F --> H["IPW / DR / audit-only<br/>P0 policy value"]
+    E --> I["Reject margin<br/>not identified"]
+    I --> J["Partial-identification bounds"]
     classDef bad fill:#fee2e2,stroke:#dc2626,color:#7f1d1d;
     classDef good fill:#dcfce7,stroke:#16a34a,color:#14532d;
-    class E,G bad;
-    class J,K good;
+    class E,I bad;
+    class H,J good;
 ```
 
 **Green:** the project's output — a `P0` estimate and full-population bounds.
