@@ -28,6 +28,7 @@ disagree, the precedence in §5 applies.
 | [`PROBLEM.md`](PROBLEM.md) | The evidence-backed problem brief and the Philippine context |
 | [`ONE_PAGER.md`](ONE_PAGER.md) | A one-page reviewer brief |
 | [`FAQ.md`](FAQ.md) | Practitioner, researcher, and interviewer questions |
+| [`LEARNING_GUIDE.md`](LEARNING_GUIDE.md) | Plain-English concept map, practice set, feedback loop, and self-test |
 | [`GLOSSARY.md`](GLOSSARY.md) | Terms and acronyms |
 
 ### 2.2 Research

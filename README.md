@@ -201,6 +201,7 @@ Philippine cyber-fraud losses.
 - [One-pager](docs/ONE_PAGER.md)
 - [Communication plan](docs/COMMUNICATION.md)
 - [FAQ](docs/FAQ.md)
+- [Learning guide](docs/LEARNING_GUIDE.md)
 - [Glossary](docs/GLOSSARY.md)
 - [Memo template](docs/MEMO_TEMPLATE.md)
 - [Publication checklist](docs/PUBLICATION_CHECKLIST.md)

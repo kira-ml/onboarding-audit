@@ -186,14 +186,16 @@ Reference machine: Windows 11, CPU-only, 16 GB RAM.
 | Run | Replications | Approx. runtime |
 |---|---:|---:|
 | `pytest -q` | — | < 10 s |
-| Pilot (13 scenarios) | 700 | ~1,114 s (18.6 min) |
+| Pilot (13 scenarios) | 700 | ~19 min CPU; ~31 min wall-clock on the reference run |
 | Sensitivity (11 scenarios) | 550 | ~16 min (reference run; covariate model fits dominate) |
 | Report on the 20-row sample | — | < 5 s |
 | Report on a 227k-row log | — | seconds to a few minutes, depending on features |
 
 The sensitivity runtime depends on the number of covariate-model folds and the
-machine. The exact wall-clock time is not part of the scientific result; the
-replication count and seed are.
+machine. Wall-clock time also depends on concurrent load; the reference pilot
+run took ~31 minutes while other work was running, with ~19 minutes of CPU time.
+The exact wall-clock time is not part of the scientific result; the replication
+count and seed are.
 
 ## 9. Determinism and version drift
 

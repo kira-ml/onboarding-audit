@@ -179,6 +179,9 @@ validity and the FiFAR capacity layer, not a new method.
   `THREATS.md`, `PILOT_SPEC.md`, `ONE_PAGER.md`, `COMMUNICATION.md`,
   `paper/brief.md`, and `paper/outline.md`.
 - The paper is intentionally not drafted; `paper/` contains research notes only.
+- Regenerated `reports/pilot.{json,md}` under v0.2.1; the headline numbers are
+  unchanged (H1 max 278.49%, DR 0.94% / 96.0%). The report header now matches the
+  package version.
 
 **Next:**
 
