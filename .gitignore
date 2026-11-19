@@ -27,3 +27,4 @@ reports/smoke*/
 reports/sensitivity_smoke/
 reports/sample_report/
 reports/*.parquet
+.serena/
