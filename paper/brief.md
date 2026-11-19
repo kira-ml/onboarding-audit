@@ -2,8 +2,8 @@
 
 **For:** a fintech data science / ML research reviewer.
 **Length:** 2 pages.
-**Status:** v0.2.0 pilot; results from the pre-registered pilot and the
-propensity sensitivity.
+**Status:** v0.2.1 pilot; results from the pre-registered pilot, the propensity
+sensitivity, and the covariate sensitivity.
 
 ---
 
@@ -62,6 +62,8 @@ one the business is asking.
   (`P0`), the part logs can identify.
 - **Reject margin:** full-population bounds, not a point estimate.
 - **Estimators:** naive, IPW, doubly robust, audit-only, bounds.
+- **Propensities:** oracle, action-level estimated, noisy, and per-action
+  covariate models.
 - **Benchmark:** BAF account-opening applications with known ground truth.
 - **Stress tests:** audit size, review capacity, delay, outcome-dependent
   labels, false-reject cost.
@@ -90,13 +92,21 @@ one the business is asking.
 | Estimated `e`: IPW max bias / coverage | **11.19% / 73.0%** |
 | Noisy `e` (sigma 0.25): DR / IPW | **1.58% / 96.5%** vs **7.01% / 93.5%** |
 | Outcome-dependent + estimated `e`: audit-only | **2.58% / 82.5%**; IPW/DR fail |
+| Covariate observation: action IPW / DR | **67.52% / 21.25%** |
+| Covariate observation: model IPW / DR | **1.97% / 2.48%** |
+| Covariate + 45-day delay: action / model | **51.72% / 17.59%** vs **3.35% / 3.68%** |
+| Covariate coverage (oracle / model) | **89–90% / 89.5–91.5%** (heavy tails) |
 
 **Interpretation:** the naive evaluation is not a small approximation; it
 overstates cost and would reject the better policy. DR recovers the identified
 value and the true ranking, and it survives estimated action-level propensities;
-IPW does not. The reject margin still requires bounds or a controlled approval
-design. The audit is a validation and outcome-dependent-label tool, not a
-universal bias fix. When `e` is estimated, use DR rather than IPW.
+IPW does not. Under covariate-dependent observation, action-level IPW fails and
+the fitted covariate model is the correction; DR is more robust than IPW but
+heavy weights can undercover the interval. The reject margin still requires
+bounds or a controlled approval design. The audit is a validation and
+outcome-dependent-label tool, not a universal bias fix. When `e` is estimated,
+use DR rather than IPW; when observation depends on application features, use
+the covariate propensity model and report the weight diagnostics.
 
 ## 6. What a team can use
 
@@ -107,7 +117,8 @@ universal bias fix. When `e` is estimated, use DR rather than IPW.
    shadow scoring, not random approvals/rejections.
 4. **An audit-ready memo** that separates measured, assumed, and unverifiable
    claims.
-5. **A public benchmark** and reproducible pilot.
+5. **Action-level and covariate propensity models** with weight/ESS diagnostics.
+6. **A public benchmark** and reproducible pilot.
 
 ## 7. What it is not
 
@@ -119,13 +130,17 @@ universal bias fix. When `e` is estimated, use DR rather than IPW.
 
 ## 8. Next steps
 
-1. Complete the pilot and the claim ledger.
-2. Add the FiFAR capacity/analyst layer.
-3. Estimate propensities from logs and test sensitivity (the current pilot uses
-   oracle propensities to isolate estimator behavior).
-4. Add a second public dataset or a transaction-fraud extension.
-5. Seek 2–3 external readers: a fraud/KYC practitioner and a researcher.
-6. Write the paper and release the tool.
+1. Finalize the documentation set (`docs/METHODS.md`, `RESULTS.md`,
+   `REPRODUCIBILITY.md`, `ARCHITECTURE.md`, `TESTING.md`,
+   `PUBLICATION_CHECKLIST.md`).
+2. Two external readers: a fraud/KYC practitioner and a researcher.
+3. Add the FiFAR capacity/analyst layer.
+4. Add a bootstrap/randomization-inference interval for the heavy-weight
+   scenarios.
+5. Seek a bank partner for a real log, especially one with covariate-dependent
+   observation.
+6. Write the paper from the canonical docs; do not start from a blank page.
+7. Release the tool and the application package.
 
 ## 9. Why this is a research contribution
 

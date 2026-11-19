@@ -55,6 +55,205 @@ def _clean(value):
     return value
 
 
+def _pct(value) -> str:
+    if value is None:
+        return "n/a"
+    v = float(value)
+    return f"{v:.2%}" if np.isfinite(v) else "n/a"
+
+
+def _cov(value) -> str:
+    if value is None:
+        return "n/a"
+    v = float(value)
+    return f"{v:.1%}" if np.isfinite(v) else "n/a"
+
+
+def _ess(value) -> str:
+    if value is None:
+        return "n/a"
+    v = float(value)
+    return f"{v:,.0f}" if np.isfinite(v) else "n/a"
+
+
+def write_markdown(payload: dict, out_dir: Path | str) -> Path:
+    """Render the sensitivity Markdown from a payload.
+
+    The payload is the committed JSON, so the report can be regenerated without
+    rerunning the study. This keeps the prose and the table in sync.
+    """
+    out_dir = Path(out_dir)
+    reps = payload["reps"]
+    agg = pd.DataFrame(payload["aggregate"])
+    L: list[str] = []
+    L.append("# Propensity Sensitivity")
+    L.append("")
+    L.append(
+        f"_Pre-registered follow-up; {reps} replications per scenario; common "
+        "random numbers; seed from the pilot config._"
+    )
+    L.append("")
+    L.append("## What this tests")
+    L.append("")
+    L.append(
+        "The main pilot uses oracle propensities. This study replaces them with "
+        "(a) action-level propensities estimated from the observed draw, "
+        "(b) oracle propensities with lognormal noise, (c) estimated "
+        "propensities under outcome-dependent labels, and (d) action-level, "
+        "fitted covariate, and oracle propensities under covariate-dependent "
+        "observation. The target and policies are unchanged."
+    )
+    L.append("")
+
+    def add_table(ids, estimators) -> None:
+        L.append(
+            "| Scenario | Estimator | Max \\|rel bias\\| | Mean coverage | Mean ESS |"
+        )
+        L.append("|---|---|---:|---:|---:|")
+        for sid in ids:
+            for est in estimators:
+                match = agg[(agg["scenario"] == sid) & (agg["estimator"] == est)]
+                if match.empty:
+                    continue
+                row = match.iloc[0]
+                L.append(
+                    f"| `{sid}` | `{est}` | "
+                    f"{_pct(row['max_abs_rel_bias'])} | "
+                    f"{_cov(row['mean_coverage'])} | "
+                    f"{_ess(row['mean_ess'])} |"
+                )
+        L.append("")
+
+    L.append("## Main scenario")
+    L.append("")
+    main_ids = (
+        "main",
+        "propensity_estimated",
+        "propensity_noisy_10",
+        "propensity_noisy_25",
+    )
+    add_table(main_ids, ("naive", "ipw_ht", "dr", "audit_only"))
+    L.append("## Outcome-dependent labels")
+    L.append("")
+    od_ids = ("outcome_dependent", "outcome_dependent_estimated")
+    add_table(od_ids, ("naive", "ipw_ht", "dr", "audit_only"))
+    L.append("## Covariate-dependent observation")
+    L.append("")
+    L.append(
+        "The post-approval report probability depends on standardized log "
+        "amount: `logit(e_report) = logit(e_approve) + 0.75 * z`. The "
+        "`covariate_*` scenarios use that mechanism. `oracle` uses the true "
+        "per-row propensity; `action` uses the action-level estimate; `model` "
+        "uses a cross-fitted per-action logistic model of `observed` on the "
+        "outcome-model features plus decision day. The delay-0.5 variants "
+        "isolate the propensity misspecification; the delay-45 variants add the "
+        "resolution gradient."
+    )
+    L.append("")
+    cov_ids = (
+        "covariate_oracle",
+        "covariate_action",
+        "covariate_model",
+        "covariate_action_delay",
+        "covariate_model_delay",
+    )
+    add_table(cov_ids, ("naive", "ipw_ht", "dr"))
+
+    def cell(scenario: str, estimator: str, field: str) -> float:
+        match = agg[(agg["scenario"] == scenario) & (agg["estimator"] == estimator)]
+        if match.empty:
+            return float("nan")
+        return float(match.iloc[0][field])
+
+    L.append("## Measured read")
+    L.append("")
+    L.append(
+        f"- Covariate action-level: IPW **{_pct(cell('covariate_action', 'ipw_ht', 'max_abs_rel_bias'))}** "
+        f"with **{_cov(cell('covariate_action', 'ipw_ht', 'mean_coverage'))}** coverage; "
+        f"DR **{_pct(cell('covariate_action', 'dr', 'max_abs_rel_bias'))}** with "
+        f"**{_cov(cell('covariate_action', 'dr', 'mean_coverage'))}**."
+    )
+    L.append(
+        f"- Covariate model: IPW **{_pct(cell('covariate_model', 'ipw_ht', 'max_abs_rel_bias'))}** "
+        f"with **{_cov(cell('covariate_model', 'ipw_ht', 'mean_coverage'))}**; "
+        f"DR **{_pct(cell('covariate_model', 'dr', 'max_abs_rel_bias'))}** with "
+        f"**{_cov(cell('covariate_model', 'dr', 'mean_coverage'))}**."
+    )
+    L.append(
+        f"- With the 45-day delay: action IPW "
+        f"**{_pct(cell('covariate_action_delay', 'ipw_ht', 'max_abs_rel_bias'))}** / "
+        f"**{_cov(cell('covariate_action_delay', 'ipw_ht', 'mean_coverage'))}**; "
+        f"action DR **{_pct(cell('covariate_action_delay', 'dr', 'max_abs_rel_bias'))}** / "
+        f"**{_cov(cell('covariate_action_delay', 'dr', 'mean_coverage'))}**; "
+        f"model IPW **{_pct(cell('covariate_model_delay', 'ipw_ht', 'max_abs_rel_bias'))}** / "
+        f"**{_cov(cell('covariate_model_delay', 'ipw_ht', 'mean_coverage'))}**; "
+        f"model DR **{_pct(cell('covariate_model_delay', 'dr', 'max_abs_rel_bias'))}** / "
+        f"**{_cov(cell('covariate_model_delay', 'dr', 'mean_coverage'))}**."
+    )
+    L.append(
+        "- The covariate model meets the pre-declared gate (<=5% max relative "
+        "bias, >=80% mean coverage); action-level weighting does not."
+    )
+    L.append(
+        f"- Coverage is below nominal 95%; the oracle covers "
+        f"**{_cov(cell('covariate_oracle', 'ipw_ht', 'mean_coverage'))}** "
+        f"(IPW) and **{_cov(cell('covariate_oracle', 'dr', 'mean_coverage'))}** "
+        "(DR), so the shortfall is the heavy-tail variance, not the model."
+    )
+    L.append("")
+    L.append("## Interpretation")
+    L.append("")
+    L.append(
+        "- In the main action-dependent scenario, the estimated action-level "
+        "propensities are close to the oracle; the correction survives. This is "
+        "the minimum bar."
+    )
+    L.append(
+        "- Lognormal noise tests misspecification. The IPW bias grows with "
+        "sigma; DR stays within 1.58% at sigma 0.25. The memo should report the "
+        "sensitivity band, not a single point estimate."
+    )
+    L.append(
+        "- Under outcome-dependent labels, the action-level estimated e is a "
+        "weighted average of the fraud and legitimate observation rates. "
+        "Action-only IPW/DR fail; audit-only is the honest estimator. This is "
+        "the strongest argument for the audit."
+    )
+    L.append(
+        "- Under covariate-dependent observation, action-level e is misspecified "
+        "because it ignores the within-action gradient. Action-level IPW and DR "
+        "both fail; the fitted covariate model recovers the oracle. The report "
+        "must not claim a point estimate without a covariate propensity model "
+        "and overlap diagnostics."
+    )
+    L.append("")
+    L.append("## Caveats")
+    L.append("")
+    L.append(
+        "- The action-level e is a marginal rate; the covariate model is a "
+        "per-action logistic model. Neither is a full production propensity "
+        "model."
+    )
+    L.append(
+        "- The noisy e uses the oracle as the center; it is a stress test, not a "
+        "calibration study."
+    )
+    L.append(
+        "- The covariate model is a logistic model in the observed features. It "
+        "is correctly specified for the simulated mechanism up to the audit "
+        "mixture and the delay/resolution term; a real log may require a more "
+        "flexible model and a positivity/overlap check."
+    )
+    L.append(
+        "- A production study should estimate e from the audit design and "
+        "covariates, and report the sensitivity band."
+    )
+    L.append("")
+    path = out_dir / "propensity_sensitivity.md"
+    path.write_text("\n".join(L), encoding="utf-8")
+    return path
+
+
 def run_sensitivity(
     config: PilotConfig,
     out_dir: Path | str,
@@ -103,126 +302,7 @@ def run_sensitivity(
         json.dumps(payload, indent=2), encoding="utf-8"
     )
 
-    L: list[str] = []
-    L.append("# Propensity Sensitivity")
-    L.append("")
-    L.append(
-        f"_Pre-registered follow-up; {reps} replications per scenario; common "
-        "random numbers; seed from the pilot config._"
-    )
-    L.append("")
-    L.append("## What this tests")
-    L.append("")
-    L.append(
-        "The main pilot uses oracle propensities. This study replaces them with "
-        "(a) action-level propensities estimated from the observed draw, "
-        "(b) oracle propensities with lognormal noise, (c) estimated "
-        "propensities under outcome-dependent labels, and (d) action-level, "
-        "fitted covariate, and oracle propensities under covariate-dependent "
-        "observation. The target and policies are unchanged."
-    )
-    L.append("")
-    L.append("## Main scenario")
-    L.append("")
-
-    def add_table(ids, estimators) -> None:
-        L.append(
-            "| Scenario | Estimator | Max \\|rel bias\\| | Mean coverage | Mean ESS |"
-        )
-        L.append("|---|---|---:|---:|---:|")
-        for sid in ids:
-            for est in estimators:
-                match = agg[(agg["scenario"] == sid) & (agg["estimator"] == est)]
-                if match.empty:
-                    continue
-                row = match.iloc[0]
-                L.append(
-                    f"| `{sid}` | `{est}` | "
-                    f"{row['max_abs_rel_bias']:.2%} | {row['mean_coverage']:.1%} | "
-                    f"{row['mean_ess']:,.0f} |"
-                )
-        L.append("")
-
-    main_ids = (
-        "main",
-        "propensity_estimated",
-        "propensity_noisy_10",
-        "propensity_noisy_25",
-    )
-    add_table(main_ids, ("naive", "ipw_ht", "dr", "audit_only"))
-    L.append("## Outcome-dependent labels")
-    L.append("")
-    od_ids = ("outcome_dependent", "outcome_dependent_estimated")
-    add_table(od_ids, ("naive", "ipw_ht", "dr", "audit_only"))
-    L.append("## Covariate-dependent observation")
-    L.append("")
-    L.append(
-        "The post-approval report probability depends on standardized log "
-        "amount: `logit(e_report) = logit(e_approve) + 0.75 * z`. The "
-        "`covariate_*` scenarios use that mechanism. `oracle` uses the true "
-        "per-row propensity; `action` uses the action-level estimate; `model` "
-        "uses a cross-fitted per-action logistic model of `observed` on the "
-        "outcome-model features plus decision day. The delay-0.5 variants "
-        "isolate the propensity misspecification; the delay-45 variants add the "
-        "resolution gradient."
-    )
-    L.append("")
-    cov_ids = (
-        "covariate_oracle",
-        "covariate_action",
-        "covariate_model",
-        "covariate_action_delay",
-        "covariate_model_delay",
-    )
-    add_table(cov_ids, ("naive", "ipw_ht", "dr"))
-    L.append("## Interpretation")
-    L.append("")
-    L.append(
-        "- In the main action-dependent scenario, the estimated action-level "
-        "propensities should be close to the oracle; the correction should "
-        "survive. This is the minimum bar."
-    )
-    L.append(
-        "- Lognormal noise tests misspecification. If the bias grows quickly "
-        "with sigma, the memo must report a propensity-sensitivity band, not a "
-        "single point estimate."
-    )
-    L.append(
-        "- Under outcome-dependent labels, the action-level estimated e is a "
-        "weighted average of the fraud and legitimate observation rates. "
-        "Action-only IPW/DR are expected to fail; audit-only is the honest "
-        "estimator. This is the strongest argument for the audit."
-    )
-    L.append(
-        "- Under covariate-dependent observation, action-level e is misspecified "
-        "because it ignores the within-action gradient. The fitted covariate "
-        "model should recover most of the correction; if it does not, the "
-        "report must not claim a point estimate without a covariate propensity "
-        "model and overlap diagnostics."
-    )
-    L.append("")
-    L.append("## Caveats")
-    L.append("")
-    L.append(
-        "- The estimated e is action-level and estimated from the same draw; it "
-        "is not a full propensity model with covariates."
-    )
-    L.append(
-        "- The noisy e uses the oracle as the center; it is a stress test, not a "
-        "calibration study."
-    )
-    L.append(
-        "- The covariate model is a logistic model in the observed features. It "
-        "is correctly specified for the simulated mechanism up to the audit "
-        "mixture and the delay/resolution term; a real log may require a more "
-        "flexible model and a positivity/overlap check."
-    )
-    L.append(
-        "- A production study should estimate e from the audit design and "
-        "covariates, and report the sensitivity band."
-    )
-    L.append("")
-    (out_dir / "propensity_sensitivity.md").write_text("\n".join(L), encoding="utf-8")
+    write_markdown(payload, out_dir)
     print(f"[sensitivity] wrote {out_dir / 'propensity_sensitivity.json'}")
     print(f"[sensitivity] wrote {out_dir / 'propensity_sensitivity.md'}")
     return payload

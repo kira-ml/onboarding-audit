@@ -1,5 +1,7 @@
 # Decision Journal
 
+**Status:** Canonical decision journal for v0.2.1 (2026-11-20).
+
 **Rule:** Record material, hard-to-reverse decisions with options, expected
 outcome, assumptions, review date, and kill criteria.
 
@@ -365,7 +367,71 @@ of the oracle; DR is more robust than IPW but not necessarily within 5%.
 pre-decision features; the audit is random; the logistic form is an
 approximation; the features are available at decision time.
 
+**Result (2026-11-20):** The gate is met by the covariate model, not by
+action-level weighting.
+- Action-level: IPW **67.52% / 1.5%** coverage; DR **21.25% / 72.5%** (delay 0.5).
+  With delay 45: IPW **51.72% / 21.5%**; DR **17.59% / 80.0%**.
+- Covariate model: IPW **1.97% / 91.5%**; DR **2.48% / 89.5%** (delay 0.5).
+  With delay 45: IPW **3.35% / 90.5%**; DR **3.68% / 89.5%**.
+- Oracle: IPW **3.01% / 90.0%**; DR **2.63% / 89.0%**.
+
+**Decision update:** The report supports `--propensity-model covariate`; the
+paper claims covariate-model robustness under covariate-dependent observation,
+not action-level DR robustness. The report exposes the
+observation-rate-by-amount-quintile diagnostic so a team can decide which model
+to use. Heavy weights still undercover (89–91.5% vs 95%); a bootstrap interval is
+the v0.3 extension.
+
 **Review date:** 2027-01-15.
 **Kill criteria:** The covariate model does not improve on action-level `e`, or
 its weights are so heavy that the interval is uninformative; then the tool
 reports bounds/diagnostics and recommends an audit, not a point estimate.
+
+---
+
+## D12 — Documentation is the source of truth; the paper is a rendering
+
+**Date:** 2026-11-20.
+**Status:** Accepted.
+
+**Options:**
+1. Start the paper draft first and fill the documentation later.
+2. Freeze the canonical documentation first, then write the paper from it.
+3. Keep a single long document and split it at submission time.
+
+**Decision:** Option 2. The canonical documentation is finalized before the
+paper draft. The paper is a rendering of `METHODS.md`, `RESULTS.md`,
+`CLAIMS.md`, `THREATS.md`, and `RELATED_WORK.md`, not a separate source of truth.
+
+**Why:**
+- The project has measured results, a claim ledger, a decision journal, and a
+  validity register. Writing the paper first would re-derive or, worse,
+  contradict them.
+- A paper is a snapshot; the documentation is the durable artifact. A reader
+  should be able to reproduce and audit the work without reading the paper.
+- The user's priority is a complete documentation foundation, not a premature
+  PDF.
+- A clear precedence rule prevents the README, one-pager, and paper from
+  drifting into different claims.
+
+**Artifacts:**
+- `docs/README.md` — map, status, precedence, update rules.
+- `docs/METHODS.md`, `docs/RESULTS.md`, `docs/CLAIMS.md`, `docs/THREATS.md`,
+  `docs/RELATED_WORK.md` — the canonical research set.
+- `docs/REPRODUCIBILITY.md`, `docs/ARCHITECTURE.md`, `docs/TESTING.md` — the
+  technical set.
+- `docs/PUBLICATION_CHECKLIST.md`, `docs/FAQ.md`, `docs/OPEN_QUESTIONS.md` — the
+  release and question set.
+- `paper/README.md` — the paper workspace guide, explicitly not a draft.
+
+**Expected outcome:** A new collaborator can start from `docs/README.md`, trace
+every number to a committed artifact, and draft the paper without re-running the
+analysis or inventing a claim.
+
+**Assumptions:** The measured results are stable enough to document; the
+covariate 50-replication run is the last measurement before the freeze.
+
+**Review date:** 2027-01-15, or when the paper draft starts.
+**Kill criteria:** A documentation change forces a new measurement or a headline
+change; then update the claim ledger and the pre-registration first, and delay
+the freeze.

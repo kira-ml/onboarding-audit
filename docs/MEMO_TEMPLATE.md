@@ -1,5 +1,7 @@
 # Onboarding Policy Change Memo — Template
 
+**Status:** Canonical memo template for v0.2.1 (2026-11-20).
+
 **Policy:** `[name / model version / threshold version]`
 **Prepared by:** `[decision strategy / analytics / model risk]`
 **Date:** `[YYYY-MM-DD]`
@@ -27,12 +29,21 @@
 
 | Diagnostic | Value | Interpretation |
 |---|---:|---|
+| Propensity source | `[provided / estimated / estimated_covariate]` | `[known / action-level / covariate]` |
 | Propensity range | `[min, max]` | `[overlap OK / weak]` |
 | Effective sample size | `[ESS]` | `[precision]` |
+| Max weight / p99 weight | `[max / p99]` | `[heavy-tail risk]` |
 | Share with propensity < 0.01 | `[%]` | `[positivity risk]` |
 | Label maturity | `[% resolved]` | `[censoring risk]` |
 | Label-source mix | `[review / report / audit / ...]` | `[selection risk]` |
+| Observation rate by amount quintile | `[approve / review]` | `[within-action gradient]` |
 | Audit share | `[%]` | `[validation strength]` |
+
+If the observation rate varies strongly across amount quintiles within an
+action, action-level `e` is misspecified. Rerun with
+`--propensity-model covariate` and report the feature list. Heavy weights
+(max or p99 far above the median) mean the interval can undercover even when the
+point estimate is close.
 
 ## 4. What would change the estimate
 
@@ -52,7 +63,16 @@
 - **What it buys:** `[bias/variance reduction / validation]`.
 - **What it does not buy:** the reject margin; small fraud-rate differences.
 
-## 6. Claim ledger
+## 6. Bounds and uncertainty language
+
+- The reject-margin interval is a **partial-identification interval conditional
+  on the `P0` estimate**, not a confidence interval.
+- Do not write "95% confident" about the bounds.
+- Report the width and the share of rejected applications.
+- If the reject margin is material, do not report a full-population point
+  estimate.
+
+## 7. Claim ledger
 
 | Claim | Status | Evidence |
 |---|---|---|
@@ -60,7 +80,7 @@
 | `[assumption]` | Assumed | `[source]` |
 | `[unverifiable]` | Unverifiable | `[why]` |
 
-## 7. Sign-off
+## 8. Sign-off
 
 | Role | Name | Decision | Date |
 |---|---|---|---|

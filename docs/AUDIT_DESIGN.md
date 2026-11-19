@@ -1,5 +1,7 @@
 # Audit Design
 
+**Status:** Canonical audit design for v0.2.1 (2026-11-20).
+
 **Purpose:** Define what a defensible audit can and cannot buy when the
 onboarding policy chooses its own labels.
 

@@ -1,5 +1,7 @@
 # Data Card — BAF Account-Opening Test Window
 
+**Status:** Canonical data card for v0.2.1 (2026-11-20).
+
 ## 1. Dataset
 
 | Item | Value |
@@ -19,6 +21,12 @@
 
 `data/scored_test.parquet` — 227,491 rows, months 5–6.
 
+SHA-256:
+`f5efd6781431f229685df6c154f1a6e124849a323e3c45d258a09cf10f331593`.
+
+Every column, its role, and its limitations are in
+[`DATA_DICTIONARY.md`](DATA_DICTIONARY.md).
+
 | Column | Meaning |
 |---|---|
 | `fraud_bool` | True account-opening fraud label |
@@ -37,23 +45,26 @@ observation mechanism.
 
 ## 3. How to rebuild
 
+The processed file was produced by the archived V2 pipeline. The pipeline is not
+part of this repository, and a standalone `scripts/prepare_baf.py` is **not
+included** in v0.2.1. The honest reproduction path is:
+
 1. Download `Base.csv` from the BAF repository/Kaggle.
-2. Place it at `data/Base.csv`.
-3. Run the preparation script (to be added in v0.1.1):
+2. Use the archived V2 pipeline to sort by month and split months 0–2 (train),
+   3–4 (validation), 5–6 (test).
+3. Fit the incumbent logistic regression and the candidate LightGBM on the
+   training window, validate on 3–4, and score the test window.
+4. Write the 39-column test frame described in
+   [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md), including `amount_proxy`,
+   `p_fraud`, `p_fraud_lgbm`, and the BAF application features.
+5. Verify the SHA-256 hash above before running the pilot.
 
-```bash
-python scripts/prepare_baf.py --raw data/Base.csv --out data/scored_test.parquet
-```
+Do not fabricate the processed file from a different split. The scores and the
+test window are part of the benchmark; a different split changes the result.
 
-The script will:
-- sort by month;
-- split months 0–2 (train), 3–4 (validation), 5–6 (test);
-- fit the incumbent logistic regression and the candidate LightGBM;
-- score the test window;
-- write the processed file.
-
-Until then, the local pilot uses the archived processed file, which is not
-committed to the public repo (see `.gitignore`).
+The processed file is not committed to the public repo (see `.gitignore`). The
+pilot and the report are reproducible from the committed code and the public raw
+data, but not from this repository alone.
 
 ## 4. Known limitations
 

@@ -2,7 +2,8 @@
 
 **Working title:** *Who Gets Onboarded? Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels.*
 
-**Status:** Outline; results from the v0.1 pilot and v0.2 tools.
+**Status:** Outline; results from the v0.2.1 pilot, propensity sensitivity, and
+covariate sensitivity.
 **Author:** Ken Ira Lacson Talingting.
 **Target:** Public technical report / arXiv first. ICAIF 2027 or a fintech research workshop if the results hold. Do not overpromise a venue.
 
@@ -21,7 +22,10 @@ estimation, audit-only estimation, and partial-identification bounds on the
 public Bank Account Fraud (BAF) account-opening benchmark. We quantify the bias,
 the rank flips, the value of a random post-hoc verification audit, and the
 failure of action-only weighting when approved fraud is more likely to be
-labeled than approved legitimate accounts. We release an open-source logging
+labeled than approved legitimate accounts. A covariate-dependent observation
+stress test shows that action-level weighting also fails when the observation
+rate depends on application features, and that a fitted covariate propensity
+model is needed. We release an open-source logging
 schema, audit design, and evaluation tool mapped to BSP Circular 1170 (eKYC),
 BSP Circular 1213 (FMS calibration and independent audit), and AFASA. The
 result is a measurement layer, not another fraud detector.
@@ -198,10 +202,10 @@ intervals. The reject margin is not point-identified from logs alone.
 
 ### 6.7 Negative controls
 
-`pytest -q`: 39 tests pass, including full-observation identity, full-audit
+`pytest -q`: 47 tests pass, including full-observation identity, full-audit
 identity, propensity recovery, bounds validity, capacity, no leakage, schema
 validation, the arbitrary-log report's known-ground-truth check, and the
-propensity helpers.
+propensity/covariate helpers.
 
 ### 6.8 Propensity sensitivity
 
@@ -211,6 +215,19 @@ sigma 0.25: DR **1.58% / 96.5%**, IPW **7.01% / 93.5%**. Under outcome-dependent
 labels with estimated `e`: audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR
 **1627.9%**. The paper should recommend DR, not IPW, when `e` is estimated, and
 audit-only when the label-source mix suggests outcome-dependent observation.
+
+### 6.9 Covariate-dependent observation
+
+When the post-approval report probability depends on standardized log amount,
+action-level `e` is misspecified. The 50-replication study compares oracle,
+action-level, and cross-fitted covariate propensities, with and without the
+45-day delay. Action-level IPW is **67.52%** biased (coverage **1.5%**) and
+action-level DR **21.25%** (coverage **72.5%**); with the delay, **51.72%** and
+**17.59%**. The fitted covariate model recovers the oracle: IPW **1.97%** / DR
+**2.48%** (coverage **91.5% / 89.5%**), and **3.35% / 3.68%** with the delay.
+The oracle itself covers **89–90%**, so the shortfall from 95% is the heavy-tail
+variance, not the model. The paper should claim covariate-model robustness, not
+action-level DR robustness, under covariate-dependent observation.
 
 ---
 
@@ -231,7 +248,9 @@ audit-only when the label-source mix suggests outcome-dependent observation.
 - Simulated observation and capacity; no PH production data.
 - BAF is synthetic; one dataset.
 - Cost matrix is a normalized assumption.
-- Oracle propensities in the pilot; estimated propensities are a follow-on.
+- Oracle propensities in the main pilot; the sensitivity tests estimated,
+  noisy, and covariate propensities. The covariate model is a logistic
+  approximation, and heavy weights can undercover the interval.
 - Reject margin not identified.
 - The audit design is a recommendation; legal/risk review required.
 - No causal deployment claim.

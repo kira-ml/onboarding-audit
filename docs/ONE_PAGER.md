@@ -3,8 +3,8 @@
 **Project:** Onboarding Audit — audit-ready evaluation of account-opening fraud
 policies under selective and delayed labels.
 **Author:** Ken Ira Lacson Talingting.
-**Status:** v0.2.0 pilot; results from the pre-registered pilot and the
-propensity sensitivity.
+**Status:** v0.2.1 pilot; results from the pre-registered pilot, the propensity
+sensitivity, and the covariate sensitivity.
 
 ---
 
@@ -28,6 +28,8 @@ new policy is estimated on the subset the incumbent policy produced.
   (`P0`), the part logs can identify.
 - **Reject margin:** full-population bounds, not a point estimate.
 - **Estimators:** naive, IPW, doubly robust, audit-only, bounds.
+- **Propensities:** oracle, action-level estimated, noisy, and per-action
+  covariate models.
 - **Benchmark:** BAF account-opening applications with known ground truth.
 - **Stress tests:** review capacity, label delay, audit size, outcome-dependent
   labels, false-reject cost.
@@ -58,13 +60,19 @@ new policy is estimated on the subset the incumbent policy produced.
   **2.67%** with **91.0%** coverage; IPW degrades to **11.19% / 73.0%**. Under
   outcome-dependent labels with estimated `e`, only audit-only is honest
   (**2.58% / 82.5%**; IPW/DR fail). Use DR when `e` is estimated.
+- **Covariate-dependent observation:** action-level IPW is **67.52%** biased and
+  action-level DR **21.25%** biased; a fitted per-action covariate propensity
+  model recovers the oracle (**1.97% / 2.48%**, or **3.35% / 3.68%** with the
+  45-day delay). Coverage is **89–91.5%**, below nominal 95%, because the
+  weights are heavy-tailed. See `RESULTS.md`.
 
 **What this means:** the naive evaluation is not a small approximation; it would
 reject the better policy. Doubly robust estimation recovers the identified value
 and the true ranking, but the reject margin still requires bounds or a
 controlled approval design. The audit is a validation and outcome-dependent-label
 tool, not a universal bias fix. When `e` is estimated from a log, use DR rather
-than IPW.
+than IPW. When the observation rate varies with application features, use the
+covariate propensity model; DR alone is not enough.
 
 ## What a team gets
 
@@ -74,6 +82,7 @@ than IPW.
 - An **audit design**: random post-hoc verification of approved applications and
   shadow scoring; no random approvals/rejections.
 - An **audit-ready memo** separating measured, assumed, and unverifiable claims.
+- **Action-level and covariate propensity models** with weight/ESS diagnostics.
 - A **public benchmark** and reproducible pilot.
 
 ## Why it matters
@@ -96,8 +105,9 @@ project supplies the missing measurement layer.
 - The observation mechanism and review capacity are simulated.
 - BAF is synthetic; no Philippine bank data.
 - The cost matrix is a normalized assumption.
-- The pilot's main run uses oracle propensities; the sensitivity tests estimated
-  and noisy propensities, but a covariate propensity model remains future work.
+- The pilot's main run uses oracle propensities; the sensitivity tests estimated,
+  noisy, and covariate propensities. The covariate model is a logistic
+  approximation, and heavy-tailed weights can undercover the interval.
 - The audit design requires legal/risk review.
 - The reject margin is bounded, not point-identified.
 

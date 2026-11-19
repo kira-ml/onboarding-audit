@@ -1,6 +1,6 @@
 # Decision-Log Schema
 
-**Version:** 0.1.0.
+**Version:** 0.2.1.
 **Purpose:** Define the minimum fields a team must log to evaluate an
 account-opening fraud policy. The schema extends BSP Circular 1213's mandated
 11-field transaction log with the fields the regulation does not require but an
@@ -71,6 +71,12 @@ outcome field**.
 | `audit_time` | timestamp | no | delay | When the audit concluded |
 | `censoring_reason` | enum | no | diagnostics | `not_resolved`, `not_reviewed`, `not_approved`, `other` |
 
+`propensity` is optional. If it is absent, the report estimates an action-level
+propensity from the review/audit rates, or a per-action covariate model when
+`--propensity-model covariate` is used. The covariate model needs numeric
+pre-decision features; add them to the evaluation table and pass them with
+`--propensity-features`.
+
 ### 2.4 Label
 
 | Field | Type | Required | Used by | Description |
@@ -97,10 +103,15 @@ outcome field**.
 - `reviewed == 1` implies `review_outcome in {fraud, legit, unknown}`.
 - `audit_flag == 1` implies `action == "approve"`.
 - `label` is null or 0/1.
-- `label` observed implies `label_time` and `label_source` are present.
+- `label` observed implies `label_time` is present; `label_source` is strongly
+  recommended and is reported as a warning when absent.
 - `propensity` is null or in `(0, 1]`.
 - `amount >= 0`.
 - `decision_time >= application_time`.
+
+`review_outcome` is part of the schema, but the current validator does not
+enforce its enum; it is a documented convention. The validator enforces the
+structural rules listed in §5.
 
 ## 4. Which fields each estimator needs
 
@@ -112,8 +123,30 @@ outcome field**.
 | Audit-only | + `audit_flag`, `label_time` |
 | Bounds | + `amount`, `action`, logging action |
 | Ranking | + candidate scores/actions |
+| Covariate propensity | + numeric pre-decision features |
 
-## 5. Example row
+## 5. Validator behavior
+
+`onboarding-audit validate` checks:
+
+- required columns are present (`application_id`, `action`, `score`, `amount`,
+  `label`);
+- `action in {approve, review, reject}`;
+- `score in [0, 1]`;
+- `reviewed == 1` implies `action == "review"`;
+- `audit_flag == 1` implies `action == "approve"`;
+- `label` is null or 0/1;
+- `label` observed implies `label_time` is present; `label_source` is warned
+  when absent;
+- `propensity` is null or in `(0, 1]`;
+- `amount >= 0`;
+- `decision_time >= application_time` when both are present.
+
+The validator also reports which estimators the log can support and what is
+missing. It does not prove the observation model is correct; it only checks the
+schema.
+
+## 6. Example row
 
 ```csv
 application_id,application_time,decision_time,channel,action,score,model_version,reviewed,review_outcome,audit_flag,propensity,label,label_time,label_source,amount
@@ -122,7 +155,7 @@ app_0002,2026-06-01T10:02:00Z,2026-06-01T10:02:03Z,mobile,review,0.0810,lr_v2,1,
 app_0003,2026-06-02T18:44:00Z,2026-06-02T18:44:01Z,web,approve,0.0210,lr_v2,0,,0,0.050,1,2026-07-20T08:00:00Z,post_approval_report,800
 ```
 
-## 6. Privacy and data protection
+## 7. Privacy and data protection
 
 - The open-source project uses public or synthetic data only.
 - In a production deployment, identifiers must be hashed/pseudonymized; the
@@ -133,7 +166,7 @@ app_0003,2026-06-02T18:44:00Z,2026-06-02T18:44:01Z,web,approve,0.0210,lr_v2,0,,0
   the evaluation extract.
 - Access to the evaluation extract should be role-controlled and audited.
 
-## 7. Relationship to the regulation
+## 8. Relationship to the regulation
 
 This schema is an **extension**, not a replacement. A team should keep the BSP
 1213 11-field log as the regulatory floor and add the decision/observation/

@@ -31,6 +31,25 @@ This is a 20-row schema/CLI smoke example, not a research result. The estimates
 are volatile at this size; use the pilot benchmark or a real log for inference.
 The generated memo is `reports/sample_report/report.md`.
 
+Because the sample log has a `propensity` column, the report uses it as the
+`provided` source. To exercise the covariate model, drop the `propensity` column
+or pass a log without it, then run:
+
+```bash
+onboarding-audit report \
+  --log examples/sample_log.csv \
+  --candidate examples/sample_candidate.csv \
+  --config configs/pilot.yaml \
+  --capacity 0.10 \
+  --propensity-model covariate \
+  --propensity-features customer_age,credit_risk_score \
+  --out reports/sample_covariate
+```
+
+The 20-row sample is too small for a meaningful covariate fit; the model falls
+back to the action mean. Use the synthetic 2,500-row test log in
+`tests/test_report.py` or a real log to see the gradient.
+
 ## Run the pilot
 
 ```bash

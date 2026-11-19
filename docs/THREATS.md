@@ -1,5 +1,7 @@
 # Threats to Validity
 
+**Status:** Canonical validity register for v0.2.1 (2026-11-20).
+
 **Purpose:** The strongest reasons this project could be wrong, and the tests or
 statements that bound the damage. This is the inversion artifact; it should be
 read before the results.
@@ -25,8 +27,8 @@ read before the results.
 | **Policy leakage** | The candidate policy must not use evaluation labels | Actions are a deterministic function of scores/amounts; permutation test | A team could accidentally tune on the evaluation window; the protocol says hold out |
 | **Cross-fitting errors** | The outcome model could overfit the observed rows | 5-fold cross-fitting; DR residual; full-observation identity test | Small samples may still overfit |
 | **Oracle propensities** | The pilot isolates estimator behavior by using known e | State it; a follow-on estimates propensities and tests sensitivity | The sensitivity estimates action-level e, adds lognormal noise, and adds a covariate-dependent observation mechanism; covariate-dependent observation is tested with a fitted propensity model, with a heavy-tail caveat |
-| **Action-level estimated propensities** | A real log may have covariate-dependent observation; an action-level e can be misspecified | The report labels the source and supports `--propensity-model covariate`; the sensitivity compares action-level, fitted covariate, and oracle e | Measured: DR survives estimated action-level e (max **2.67%**, coverage **91.0%**); IPW does not (**11.19%**, **73.0%**). Under covariate-dependent observation, action-level IPW fails; the fitted covariate model recovers the oracle. |
-| **Covariate-dependent observation** | `P(observed | action, X)` can depend on the application, so action-level e is misspecified even with a large sample | A cross-fitted per-action logistic propensity model; report the feature list, ESS, max weight, and weight range; compare with oracle and action-level e | The fitted model can recover the point estimate, but heavy-tailed weights can undercover the interval; the memo must not treat a within-5% point estimate as calibrated uncertainty |
+| **Action-level estimated propensities** | A real log may have covariate-dependent observation; an action-level e can be misspecified | The report labels the source and supports `--propensity-model covariate`; the sensitivity compares action-level, fitted covariate, and oracle e | Measured: DR survives estimated action-level e when observation is action-dependent (max **2.67%**, coverage **91.0%**); IPW does not (**11.19%**, **73.0%**). Under covariate-dependent observation, action-level IPW fails (**67.52%**) and action-level DR also fails (**21.25%**); the covariate model recovers the oracle (**1.97–3.68%**). |
+| **Covariate-dependent observation** | `P(observed \| action, X)` can depend on the application, so action-level e is misspecified even with a large sample | A cross-fitted per-action logistic propensity model; report the feature list, ESS, max weight, and weight range; compare with oracle and action-level e | Measured: action-level IPW **67.52% / 1.5%** coverage, action-level DR **21.25% / 72.5%**; covariate model **1.97% / 91.5%** (IPW) and **2.48% / 89.5%** (DR). The oracle itself covers **89-90%**, so heavy weights can undercover even with a correct model. |
 | **Outcome-dependent labels with estimated e** | The action-level e is a weighted average of the fraud and legitimate observation rates | The report exposes the label-source mix; audit-only is the fallback; the audit design is the identification device | Measured: audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR **1627.9%**. The tool must warn before reporting a point estimate. |
 | **Finite-sample bias** | IPW/DR can be biased/noisy at small audit sizes | Report MC SE, ESS, max weight; 100 reps main; 50 sweeps | The pilot may still be noisy for the audit-only estimator |
 | **Multiple scenarios** | Searching many scenarios can produce false positives | Pre-register the main scenario and H1–H6; report all scenarios; no post-hoc headline switching | The reader should treat the sweep as sensitivity, not confirmation |
@@ -69,6 +71,9 @@ read before the results.
 - The audit design is a recommendation, not a claim that every bank can run it.
 - If the correction does not survive estimated or covariate propensities, the
   paper must say so and narrow the claim.
+- The covariate result is exactly that: action-level DR fails (21.25%); the
+  paper claims only the fitted covariate model (1.97–3.68%), with the
+  heavy-tail coverage caveat.
 - Covariate-dependent observation can produce heavy-tailed weights; a point
   estimate within 5% is not evidence that the interval is calibrated. The memo
   reports ESS, max weight, and the weight range.
@@ -77,7 +82,8 @@ read before the results.
 
 1. The naive bias is negligible and no ranking flips under all realistic
    scenarios.
-2. Estimated propensities remove the corrected estimator's advantage.
+2. Estimated or covariate propensities remove the corrected estimator's
+   advantage.
 3. The reject-margin bounds are so wide that no decision is supported.
 4. The audit design is legally or operationally infeasible.
 5. The binding problem is scam intervention UX, not onboarding policy

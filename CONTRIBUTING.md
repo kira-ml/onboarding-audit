@@ -1,5 +1,7 @@
 # Contributing
 
+**Status:** Canonical contribution guide for v0.2.1 (2026-11-20).
+
 This is a research repository. The contribution rules are designed to protect
 the credibility of the claims, not just the code.
 
@@ -34,13 +36,41 @@ the credibility of the claims, not just the code.
 
 1. Add the scenario to `configs/pilot.yaml` with a unique `id`, `reps`,
    `audit_rate`, `approve_delay_median`, `false_reject_cost`, and optional
-   `outcome_dependent`/`candidate_capacity`.
-2. State the purpose in `docs/PILOT_SPEC.md` §8.
+   `outcome_dependent`, `candidate_capacity`, `propensity_mode`,
+   `propensity_noise`, `observation_mode`, and `covariate_beta`.
+   - `propensity_mode`: `oracle`, `estimated`, `noisy`, or `covariate`.
+   - `observation_mode`: `action` or `covariate`.
+   - `covariate` observation requires `0 < kappa_review < 1` and
+     `0 < e_approve < 1`.
+2. State the purpose in `docs/PILOT_SPEC.md` §8 and, if it is a new mechanism,
+   add a dated addendum.
 3. Run `onboarding-audit pilot --config configs/pilot.yaml --scenarios <id> --reps 5`
    as a smoke test.
 4. Run the full scenario.
-5. Add the result to `docs/CLAIMS.md` and, if it changes the headline, to the
-   report.
+5. Add the result to `docs/CLAIMS.md` and `docs/RESULTS.md`; if it changes the
+   headline, update the derived docs.
+
+## Documentation rules
+
+1. A new public claim goes to `docs/CLAIMS.md` first, with a status and evidence.
+2. A new measured number goes to `docs/RESULTS.md` and the claim ledger.
+3. A new method or estimator goes to `docs/METHODS.md`, `docs/ARCHITECTURE.md`,
+   and `docs/TESTING.md`.
+4. A new document goes to `docs/README.md` with a reading path and a status.
+5. Do not hand-edit a generated report; rerun the command.
+6. Do not let a derived document (README, one-pager, brief, outline) introduce a
+   claim that is not in the ledger.
+7. Run the link and stale-number check in
+   `docs/PUBLICATION_CHECKLIST.md` before a release.
+
+## Community expectations
+
+- Critique claims and evidence, not people.
+- State what you verified, what you assumed, and what you could not check.
+- Report a conflict of interest when it affects a claim or a review.
+- Do not submit proprietary data, PII, or a claim you cannot trace to an
+  artifact.
+- A disagreement about a number is resolved by the artifact, not by seniority.
 
 ## Reporting a bug
 

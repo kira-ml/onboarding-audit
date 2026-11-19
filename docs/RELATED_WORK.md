@@ -1,7 +1,10 @@
 # Related Work Map
 
+**Status:** Canonical related-work map for v0.2.1 (2026-11-20).
+
 **Purpose:** Show what is established, what is adjacent, and what this project
-adds. The full annotated bibliography is in the archived origin repository:
+adds. The curated public bibliography is [`REFERENCES.md`](REFERENCES.md). The
+full annotated bibliography is in the archived origin repository:
 `D:\delayed-label-fraud-decisioning\research_notes\Philippine fintech fraud problem evidence\literature_review.md`.
 
 ---

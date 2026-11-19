@@ -1,9 +1,10 @@
 # Problem Brief — Account-Opening Fraud Policy Evaluation
 
-**Status:** v0.1.0, 2026-11-19.
+**Status:** v0.2.1, 2026-11-20.
 **Purpose:** Define the problem this project solves, the user, the decision, the
 evidence, and the limits. This is the document a fintech reviewer should read
-first.
+first. The measured findings are in [`RESULTS.md`](RESULTS.md); the claim ledger
+is [`CLAIMS.md`](CLAIMS.md).
 
 ---
 
@@ -222,9 +223,11 @@ The targeted review of 25 primary sources found:
 | BSP Project Sapiens names sampling/labelling bias | **Verified** (BSP document) |
 | The pilot's logging policy and observation mechanism | **Simulated**; calibrated to public/regulatory parameters |
 | The cost matrix | **Assumed**; sensitivity-tested, not a production estimate |
-| The naive bias and rank flips | **To be measured** |
-| The audit value | **To be measured** |
-| The reject-margin bounds | **Derived**; assumptions stated |
+| The naive bias and rank flips | **Measured**: +111.6% to +278.5%; mean 1.00 inversion; see `RESULTS.md` |
+| The audit value | **Measured**: modest in the main scenario, decisive under outcome-dependent labels; see `RESULTS.md` |
+| The reject-margin bounds | **Derived and measured**: widest 0.009942; incumbent coverage 35%; not a CI |
+| Propensity estimation | **Measured**: DR 2.67% / 91.0%; IPW 11.19% / 73.0%; see `RESULTS.md` |
+| Covariate-dependent observation | **Measured**: action IPW 67.52%, DR 21.25%; covariate model 1.97% / 2.48%; see `RESULTS.md` |
 | Generalization to a Philippine production system | **Not claimed** |
 
 ## 6. What would change the conclusion
@@ -232,7 +235,7 @@ The targeted review of 25 primary sources found:
 - The naive bias is negligible and no ranking flips under all realistic
   scenarios.
 - The corrected estimators only work because the propensities are oracle-known;
-  estimated propensities remove the advantage.
+  estimated or covariate propensities remove the advantage.
 - The audit design is infeasible or legally unavailable.
 - The reject-margin bounds are so wide that no decision can be supported.
 - The binding operational problem is scam intervention UX, not onboarding
@@ -241,16 +244,18 @@ The targeted review of 25 primary sources found:
 
 ## 7. Scope and non-goals
 
-**In scope (v0.1 pilot):**
+**In scope (v0.2):**
 
 - Account-opening approve/review/reject decisions on BAF.
 - Action-dependent observation, delayed labels, censoring.
 - Naive, IPW, DR, audit-only, bounds.
 - Capacity-constrained review.
 - Audit design (post-hoc verification, shadow scoring).
+- Arbitrary-log report, action-level and covariate propensity models.
+- Propensity and covariate sensitivity studies.
 - A decision memo and claim ledger.
 
-**Out of scope (v0.1):**
+**Out of scope (v0.2):**
 
 - A new fraud detector or classifier.
 - A production integration or vendor replacement.
@@ -263,8 +268,10 @@ The targeted review of 25 primary sources found:
 
 ## 8. References
 
-The full evidence tables are in the archived origin repository:
-`D:\delayed-label-fraud-decisioning\research_notes\Philippine fintech fraud problem evidence\`.
+The curated public bibliography is [`REFERENCES.md`](REFERENCES.md). The full
+annotated evidence tables are archived in the origin repository:
+
+`D:\delayed-label-fraud-decisioning\research_notes\Philippine fintech fraud problem evidence\`
 
 Primary sources include:
 

@@ -1,5 +1,8 @@
 # Worklog
 
+**Status:** Historical state log; past entries are not updated. The current
+state is the last entry.
+
 ## 2026-11-19 — Direction set, repo scaffolded
 
 **Done:**
@@ -133,3 +136,60 @@ observation.
 **Health:** The tool surface is usable on a real log, and the correction
 survives estimated propensities with DR. The remaining scope is external
 validity and the FiFAR capacity layer, not a new method.
+
+---
+
+## 2026-11-20 — Covariate sensitivity + documentation freeze
+
+**Done:**
+
+- Added covariate-dependent observation to the pilot:
+  `logit(channel) = logit(base) + 0.75 * standardized log1p(amount)`.
+- Added a cross-fitted per-action logistic propensity model
+  (`propensity.fit_covariate_propensity`).
+- Added five 50-replication scenarios: oracle, action-level, covariate model,
+  and the two delay-45 variants.
+- Added `--propensity-model covariate` and `--propensity-features` to the
+  arbitrary-log report.
+- Added observation-rate-by-amount-quintile and weight-tail diagnostics to the
+  memo.
+- 47 tests pass, including the covariate gradient recovery and the report's
+  covariate path.
+
+**Covariate result (50 reps):**
+
+- Action-level: IPW **67.52% / 1.5%** coverage; DR **21.25% / 72.5%**
+  (delay 0.5). With delay 45: IPW **51.72% / 21.5%**; DR **17.59% / 80.0%**.
+- Covariate model: IPW **1.97% / 91.5%**; DR **2.48% / 89.5%** (delay 0.5).
+  With delay 45: IPW **3.35% / 90.5%**; DR **3.68% / 89.5%**.
+- Oracle: IPW **3.01% / 90.0%**; DR **2.63% / 89.0%**.
+- The covariate model recovers the oracle; action-level weighting does not.
+  Coverage is 89–91.5%, below nominal 95%, because the weights are heavy-tailed.
+
+**Documentation freeze:**
+
+- Added `docs/METHODS.md`, `docs/RESULTS.md`, `docs/REPRODUCIBILITY.md`,
+  `docs/ARCHITECTURE.md`, `docs/TESTING.md`, `docs/DATA_DICTIONARY.md`,
+  `docs/PUBLICATION_CHECKLIST.md`, `docs/FAQ.md`, `docs/OPEN_QUESTIONS.md`,
+  `docs/REFERENCES.md`, and `paper/README.md`.
+- Rewrote `docs/README.md` as the map with reading paths, document status, and
+  precedence/update rules.
+- Updated `README.md`, `PROBLEM.md`, `DATA.md`, `SCHEMA.md`, `MEMO_TEMPLATE.md`,
+  `CONTRIBUTING.md`, `ROADMAP.md`, `DECISIONS.md` (D11/D12), `CLAIMS.md`,
+  `THREATS.md`, `PILOT_SPEC.md`, `ONE_PAGER.md`, `COMMUNICATION.md`,
+  `paper/brief.md`, and `paper/outline.md`.
+- The paper is intentionally not drafted; `paper/` contains research notes only.
+
+**Next:**
+
+1. Two external readers: a fraud/KYC practitioner and a researcher.
+2. FiFAR capacity/analyst layer.
+3. Bootstrap/randomization-inference interval for the heavy-weight scenarios.
+4. Paper draft from the canonical docs, not from a blank page.
+5. Public release and application package.
+
+**Health:** The documentation is research-ready. The scientific claim is now
+model-specific: DR with an estimated action-level `e` for action-dependent
+observation; a covariate propensity model for covariate-dependent observation;
+audit-only for outcome-dependent labels. The remaining work is external validity,
+uncertainty calibration, and the paper.

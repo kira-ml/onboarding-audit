@@ -14,13 +14,14 @@ selection- and delay-aware estimators, capacity-constrained review, an audit
 designer, and an audit-ready policy change memo. It is validated on public
 account-opening fraud data with known ground truth.
 
-> **Status:** v0.2.0 pilot. Not a production system. No proprietary bank data.
+> **Status:** v0.2.1 pilot. Not a production system. No proprietary bank data.
 > The cost model is an explicit assumption, sensitivity-tested, not a
-> production estimate.
+> production estimate. Documentation is research-ready; the paper draft is not
+> started.
 
 ---
 
-## Pilot result (v0.1 simulation benchmark)
+## Pilot result (simulation benchmark)
 
 On the BAF account-opening test window (227,491 applications, known labels):
 
@@ -45,6 +46,13 @@ On the BAF account-opening test window (227,491 applications, known labels):
   **11.19% / 73.0%**. Under outcome-dependent labels with estimated `e`, only
   audit-only is honest (**2.58% / 82.5%**; IPW/DR fail). Use DR, not IPW, when
   `e` is estimated.
+- **Covariate-dependent observation:** when the observation rate depends on
+  application features, action-level IPW is **67.52%** biased and action-level
+  DR is **21.25%** biased. A fitted per-action covariate propensity model
+  recovers the oracle: IPW **1.97%**, DR **2.48%** (delay 0.5); **3.35%** and
+  **3.68%** with the 45-day delay. Coverage is **89–91.5%**, below nominal 95%,
+  because the weights are heavy-tailed. See
+  [`reports/propensity_sensitivity.md`](reports/propensity_sensitivity.md).
 
 Full report: [`reports/pilot.md`](reports/pilot.md). Claim ledger:
 [`docs/CLAIMS.md`](docs/CLAIMS.md). Propensity sensitivity:
@@ -80,12 +88,18 @@ question from the one the business is asking.
 | Artifact | Purpose |
 |---|---|
 | `docs/PROBLEM.md` | The evidence-backed problem brief, including the Philippine regulatory context |
+| `docs/METHODS.md` | Estimand, identification, estimators, simulation, metrics |
+| `docs/RESULTS.md` | Consolidated measured findings and H1–H6 verdicts |
 | `docs/PILOT_SPEC.md` | Pre-registered pilot: estimand, data-generating process, estimators, metrics, kill criteria |
 | `docs/SCHEMA.md` | Decision-log schema: BSP 1213's 11 mandated fields plus the missing decision/observation/label fields |
 | `docs/AUDIT_DESIGN.md` | Compliant audit design: post-hoc verification and shadow scoring, not random approvals/rejections |
+| `docs/REPORT_USAGE.md` | How to run and read the arbitrary-log report, including the covariate propensity model |
+| `docs/ARCHITECTURE.md` | Module map, data flow, invariants, extension points |
+| `docs/TESTING.md` | Test strategy, coverage, and gaps |
+| `docs/REPRODUCIBILITY.md` | Environment, data, commands, seeds, outputs, runtime |
 | `src/onboarding_audit/` | Simulation, estimators, diagnostics, audit designer, report |
 | `configs/pilot.yaml` | Pilot configuration |
-| `reports/` | Generated pilot results and claim ledger |
+| `reports/` | Generated pilot and sensitivity results |
 | `tests/` | Negative controls, estimator identities, schema checks |
 
 ## Quickstart (local pilot)
@@ -108,6 +122,16 @@ onboarding-audit report \
   --config configs/pilot.yaml \
   --capacity 0.02 \
   --out reports/my_policy
+
+# 3b. Use a covariate propensity model when observation depends on features
+onboarding-audit report \
+  --log data/decisions.parquet \
+  --candidate data/candidate_scores.parquet \
+  --config configs/pilot.yaml \
+  --capacity 0.02 \
+  --propensity-model covariate \
+  --propensity-features customer_age,credit_risk_score,velocity_6h \
+  --out reports/my_policy_covariate
 
 # 4. Run the propensity-estimation sensitivity
 onboarding-audit sensitivity --config configs/pilot.yaml --out reports --reps 50
@@ -155,23 +179,38 @@ Philippine cyber-fraud losses.
 
 ## Documentation
 
-- [Documentation index](docs/README.md)
+- [Documentation index](docs/README.md) — the reading paths and the update rules
 - [Problem brief](docs/PROBLEM.md)
+- [Methods](docs/METHODS.md)
+- [Results](docs/RESULTS.md)
 - [Pilot specification](docs/PILOT_SPEC.md)
 - [Decision-log schema](docs/SCHEMA.md)
 - [Audit design](docs/AUDIT_DESIGN.md)
 - [Report usage](docs/REPORT_USAGE.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Testing](docs/TESTING.md)
+- [Reproducibility](docs/REPRODUCIBILITY.md)
+- [Data card](docs/DATA.md) and [data dictionary](docs/DATA_DICTIONARY.md)
 - [BSP/AFASA/NPC mapping](docs/BSP_MAPPING.md)
 - [Related work / gap map](docs/RELATED_WORK.md)
+- [References](docs/REFERENCES.md)
 - [Threats to validity](docs/THREATS.md)
 - [Claim ledger](docs/CLAIMS.md)
+- [Decision journal](docs/DECISIONS.md)
+- [Open questions](docs/OPEN_QUESTIONS.md)
 - [One-pager](docs/ONE_PAGER.md)
 - [Communication plan](docs/COMMUNICATION.md)
+- [FAQ](docs/FAQ.md)
 - [Glossary](docs/GLOSSARY.md)
 - [Memo template](docs/MEMO_TEMPLATE.md)
+- [Publication checklist](docs/PUBLICATION_CHECKLIST.md)
 - [Roadmap](docs/ROADMAP.md)
-- [Data card](docs/DATA.md)
-- [Paper outline](paper/outline.md) and [2-page brief](paper/brief.md)
+- [Paper workspace](paper/README.md), [outline](paper/outline.md), and [2-page brief](paper/brief.md)
+
+**Documentation status:** the canonical research and technical documents are
+finalized for v0.2.1. The paper is intentionally not drafted; `paper/` contains
+research notes only. See [`docs/README.md`](docs/README.md) for the document
+status table and the precedence rules.
 
 ## License
 

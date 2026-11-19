@@ -1,5 +1,7 @@
 # Communication Plan
 
+**Status:** Canonical communication guide for v0.2.1 (2026-11-20).
+
 **Purpose:** Make the project legible to a fintech research team, a risk
 committee, and an internship interviewer without overclaiming.
 
@@ -36,8 +38,14 @@ committee, and an internship interviewer without overclaiming.
 > A follow-up sensitivity replaced the oracle propensities with estimated ones:
 > **DR stayed within 2.67% with 91% coverage; IPW degraded to 11.19% with 73%
 > coverage.** Under outcome-dependent labels with estimated propensities, only
-> audit-only was honest. The practical recommendation is DR, not IPW, when the
-> propensity is estimated.
+> audit-only was honest. A covariate-dependent observation stress test showed
+> that action-level IPW is **67.52%** biased and action-level DR **21.25%**
+> biased; a fitted covariate propensity model recovers the oracle
+> (**1.97% / 2.48%**, or **3.35% / 3.68%** with the 45-day delay). Coverage is
+> **89–91.5%**, below nominal 95%, because the weights are heavy-tailed.
+> The practical recommendation is DR, not IPW, when the propensity is estimated,
+> and the covariate model when the log shows a within-action observation
+> gradient.
 >
 > The output is an open-source logging schema, audit design, and policy-change
 > memo mapped to BSP Circular 1170 (eKYC), BSP Circular 1213 (FMS calibration
@@ -55,9 +63,11 @@ committee, and an internship interviewer without overclaiming.
    fields contain no decision/score/outcome; BSP Project Sapiens names sampling
    and labelling bias; AFASA s.6 ties inadequate controls to restitution.
 4. **The method (2 min).** Primary estimand `P0`, IPW/DR, audit-only, bounds;
-   why the reject margin is not point-identified.
+   action-level and covariate propensities; why the reject margin is not
+   point-identified.
 5. **The pilot (2 min).** Naive bias and rank flips; corrected estimator
-   performance; audit value; outcome-dependent failure; bounds width.
+   performance; audit value; outcome-dependent failure; propensity and covariate
+   sensitivity; bounds width.
 6. **The artifact (1 min).** Schema, validator, audit designer, memo, benchmark.
 7. **The limits (1 min).** Simulation, BAF, assumed costs, oracle propensities,
    no PH data, no causal deployment claim.
@@ -84,15 +94,20 @@ designs that audit and quantifies what it buys.
 **Q4. What would you deploy, and at what threshold?**
 A: I would not deploy a point estimate from logs alone. I would deploy the
 logging schema and the audit first; then use the memo to support a policy change
-only if the overlap/ESS and the bounds support it. The threshold is a
-cost-sensitive argmin, not a generic 0.5.
+only if the overlap/ESS and the bounds support it. If the log shows a
+within-action observation gradient, I would run the covariate propensity model
+and report the weight tail. The threshold is a cost-sensitive argmin, not a
+generic 0.5.
 
 **Q5. What is the biggest weakness?**
-A: The pilot's observation mechanism is simulated and the propensities are
-oracle-known in the main run. A real bank's labels are outcome-dependent and its
-propensities are estimated. The sensitivity addresses the second point: DR
-survives estimated action-level propensities, but IPW does not (11.19% bias, 73%
-coverage), so the tool recommends DR. The remaining weaknesses are the
+A: The pilot's observation mechanism is simulated. A real bank's labels are
+outcome-dependent and its propensities are estimated. The sensitivity addresses
+the second point: DR survives estimated action-level propensities, but IPW does
+not (11.19% bias, 73% coverage), so the tool recommends DR. Under
+covariate-dependent observation, action-level IPW is 67.52% biased and
+action-level DR 21.25% biased; the fitted covariate model recovers the oracle
+(1.97–3.68%), but coverage is 89–91.5%, so heavy weights can undercover the
+interval even when the point estimate is close. The remaining weaknesses are the
 simulated observation model, the close better-model/incumbent ranking (DR selects
 the true best 72% of the time), and the reject margin, which is bounded rather
 than point-identified (the incumbent's narrow interval covers the true full
@@ -104,6 +119,10 @@ value only 35% of the time). The project is explicit about all of these.
 - Do not claim a causal deployment effect.
 - Do not claim a point-identified full-population value.
 - Do not claim a new fraud detector or a new OPE estimator.
+- Do not claim DR is robust to any observation mechanism; it fails under
+  covariate-dependent observation without a covariate propensity model.
+- Do not claim the covariate propensity model is a production model; it is a
+  logistic approximation with a weight-tail caveat.
 - Do not claim the 1% audit detects small fraud-rate differences; it does not.
 - Do not claim BSP mandates explainable AI; BSP's AI principles are voluntary,
   and the binding explainability/fairness duties come from the NPC.

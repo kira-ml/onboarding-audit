@@ -1,5 +1,7 @@
 # Roadmap
 
+**Status:** Canonical roadmap for v0.2.1 (2026-11-20).
+
 **Goal:** A public, research-grade measurement layer for account-opening fraud
 policies, ready for the Summer 2027 fintech internship cycle.
 
@@ -33,9 +35,14 @@ at least one honest correction or bound; or a well-supported null. **Met.**
 
 - [x] Arbitrary-log `report` command (bring your own log and candidate scores).
 - [x] Propensity estimation from logs/audit; sensitivity to estimated e.
-  **Result:** DR survives estimated `e` (**2.67% / 91.0%**); IPW does not
-  (**11.19% / 73.0%**); outcome-dependent labels with estimated `e` require
-  audit-only (**2.58% / 82.5%**).
+  **Result:** DR survives estimated `e` when observation is action-dependent
+  (**2.67% / 91.0%**); IPW does not (**11.19% / 73.0%**); outcome-dependent
+  labels with estimated `e` require audit-only (**2.58% / 82.5%**).
+- [x] Covariate-dependent observation: fitted per-action propensity model,
+  `--propensity-model covariate`, and a 50-replication sensitivity.
+  **Result:** action-level IPW **67.52%**, DR **21.25%**; covariate model
+  **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage
+  **89–91.5%** (heavy tails).
 - [ ] FiFAR capacity/analyst layer.
 - [x] Markdown memo template with the measured/assumed/unverifiable ledger.
 - [x] Example log and CLI walkthrough (`examples/`, `docs/REPORT_USAGE.md`).
@@ -44,11 +51,32 @@ at least one honest correction or bound; or a well-supported null. **Met.**
 **Exit criterion:** a data scientist can run the tool on a sample log and get a
 memo in under 30 minutes.
 
+## v0.2.1 — Documentation freeze (November 2026)
+
+- [x] Consolidated methods reference (`docs/METHODS.md`).
+- [x] Consolidated results and H1–H6 verdicts (`docs/RESULTS.md`).
+- [x] Reproducibility guide (`docs/REPRODUCIBILITY.md`).
+- [x] Architecture and testing guides (`docs/ARCHITECTURE.md`,
+  `docs/TESTING.md`).
+- [x] Data dictionary (`docs/DATA_DICTIONARY.md`).
+- [x] Publication checklist (`docs/PUBLICATION_CHECKLIST.md`).
+- [x] FAQ and open-questions register (`docs/FAQ.md`,
+  `docs/OPEN_QUESTIONS.md`).
+- [x] Paper workspace guide (`paper/README.md`), explicitly not a paper draft.
+- [ ] Two external readers (fraud/KYC practitioner + researcher).
+
+**Exit criterion:** every public number traces to a committed artifact, every
+canonical document is current, and a new collaborator can start from
+`docs/README.md` without reading the conversation history. **Met for the
+author; external readers remain.**
+
 ## v0.3 — Research (February 2027)
 
-- [ ] Paper draft (IMRaD) with the claim ledger.
+- [ ] Paper draft (IMRaD) built from `docs/METHODS.md`, `docs/RESULTS.md`, and
+  `docs/CLAIMS.md`; no new headline during drafting.
 - [ ] Second public dataset or a transaction-fraud extension.
 - [ ] Sensitivity: costs, capacity, delay, audit size.
+- [ ] Bootstrap/randomization-inference interval for the heavy-weight scenarios.
 - [ ] Independent review/red-team pass.
 
 **Exit criterion:** a researcher can reproduce the headline and explain the
@@ -73,7 +101,9 @@ limitations.
 
 ## Review dates
 
-- **2026-12-15:** pilot result and go/no-go.
+- **2026-11-20:** documentation freeze (canonical docs complete; paper not
+  started). **Met for the author.**
+- **2026-12-15:** external readers and pilot go/no-go.
 - **2027-01-15:** v0.2 usable-tool gate.
 - **2027-02-15:** paper draft gate.
 - **2027-03-15:** release and application package.

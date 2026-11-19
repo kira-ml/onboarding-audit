@@ -1,6 +1,8 @@
 # Pilot Specification — Pre-Registered
 
-**Status:** Frozen before the first account-opening pilot run.
+**Status:** Frozen before the first account-opening pilot run. The
+pre-registered sections are unchanged; post-run addenda are at the end.
+**Current:** v0.2.1 (2026-11-20).
 **Date:** 2026-11-19.
 **Owner:** Ken Ira Lacson Talingting.
 **Purpose:** Test whether naive onboarding-policy evaluation is materially
@@ -456,7 +458,7 @@ includes `log1p(amount)`, so DR has a second chance to adjust; IPW does not.
 |---|---:|---|---|
 | `covariate_oracle` | 0.5 | true per-row `e` | ceiling |
 | `covariate_action` | 0.5 | action-level estimated `e` | misspecified comparator |
-| `covariate_model` | 0.5 | cross-fitted per-action logistic `P(observed | action, X)` | fitted correction |
+| `covariate_model` | 0.5 | cross-fitted per-action logistic `P(observed \| action, X)` | fitted correction |
 | `covariate_action_delay` | 45 | action-level estimated `e` | delay + misspecification |
 | `covariate_model_delay` | 45 | cross-fitted covariate model | delay robustness |
 
@@ -476,5 +478,24 @@ weights. The HT variance estimator can undercover even with oracle propensities;
 the report must show ESS, max weight, and the weight range. A point estimate
 within 5% is not evidence that the interval is calibrated.
 
-**Status.** The 50-replication run is in progress; results will be appended to
-this section and to `reports/propensity_sensitivity.md`.
+**Status.** The 50-replication run is complete. Results:
+
+| Scenario | Estimator | Max \|rel bias\| | Mean coverage | Mean ESS |
+|---|---|---:|---:|---:|
+| `covariate_oracle` | `ipw_ht` | 3.01% | 90.0% | 11,668 |
+| `covariate_oracle` | `dr` | 2.63% | 89.0% | 11,668 |
+| `covariate_action` | `ipw_ht` | **67.52%** | **1.5%** | 16,031 |
+| `covariate_action` | `dr` | **21.25%** | **72.5%** | 16,031 |
+| `covariate_model` | `ipw_ht` | **1.97%** | **91.5%** | 11,582 |
+| `covariate_model` | `dr` | **2.48%** | **89.5%** | 11,582 |
+| `covariate_action_delay` | `ipw_ht` | **51.72%** | **21.5%** | 9,938 |
+| `covariate_action_delay` | `dr` | **17.59%** | **80.0%** | 9,938 |
+| `covariate_model_delay` | `ipw_ht` | **3.35%** | **90.5%** | 6,798 |
+| `covariate_model_delay` | `dr` | **3.68%** | **89.5%** | 6,798 |
+
+The pre-declared gate is met by the **covariate model** (1.97–3.68%, coverage
+89.5–91.5%), not by action-level weighting (IPW 51.72–67.52%, DR 17.59–21.25%).
+The oracle itself covers 89–90%, so the shortfall from 95% is the heavy-tail
+variance, not the model. The paper should claim covariate-model robustness, not
+action-level DR robustness, under covariate-dependent observation. See
+`reports/propensity_sensitivity.md` and `docs/RESULTS.md` §9.

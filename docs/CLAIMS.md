@@ -1,5 +1,7 @@
 # Claim Ledger
 
+**Status:** Canonical claim ledger for v0.2.1 (2026-11-20).
+
 **Rule:** Every public claim carries one status: **Measured**, **Pre-registered**,
 **Post-hoc**, **Non-finding**, or **Limitation**. A number that is not in the
 pilot output or a cited primary source does not appear in the paper.
@@ -24,10 +26,14 @@ pilot output or a cited primary source does not appear in the paper.
 | The naive estimate would reject the better model | **Measured** | Naive: `better_model` **0.025835** vs `incumbent` **0.018584**; true: `better_model` **0.008452** vs `incumbent` **0.008785** | A different cost matrix or action mix; the direction of the bias is not universal |
 | Audit-only is unbiased but high variance at a 1% audit | **Measured** | Max \|relative bias\| **2.98%**, mean coverage **84.5%**, mean ESS **1,271** | A larger audit; a different approved-label base rate |
 | A larger audit improves the corrected estimator modestly in the main scenario | **Measured** (H4 supported, modest effect) | DR RMSE **0.001159 → 0.001068** (0% → 2%), ESS **6,610 → 9,126**; IPW **0.001162 → 0.001088** | A lower base approve-label rate, or outcome-dependent labels |
-| DR survives estimated action-level propensities | **Measured** | DR max \|relative bias\| **2.67%**, mean coverage **91.0%**; IPW max **11.19%**, coverage **73.0%** (`reports/propensity_sensitivity.json`) | A covariate-dependent observation model, or a much smaller audit |
+| DR survives estimated action-level propensities when observation is action-dependent | **Measured** | DR max \|relative bias\| **2.67%**, mean coverage **91.0%**; IPW max **11.19%**, coverage **73.0%** (`reports/propensity_sensitivity.json`) | Covariate-dependent observation (tested below); a much smaller audit |
 | IPW is not robust to estimated propensities | **Measured** (negative result) | IPW max **11.19%**, coverage **73.0%** when e is estimated; the oracle-IPW result is not a production claim | A covariate propensity model, or a much larger audit |
 | Noisy propensities degrade IPW faster than DR | **Measured** | At sigma 0.25: DR **1.58%/96.5%**, IPW **7.01%/93.5%** | A different noise model |
 | Outcome-dependent labels with estimated e break action-only estimators | **Measured** (H6 extended) | Audit-only **2.58%/82.5%**; IPW **1350.76%/0%**; DR **1627.90%/0%** | An action-dependent observation mechanism, or an audit-labeled approved sample |
+| Covariate-dependent observation breaks action-level IPW | **Measured** (post-hoc S1) | Action-level IPW max **67.52%**, coverage **1.5%** (delay 0.5); **51.72% / 21.5%** (delay 45) | A different observation gradient, or an outcome model that fully absorbs it |
+| Covariate-dependent observation also breaks action-level DR | **Measured** (post-hoc S1) | Action-level DR max **21.25%**, coverage **72.5%** (delay 0.5); **17.59% / 80.0%** (delay 45) | A covariate propensity model; DR alone is not enough |
+| A fitted covariate propensity model recovers the oracle under covariate-dependent observation | **Measured** (post-hoc S1) | Covariate model: IPW **1.97%/91.5%**, DR **2.48%/89.5%** (delay 0.5); **3.35%/90.5%** and **3.68%/89.5%** (delay 45); oracle **3.01%/90.0%** and **2.63%/89.0%** | A misspecified covariate model, or a real log with unmeasured observation drivers |
+| Heavy weights undercover even with oracle propensities | **Measured** (caveat) | Covariate-oracle coverage **89–90%**, covariate-model **89.5–91.5%**, below nominal 95% | A bootstrap/randomization-inference interval, or a different weight estimator |
 | The audit is decisive when approved labels are outcome-dependent | **Measured** (H6 supported) | Audit-only bias **-2.37% to -1.98%**, coverage **80–86%**; IPW **+43.90% to +368.25%**; DR **+596.41% to +1301.53%** | An observation mechanism that is action-dependent after all |
 | The reject margin is not point-identified from logs alone | **Measured** (H5 supported) | Widest bounds **0.009942**; incumbent width **0.001581** with **35%** coverage of the true full value | A controlled approval design or a defensible assumption |
 | The bounds are not confidence intervals | **Measured** (caveat) | Incumbent bounds cover the true full value in **35%** of replications; bounds are conditional on the P0 estimate | A different P0 estimator or a wider interval construction |
@@ -56,3 +62,11 @@ pilot output or a cited primary source does not appear in the paper.
 5. **The reject margin needs bounds.** The widest interval is 0.009942, and the
    narrower incumbent interval covers the true full value only 35% of the time.
    Do not report the bounds as a confidence interval or a point estimate.
+6. **The correction depends on the observation model.** Action-level IPW fails
+   under covariate-dependent observation (**67.52%** bias); action-level DR is
+   better but still fails (**21.25%**). The fitted covariate propensity model
+   recovers the oracle (**1.97–2.48%** without delay, **3.35–3.68%** with
+   delay). The practical rule is: match the propensity model to the observation
+   mechanism, and report the weight diagnostics. A point estimate within 5% is
+   not evidence that the interval is calibrated; covariate-oracle coverage is
+   **89–90%**, not 95%.

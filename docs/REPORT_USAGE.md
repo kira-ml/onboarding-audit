@@ -1,5 +1,7 @@
 # Using the Arbitrary-Log Report
 
+**Status:** Canonical report guide for v0.2.1 (2026-11-20).
+
 **Command:** `onboarding-audit report`
 **Purpose:** Evaluate a candidate onboarding policy from a decision log and a
 candidate score file, and produce an audit-ready memo.
@@ -141,6 +143,19 @@ trusting the interval.
 - Check the candidate review/approve-outside-`P0` counts. If the candidate
   explores regions the logging policy never labeled, the log cannot identify
   that region without an audit or a model assumption.
+
+### Choosing the propensity model
+
+- The memo reports the observation rate by amount quintile. If the rate varies
+  strongly across quintiles within an action, action-level `e` is misspecified;
+  rerun with `--propensity-model covariate`.
+- Measured on the pilot's covariate mechanism: action-level IPW was **67.52%**
+  biased; the covariate model was **1.97%**. Action-level DR was **21.25%**; the
+  covariate DR was **2.48%**. The covariate model is the correction, not DR
+  alone.
+- The covariate model is a logistic approximation. Check the weight tail and
+  ESS; coverage was **89–91.5%**, below nominal 95%, because the weights are
+  heavy-tailed.
 
 ### Bounds
 
