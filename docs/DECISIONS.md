@@ -1,0 +1,253 @@
+# Decision Journal
+
+**Rule:** Record material, hard-to-reverse decisions with options, expected
+outcome, assumptions, review date, and kill criteria.
+
+---
+
+## D1 — Adopt account-opening as the decision unit
+
+**Date:** 2026-11-19.
+**Status:** Accepted.
+
+**Options considered:**
+1. Continue transaction approve/review/block on BAF.
+2. Switch to a transaction dataset (IEEE-CIS/PaySim) for transaction triage.
+3. Reframe to account-opening approve/review/reject on BAF.
+4. Scam/APP intervention evaluation.
+
+**Decision:** Option 3, with the transaction-triage and scam-intervention
+framings kept as fallbacks/extensions.
+
+**Why:**
+- BAF is one million **account-opening applications**, not transaction data.
+  Option 1 has a fatal domain mismatch.
+- Option 2 is feasible but less locally distinctive and requires a new pipeline.
+- Option 4 has the strongest problem evidence but no public intervention logs;
+  it would be a simulation/design study.
+- Option 3 matches the data, the decision, the label structure, and the
+  regulatory hooks (BSP 1170 eKYC, BSP 1213 FMS, AFASA). It also preserves the
+  V1/V2 cost-sensitive and capacity work.
+
+**Expected outcome:** A defensible pilot showing naive bias/rank flips and at
+least one honest correction or bound on BAF, plus a usable logging/audit
+protocol.
+
+**Assumptions:** BAF's account-opening labels are a reasonable proxy for
+account-opening fraud; the cost matrix can be normalized and sensitivity-tested;
+the reject margin will require bounds.
+
+**Review date:** 2026-12-15 (after the pilot).
+**Kill criteria:** The pilot shows negligible bias and no rank flips; the
+account-opening reframing cannot be defended; or a bank partner provides
+transaction data that changes the ranking.
+
+---
+
+## D2 — Primary estimand is the logging non-rejected population
+
+**Date:** 2026-11-19.
+**Status:** Accepted.
+
+**Options:**
+1. Full-population policy value (including logging-rejected applicants).
+2. Logging non-rejected population (`P0`) + full-population bounds.
+3. Only the reviewed population.
+
+**Decision:** Option 2.
+
+**Why:**
+- Rejected applicants have no outcome; a full-population point estimate is not
+  identified from logs alone.
+- `P0` is the population the institution would still consider; it answers the
+  practical decision and has positivity.
+- Bounds preserve the full-population question without pretending to identify
+  it.
+- Option 3 is too narrow; it ignores the approved margin and the audit.
+
+**Expected outcome:** An identified estimate for `P0` and an honest bounds
+interval for the full population.
+
+**Assumptions:** Positivity holds in `P0` (review and approve channels have
+positive probability); the label channels are correctly specified for the
+primary scenario.
+
+**Review date:** 2026-12-15.
+**Pilot update (2026-11-19):** The `P0` estimate is identified and the corrected
+estimators recover it (DR max |relative bias| 0.94%, mean coverage 96.0%). The
+reject-margin bounds are not confidence intervals: the incumbent's narrow
+interval covers the true full value in only 35% of replications. The `P0`
+decision stands, with the bounds caveat recorded in D8.
+**Kill criteria:** The bounds are so wide that no decision is possible; or the
+`P0` estimand is not the decision the buyer cares about.
+
+---
+
+## D3 — Audit design: post-hoc verification and shadow scoring, not random approvals/rejections
+
+**Date:** 2026-11-19.
+**Status:** Accepted, subject to legal/risk review.
+
+**Options:**
+1. Randomly approve a sample of would-be-rejected applicants.
+2. Randomly reject a sample of would-be-approved applicants.
+3. Randomly verify a sample of approved applications after approval.
+4. Shadow-score a challenger policy without changing decisions.
+
+**Decision:** Options 3 and 4; reject 1 and 2.
+
+**Why:**
+- Option 1 deliberately onboards fraud/mule accounts; it conflicts with eKYC and
+  AFASA duties and the institution's risk appetite.
+- Option 2 deliberately excludes legitimate customers; it creates inclusion harm
+  and complaints.
+- Option 3 yields unbiased labels for the approved population without changing
+  the decision.
+- Option 4 yields overlap/coverage diagnostics with no customer impact.
+
+**Expected outcome:** A defensible audit arm that improves the approved-margin
+estimate; the reject margin remains bounded.
+
+**Assumptions:** Post-hoc verification is operationally feasible and legally
+permissible; the verification outcome is a valid fraud proxy; the audit sample
+is random within the approved population.
+
+**Review date:** Before any external pilot with a bank partner.
+**Kill criteria:** Legal/risk review rejects post-hoc verification; or the audit
+sample cannot be made random/representative.
+
+---
+
+## D4 — Cost matrix is a normalized assumption
+
+**Date:** 2026-11-19.
+**Status:** Accepted.
+
+**Decision:** Use the V2 normalized cost values for comparability:
+`fraud_loss_rate=0.0019187869` (amount-scaled), `review_cost=0.02`,
+`false_reject_cost=0.10`, `residual_fraud_loss=0.30`. Sweep the false-reject
+cost (0.02, 0.10, 0.50).
+
+**Why:** The project needs a common cost unit to compare policies; the V2 values
+are already documented and sensitivity-tested. They are not production
+estimates.
+
+**Expected outcome:** Policy rankings and bias results are reported as
+cost-model-conditional; the false-reject sweep shows the inclusion trade-off.
+
+**Assumptions:** The normalized values preserve the qualitative cost ordering;
+the credit-line proxy is a reasonable exposure measure.
+
+**Review date:** After the pilot; before any external claim.
+**Kill criteria:** A bank-provided cost study shows the qualitative ordering is
+different; or the results are driven entirely by the cost assumption.
+
+---
+
+## D5 — BAF primary, FiFAR follow-on
+
+**Date:** 2026-11-19.
+**Status:** Accepted.
+
+**Decision:** Use BAF as the primary account-opening benchmark. Add FiFAR's 50
+synthetic analysts and 30K alerts as the capacity layer in a follow-on, not in
+the first pilot.
+
+**Why:** BAF matches the decision; FiFAR adds the review-capacity/analyst
+heterogeneity layer but is a derived synthetic dataset. The first pilot should
+test the selective-label premise before adding analyst complexity.
+
+**Expected outcome:** A clean BAF pilot; a FiFAR capacity study if the premise
+holds.
+
+**Assumptions:** FiFAR remains available and its synthetic analysts are a
+reasonable capacity abstraction, not a claim about real analyst behavior.
+
+**Review date:** 2026-12-31.
+**Kill criteria:** The BAF pilot fails its premise; or FiFAR is unavailable.
+
+---
+
+## D6 — Archive V2.1.0 and start a new repository
+
+**Date:** 2026-11-19.
+**Status:** Accepted and executed.
+
+**Decision:** Tag the old repository `v2.1.0` (already present), add
+`ARCHIVE.md`, commit the evidence and superseded V3 artifacts, and start
+`D:\onboarding-audit` as the new flagship.
+
+**Why:** Preserve the origin, avoid rewriting V1/V2, and give the new project a
+clean public surface.
+
+**Expected outcome:** The old repo is an auditable origin; the new repo is the
+flagship.
+
+**Review date:** At public release.
+**Kill criteria:** None; this is reversible by reverting the commit.
+
+---
+
+## D7 — H2 is naive-only; H3 is IPW/DR-only
+
+**Date:** 2026-11-19.
+**Status:** Accepted before the final pilot verdict.
+
+**Options:**
+1. Let H2 use the maximum inversion across all estimators.
+2. Let H3 include audit-only, whose target is the approved population.
+3. Define H2 on the naive estimator only, and H3 on the `P0` estimators
+   (IPW/DR), with audit-only reported separately.
+
+**Decision:** Option 3.
+
+**Why:**
+- H2 is a claim about the **naive** estimate; using the maximum across corrected
+  estimators would let estimator noise satisfy a hypothesis about naive
+  evaluation.
+- Audit-only targets the **approved population**, not `P0`. Mixing it into H3
+  would compare an approved-population estimate against a `P0` truth.
+- The fixed definitions are stricter and easier to defend.
+
+**Expected outcome:** H2 = 1.00 naive inversion; H3 = DR max |relative bias|
+0.94%, mean coverage 96.0%; IPW 1.18%/95.0%.
+
+**Assumptions:** The `P0` estimand is the decision-relevant one; audit-only is a
+separate approved-margin diagnostic.
+
+**Review date:** 2027-01-15 (with the paper draft).
+**Kill criteria:** A reviewer shows the H2/H3 definitions are inconsistent with
+the pre-registration; then report both versions and explain the change.
+
+---
+
+## D8 — Bounds are partial-identification intervals, not confidence intervals
+
+**Date:** 2026-11-19.
+**Status:** Accepted after the pilot.
+
+**Options:**
+1. Report the full-population bounds as a 95% interval.
+2. Report them as partial-identification intervals conditional on the `P0`
+   estimate, with coverage as a diagnostic.
+3. Do not report full-population bounds; report only `P0`.
+
+**Decision:** Option 2.
+
+**Why:**
+- The bounds combine the `P0` estimate with the min/max cost of the unobserved
+  rejected rows. They are not sampling intervals for the full-population value.
+- The pilot shows the incumbent's narrow interval covers the true full value in
+  only 35% of replications. Calling it a 95% CI would be false.
+- Option 3 would hide the reject-margin problem.
+
+**Expected outcome:** The memo reports the interval, its width, and the
+assumption; it says "partial identification" and does not claim 95% coverage.
+
+**Assumptions:** The cost model is correct enough to bound the rejected rows;
+the `P0` estimate is the identified part.
+
+**Review date:** 2027-01-15.
+**Kill criteria:** A reviewer proposes a valid confidence-interval construction
+for the full-population value under weaker assumptions; then adopt it and
+compare.

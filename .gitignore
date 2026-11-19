@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.DS_Store
+Thumbs.db
+
+# Data is public but not redistributed in the repository.
+data/*.parquet
+data/*.csv
+data/raw/
+data/processed/
+data/interim/
+
+# Generated outputs: keep the report and the small JSON evidence file;
+# the large row-level parquet is reproducible and stays local.
+reports/smoke*/
+reports/*.parquet

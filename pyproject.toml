@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onboarding-audit"
+version = "0.1.0"
+description = "Audit-ready evaluation of account-opening fraud policies under selective and delayed labels"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Ken Ira Lacson Talingting" }
+]
+keywords = [
+  "fraud",
+  "account-opening",
+  "selective-labels",
+  "off-policy-evaluation",
+  "fintech",
+  "model-risk",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "numpy>=1.26,<3.0",
+  "pandas>=2.1,<3.0",
+  "scipy>=1.11,<2.0",
+  "scikit-learn>=1.4,<2.0",
+  "pyarrow>=14,<22",
+  "PyYAML>=6.0,<7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.1,<9.0",
+  "matplotlib>=3.8,<4.0",
+]
+
+[project.scripts]
+onboarding-audit = "onboarding_audit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

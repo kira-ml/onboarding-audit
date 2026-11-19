@@ -1,0 +1,78 @@
+# Threats to Validity
+
+**Purpose:** The strongest reasons this project could be wrong, and the tests or
+statements that bound the damage. This is the inversion artifact; it should be
+read before the results.
+
+---
+
+## 1. Construct validity
+
+| Threat | Why it matters | Mitigation | Residual risk |
+|---|---|---|---|
+| **The observation mechanism is simulated** | The bias result could be an artifact of the chosen propensities/delays | Pre-register the mechanism; sweep audit/capacity/delay; negative controls; state that the mechanism is assumed | The real mechanism may differ; the tool must take the team's actual propensities/labels |
+| **The cost matrix is assumed** | The policy ranking and the value depend on costs | Normalized, transparent, sensitivity-tested; report the false-reject sweep | A bank's true costs may reverse a close ranking |
+| **BAF is synthetic** | External validity is limited | State it; use it as a task-matched benchmark, not a production estimate | Real account-opening data may have different fraud modes |
+| **BAF is not Philippine data** | The local hook is motivational | Use BSP/industry evidence for the problem, not for calibration; state the gap | A reviewer may ask for PH data; the answer is a partner, not a scrape |
+| **The review-capacity parameter is assumed** | The capacity conclusion depends on it | Sweep 1–10%; use FiFAR in a follow-on; elicit from practitioners | No public PH capacity data |
+| **The audit is not a universal bias fix** | A team may expect a 1% audit to solve selection | The pilot measures the audit's marginal value; it is modest at a 5% approved-label base rate and decisive under outcome-dependent labels | A team with a lower base rate may see a larger gain; a team with a high base rate may see little |
+
+## 2. Internal validity
+
+| Threat | Why it matters | Mitigation | Residual risk |
+|---|---|---|---|
+| **Label leakage** | Post-investigation fields can encode the outcome | The pilot uses only pre-decision features; the schema flags label/post-decision fields; no-leakage test | A real log may contain post-decision fields; the validator warns |
+| **Policy leakage** | The candidate policy must not use evaluation labels | Actions are a deterministic function of scores/amounts; permutation test | A team could accidentally tune on the evaluation window; the protocol says hold out |
+| **Cross-fitting errors** | The outcome model could overfit the observed rows | 5-fold cross-fitting; DR residual; full-observation identity test | Small samples may still overfit |
+| **Oracle propensities** | The pilot isolates estimator behavior by using known e | State it; a follow-on estimates propensities and tests sensitivity | Estimated propensities could remove the correction advantage |
+| **Finite-sample bias** | IPW/DR can be biased/noisy at small audit sizes | Report MC SE, ESS, max weight; 100 reps main; 50 sweeps | The pilot may still be noisy for the audit-only estimator |
+| **Multiple scenarios** | Searching many scenarios can produce false positives | Pre-register the main scenario and H1–H6; report all scenarios; no post-hoc headline switching | The reader should treat the sweep as sensitivity, not confirmation |
+
+## 3. External validity
+
+| Threat | Why it matters | Mitigation | Residual risk |
+|---|---|---|---|
+| **One dataset** | A single benchmark may not generalize | FiFAR capacity layer; IEEE-CIS/PaySim as future transactions extension; state the limitation | The paper cannot claim broad generalization |
+| **Account opening vs transaction fraud** | The decision and labels differ | The project is explicitly account-opening; do not evaluate a transaction policy on BAF | A reader may want transaction fraud; that is a different project |
+| **Scam/APP fraud** | The largest PH loss category; onboarding is the entry point, not the whole intervention | Frame onboarding as the entry point; plan a scam-intervention extension if a partner provides data | The project does not evaluate warn/delay/step-up directly |
+| **Regulatory change** | BSP 1213/1170 and the draft MRM may evolve | Cite the current instruments; state the draft status; design the schema as an extension | A new circular could change the logging/audit requirements |
+
+## 4. Statistical conclusion validity
+
+| Threat | Why it matters | Mitigation | Residual risk |
+|---|---|---|---|
+| **Rank flips are noisy** | A single rep can flip by chance | 100 reps; Spearman/inversions/P(best)/cost of misranking; MC SE | The pilot's DR mean inversions is 0.29, concentrated in the close better-model/incumbent gap; P(select true best) is 72%, not 100% |
+| **Coverage is not nominal** | Influence-function SEs may understate uncertainty | Report coverage; treat the outcome model as fixed (stated); use MC SE | Coverage may be <95% in some scenarios; report it |
+| **Bounds are not CIs** | A reader may interpret the interval as a confidence interval | Label it a partial-identification interval; coverage of the true full value is a diagnostic, not a guarantee | The pilot's incumbent interval covers the true full value in only 35% of replications; the bounds can miss if the `P0` estimate is biased |
+| **H3 is strong** | Requiring <=5% max bias across all policies may fail | Report the failure honestly; narrow to bounds/diagnostic if needed | A weaker per-policy criterion would overclaim |
+
+## 5. The strongest counter-case
+
+> The simulation is an assumption stack. The naive bias is real in the
+> simulation, but the corrected estimators only work because the propensities
+> are oracle-known and the observation mechanism is simple. In a real bank, the
+> propensities are unknown, the labels are outcome-dependent, and the reject
+> margin is unobserved. The tool may produce a confident-looking memo that is
+> not identified.
+
+**Response:**
+- The project does not claim a point estimate for the reject margin; it reports
+  bounds.
+- The pilot includes an outcome-dependent stress test where action-only IPW
+  fails and audit-only survives.
+- The tool reports overlap/ESS and a measured/assumed/unverifiable ledger.
+- A follow-on will estimate propensities and test sensitivity.
+- The audit design is a recommendation, not a claim that every bank can run it.
+- If the correction does not survive estimated propensities, the paper must say
+  so and narrow the claim.
+
+## 6. What would change the conclusion
+
+1. The naive bias is negligible and no ranking flips under all realistic
+   scenarios.
+2. Estimated propensities remove the corrected estimator's advantage.
+3. The reject-margin bounds are so wide that no decision is supported.
+4. The audit design is legally or operationally infeasible.
+5. The binding problem is scam intervention UX, not onboarding policy
+   evaluation.
+6. A vendor ships the same measurement layer with documented mechanics.
