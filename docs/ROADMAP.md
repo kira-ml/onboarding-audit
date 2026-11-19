@@ -33,6 +33,9 @@ at least one honest correction or bound; or a well-supported null. **Met.**
 
 - [x] Arbitrary-log `report` command (bring your own log and candidate scores).
 - [x] Propensity estimation from logs/audit; sensitivity to estimated e.
+  **Result:** DR survives estimated `e` (**2.67% / 91.0%**); IPW does not
+  (**11.19% / 73.0%**); outcome-dependent labels with estimated `e` require
+  audit-only (**2.58% / 82.5%**).
 - [ ] FiFAR capacity/analyst layer.
 - [x] Markdown memo template with the measured/assumed/unverifiable ledger.
 - [x] Example log and CLI walkthrough (`examples/`, `docs/REPORT_USAGE.md`).

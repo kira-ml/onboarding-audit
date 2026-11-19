@@ -109,18 +109,27 @@ ready for external review and the v0.2 tool layer.
   behavior, missing candidate IDs, and invalid logs.
 - Docs: `docs/REPORT_USAGE.md`, updated README quickstart, roadmap, examples.
 
-**In progress:** the 50-replication propensity sensitivity is running; results
-go to `reports/propensity_sensitivity.md`/`.json`.
+**Sensitivity result (50 reps, complete):**
+
+- Estimated action-level `e`: DR max **2.67%**, coverage **91.0%**; IPW max
+  **11.19%**, coverage **73.0%**.
+- Lognormal noise sigma 0.25: DR **1.58% / 96.5%**; IPW **7.01% / 93.5%**.
+- Outcome-dependent labels with estimated `e`: audit-only **2.58% / 82.5%**;
+  IPW **1350.8%**; DR **1627.9%**.
+
+The claim gate is met for **DR**, not for IPW. The paper should claim DR
+robustness, not IPW robustness. The tool should recommend DR when `e` is
+estimated, and audit-only when the label-source mix suggests outcome-dependent
+observation.
 
 **Next:**
 
-1. Fill the sensitivity results in `docs/CLAIMS.md`, `docs/THREATS.md`, README,
-   and the worklog.
-2. If estimated/noisy propensities preserve the correction, keep the claim; if
-   not, narrow to a propensity-sensitivity band or bounds/diagnostic.
-3. FiFAR capacity/analyst layer.
-4. Two external readers.
-5. Paper draft and public release.
+1. Update the paper draft and one-pager with the DR-only propensity claim (done
+   in the brief/outline; paper draft remains).
+2. FiFAR capacity/analyst layer.
+3. Two external readers.
+4. Public release and application package.
 
-**Health:** The tool surface is now usable on a real log; the remaining
-scientific question is whether the correction survives estimated propensities.
+**Health:** The tool surface is usable on a real log, and the correction
+survives estimated propensities with DR. The remaining scope is external
+validity and the FiFAR capacity layer, not a new method.

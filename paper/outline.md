@@ -2,7 +2,7 @@
 
 **Working title:** *Who Gets Onboarded? Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels.*
 
-**Status:** Outline; results pending the pre-registered pilot.
+**Status:** Outline; results from the v0.1 pilot and v0.2 tools.
 **Author:** Ken Ira Lacson Talingting.
 **Target:** Public technical report / arXiv first. ICAIF 2027 or a fintech research workshop if the results hold. Do not overpromise a venue.
 
@@ -198,9 +198,19 @@ intervals. The reject margin is not point-identified from logs alone.
 
 ### 6.7 Negative controls
 
-`pytest -q`: 29 tests pass, including full-observation identity, full-audit
-identity, propensity recovery, bounds validity, capacity, no leakage, and schema
-validation.
+`pytest -q`: 39 tests pass, including full-observation identity, full-audit
+identity, propensity recovery, bounds validity, capacity, no leakage, schema
+validation, the arbitrary-log report's known-ground-truth check, and the
+propensity helpers.
+
+### 6.8 Propensity sensitivity
+
+When `e` is estimated from the log: DR max |relative bias| **2.67%**, mean
+coverage **91.0%**; IPW max **11.19%**, coverage **73.0%**. At lognormal noise
+sigma 0.25: DR **1.58% / 96.5%**, IPW **7.01% / 93.5%**. Under outcome-dependent
+labels with estimated `e`: audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR
+**1627.9%**. The paper should recommend DR, not IPW, when `e` is estimated, and
+audit-only when the label-source mix suggests outcome-dependent observation.
 
 ---
 

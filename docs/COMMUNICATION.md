@@ -33,6 +33,12 @@ committee, and an internship interviewer without overclaiming.
 > when approved fraud was more likely to be labeled than approved legitimate
 > accounts. The reject margin required bounds, not a point estimate.
 >
+> A follow-up sensitivity replaced the oracle propensities with estimated ones:
+> **DR stayed within 2.67% with 91% coverage; IPW degraded to 11.19% with 73%
+> coverage.** Under outcome-dependent labels with estimated propensities, only
+> audit-only was honest. The practical recommendation is DR, not IPW, when the
+> propensity is estimated.
+>
 > The output is an open-source logging schema, audit design, and policy-change
 > memo mapped to BSP Circular 1170 (eKYC), BSP Circular 1213 (FMS calibration
 > and independent audit), and AFASA. It is a measurement layer, not another
@@ -83,13 +89,14 @@ cost-sensitive argmin, not a generic 0.5.
 
 **Q5. What is the biggest weakness?**
 A: The pilot's observation mechanism is simulated and the propensities are
-oracle-known. A real bank's labels are outcome-dependent and its propensities are
-estimated. The next step is a propensity-estimation and sensitivity study, plus
-a bank partner for real logs. The corrected ranking is also good but not perfect:
-DR selects the true best policy 72% of the time, with the residual instability
-concentrated in the close better-model/incumbent gap. And the reject margin is
-bounded, not point-identified; the incumbent's narrow interval covers the true
-full value only 35% of the time. The project is explicit about all three.
+oracle-known in the main run. A real bank's labels are outcome-dependent and its
+propensities are estimated. The sensitivity addresses the second point: DR
+survives estimated action-level propensities, but IPW does not (11.19% bias, 73%
+coverage), so the tool recommends DR. The remaining weaknesses are the
+simulated observation model, the close better-model/incumbent ranking (DR selects
+the true best 72% of the time), and the reject margin, which is bounded rather
+than point-identified (the incumbent's narrow interval covers the true full
+value only 35% of the time). The project is explicit about all of these.
 
 ## 5. What not to claim
 

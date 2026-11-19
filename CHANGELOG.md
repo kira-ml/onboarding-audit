@@ -33,6 +33,10 @@
   correct, and the reject margin is bounded, not point-identified.
 - The sensitivity uses action-level propensities; a covariate propensity model
   is the v0.3 extension.
+- Sensitivity result: DR survives estimated `e` (**2.67% / 91.0%**); IPW does
+  not (**11.19% / 73.0%**); outcome-dependent labels with estimated `e` require
+  audit-only (**2.58% / 82.5%**). The paper claims DR robustness, not IPW
+  robustness.
 
 ## [0.1.0] — 2026-11-19
 

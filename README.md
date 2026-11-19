@@ -14,13 +14,13 @@ selection- and delay-aware estimators, capacity-constrained review, an audit
 designer, and an audit-ready policy change memo. It is validated on public
 account-opening fraud data with known ground truth.
 
-> **Status:** v0.1.0 pilot. Not a production system. No proprietary bank data.
+> **Status:** v0.2.0 pilot. Not a production system. No proprietary bank data.
 > The cost model is an explicit assumption, sensitivity-tested, not a
 > production estimate.
 
 ---
 
-## Pilot result (simulation benchmark, v0.1)
+## Pilot result (v0.1 simulation benchmark)
 
 On the BAF account-opening test window (227,491 applications, known labels):
 
@@ -40,6 +40,11 @@ On the BAF account-opening test window (227,491 applications, known labels):
   **0.009942**; the incumbent's narrow interval covers the true full value in
   only **35%** of replications. Bounds are partial-identification intervals, not
   confidence intervals.
+- **Sensitivity to estimated propensities:** when `e` is estimated from the
+  log, DR stays within **2.67%** with **91.0%** coverage; IPW degrades to
+  **11.19% / 73.0%**. Under outcome-dependent labels with estimated `e`, only
+  audit-only is honest (**2.58% / 82.5%**; IPW/DR fail). Use DR, not IPW, when
+  `e` is estimated.
 
 Full report: [`reports/pilot.md`](reports/pilot.md). Claim ledger:
 [`docs/CLAIMS.md`](docs/CLAIMS.md). Propensity sensitivity:

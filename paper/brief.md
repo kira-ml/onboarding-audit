@@ -2,7 +2,8 @@
 
 **For:** a fintech data science / ML research reviewer.
 **Length:** 2 pages.
-**Status:** v0.1 pilot; results pending the pre-registered run.
+**Status:** v0.2.0 pilot; results from the pre-registered pilot and the
+propensity sensitivity.
 
 ---
 
@@ -85,12 +86,17 @@ one the business is asking.
 | Incumbent bounds coverage of true full value | **35%** (not a CI) |
 | Outcome-dependent: audit-only bias | **-2.37% to -1.98%** |
 | Outcome-dependent: IPW / DR bias | **+43.9% to +368.3% / +596.4% to +1301.5%** |
+| Estimated `e`: DR max bias / coverage | **2.67% / 91.0%** |
+| Estimated `e`: IPW max bias / coverage | **11.19% / 73.0%** |
+| Noisy `e` (sigma 0.25): DR / IPW | **1.58% / 96.5%** vs **7.01% / 93.5%** |
+| Outcome-dependent + estimated `e`: audit-only | **2.58% / 82.5%**; IPW/DR fail |
 
 **Interpretation:** the naive evaluation is not a small approximation; it
 overstates cost and would reject the better policy. DR recovers the identified
-value and the true ranking, but the reject margin still requires bounds or a
-controlled approval design. The audit is a validation and
-outcome-dependent-label tool, not a universal bias fix.
+value and the true ranking, and it survives estimated action-level propensities;
+IPW does not. The reject margin still requires bounds or a controlled approval
+design. The audit is a validation and outcome-dependent-label tool, not a
+universal bias fix. When `e` is estimated, use DR rather than IPW.
 
 ## 6. What a team can use
 

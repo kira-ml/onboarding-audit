@@ -314,6 +314,17 @@ audit-only.
 **Assumptions:** The estimated e is action-level; the noise is a stress test,
 not a calibrated error model.
 
+**Result (2026-11-20):** The gate is met for **DR**, not for IPW.
+- Estimated e: DR max **2.67%**, coverage **91.0%**; IPW max **11.19%**,
+  coverage **73.0%**.
+- Noise sigma 0.25: DR **1.58% / 96.5%**; IPW **7.01% / 93.5%**.
+- Outcome-dependent labels with estimated e: audit-only **2.58% / 82.5%**;
+  IPW **1350.8%**; DR **1627.9%**.
+
+**Decision update:** The paper claims DR robustness, not IPW robustness. The tool
+recommends DR when e is estimated, and audit-only when the label-source mix
+suggests outcome-dependent observation.
+
 **Review date:** 2027-01-15.
 **Kill criteria:** The correction fails under estimated e in the main scenario;
 then the claim narrows to bounds/diagnostic and the tool recommends an audit

@@ -420,3 +420,18 @@ H3 is evaluated on the `P0` estimators (IPW/DR). Audit-only targets the approved
 population and is reported separately. The bounds are partial-identification
 intervals conditional on the `P0` estimate, not confidence intervals. See
 `docs/DECISIONS.md` D7 and D8.
+
+### 15. Propensity sensitivity addendum (2026-11-20)
+
+The oracle-propensity pilot was followed by a 50-replication sensitivity with
+estimated and noisy propensities:
+
+- Estimated action-level `e`: DR max **2.67%**, coverage **91.0%**; IPW max
+  **11.19%**, coverage **73.0%**.
+- Lognormal noise sigma 0.25: DR **1.58% / 96.5%**; IPW **7.01% / 93.5%**.
+- Outcome-dependent labels with estimated `e`: audit-only **2.58% / 82.5%**;
+  IPW **1350.8%**; DR **1627.9%**.
+
+The claim gate is met for **DR**, not for IPW. The paper should claim DR
+robustness, not IPW robustness. See `reports/propensity_sensitivity.md` and
+`docs/DECISIONS.md` D10.

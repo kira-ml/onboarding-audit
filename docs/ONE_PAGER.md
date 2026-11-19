@@ -3,7 +3,8 @@
 **Project:** Onboarding Audit — audit-ready evaluation of account-opening fraud
 policies under selective and delayed labels.
 **Author:** Ken Ira Lacson Talingting.
-**Status:** v0.1 pilot; results below are generated from the pre-registered run.
+**Status:** v0.2.0 pilot; results from the pre-registered pilot and the
+propensity sensitivity.
 
 ---
 
@@ -53,12 +54,17 @@ new policy is estimated on the subset the incumbent policy produced.
 - **Reject-margin bounds:** widest interval **0.009942**; the incumbent's narrow
   interval covers the true full value in only **35%** of replications. The
   bounds are partial-identification intervals, not confidence intervals.
+- **Propensity sensitivity:** with estimated action-level `e`, DR stays within
+  **2.67%** with **91.0%** coverage; IPW degrades to **11.19% / 73.0%**. Under
+  outcome-dependent labels with estimated `e`, only audit-only is honest
+  (**2.58% / 82.5%**; IPW/DR fail). Use DR when `e` is estimated.
 
 **What this means:** the naive evaluation is not a small approximation; it would
 reject the better policy. Doubly robust estimation recovers the identified value
 and the true ranking, but the reject margin still requires bounds or a
 controlled approval design. The audit is a validation and outcome-dependent-label
-tool, not a universal bias fix.
+tool, not a universal bias fix. When `e` is estimated from a log, use DR rather
+than IPW.
 
 ## What a team gets
 
@@ -90,8 +96,10 @@ project supplies the missing measurement layer.
 - The observation mechanism and review capacity are simulated.
 - BAF is synthetic; no Philippine bank data.
 - The cost matrix is a normalized assumption.
-- The pilot uses oracle propensities; estimated propensities are the next study.
+- The pilot's main run uses oracle propensities; the sensitivity tests estimated
+  and noisy propensities, but a covariate propensity model remains future work.
 - The audit design requires legal/risk review.
+- The reject margin is bounded, not point-identified.
 
 ## Reproduce
 
@@ -99,4 +107,5 @@ project supplies the missing measurement layer.
 pip install -e ".[dev]"
 pytest -q
 onboarding-audit pilot --config configs/pilot.yaml --out reports
+onboarding-audit sensitivity --config configs/pilot.yaml --out reports --reps 50
 ```
