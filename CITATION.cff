@@ -7,7 +7,7 @@ license: MIT
 authors:
   - family-names: Talingting
     given-names: Ken Ira Lacson
-repository-code: "https://github.com/keniralacson/onboarding-audit"
+repository-code: "https://github.com/kira-ml/onboarding-audit"
 keywords:
   - fraud detection
   - account opening

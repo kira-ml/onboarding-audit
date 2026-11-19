@@ -118,7 +118,7 @@ scenario and 50 for the sweeps and sensitivity studies.
 ## Quickstart
 
 ```bash
-git clone https://github.com/keniralacson/onboarding-audit.git
+git clone https://github.com/kira-ml/onboarding-audit.git
 cd onboarding-audit
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
@@ -333,7 +333,7 @@ If you use this project, cite the software via [`CITATION.cff`](CITATION.cff):
   version = {0.2.1},
   year    = {2026},
   license = {MIT},
-  url     = {https://github.com/keniralacson/onboarding-audit}
+  url     = {https://github.com/kira-ml/onboarding-audit}
 }
 ```
 
