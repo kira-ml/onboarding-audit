@@ -5,7 +5,9 @@ scenarios with:
 
 - action-level propensities estimated from the observed draw;
 - oracle propensities perturbed by lognormal noise (sigma 0.10, 0.25);
-- the outcome-dependent label mechanism, with estimated e.
+- the outcome-dependent label mechanism, with estimated e;
+- covariate-dependent observation, comparing action-level, fitted covariate,
+  and oracle propensities.
 
 The question: does the correction survive the loss of the oracle?
 """
@@ -32,8 +34,13 @@ SCENARIOS = (
     "propensity_noisy_25",
     "outcome_dependent",
     "outcome_dependent_estimated",
+    "covariate_oracle",
+    "covariate_action",
+    "covariate_model",
+    "covariate_action_delay",
+    "covariate_model_delay",
 )
-ESTIMATORS = ("ipw_ht", "dr", "audit_only")
+ESTIMATORS = ("naive", "ipw_ht", "dr", "audit_only")
 
 
 def _clean(value):
@@ -109,42 +116,65 @@ def run_sensitivity(
     L.append(
         "The main pilot uses oracle propensities. This study replaces them with "
         "(a) action-level propensities estimated from the observed draw, "
-        "(b) oracle propensities with lognormal noise, and (c) estimated "
-        "propensities under outcome-dependent labels. The target and policies "
-        "are unchanged."
+        "(b) oracle propensities with lognormal noise, (c) estimated "
+        "propensities under outcome-dependent labels, and (d) action-level, "
+        "fitted covariate, and oracle propensities under covariate-dependent "
+        "observation. The target and policies are unchanged."
     )
     L.append("")
     L.append("## Main scenario")
     L.append("")
+
+    def add_table(ids, estimators) -> None:
+        L.append(
+            "| Scenario | Estimator | Max \\|rel bias\\| | Mean coverage | Mean ESS |"
+        )
+        L.append("|---|---|---:|---:|---:|")
+        for sid in ids:
+            for est in estimators:
+                match = agg[(agg["scenario"] == sid) & (agg["estimator"] == est)]
+                if match.empty:
+                    continue
+                row = match.iloc[0]
+                L.append(
+                    f"| `{sid}` | `{est}` | "
+                    f"{row['max_abs_rel_bias']:.2%} | {row['mean_coverage']:.1%} | "
+                    f"{row['mean_ess']:,.0f} |"
+                )
+        L.append("")
+
     main_ids = (
         "main",
         "propensity_estimated",
         "propensity_noisy_10",
         "propensity_noisy_25",
     )
-    main = agg[agg["scenario"].isin(main_ids)]
-    L.append("| Scenario | Estimator | Max \\|rel bias\\| | Mean coverage | Mean ESS |")
-    L.append("|---|---|---:|---:|---:|")
-    for _, row in main.iterrows():
-        L.append(
-            f"| `{row['scenario']}` | `{row['estimator']}` | "
-            f"{row['max_abs_rel_bias']:.2%} | {row['mean_coverage']:.1%} | "
-            f"{row['mean_ess']:,.0f} |"
-        )
-    L.append("")
+    add_table(main_ids, ("naive", "ipw_ht", "dr", "audit_only"))
     L.append("## Outcome-dependent labels")
     L.append("")
     od_ids = ("outcome_dependent", "outcome_dependent_estimated")
-    od = agg[agg["scenario"].isin(od_ids)]
-    L.append("| Scenario | Estimator | Max \\|rel bias\\| | Mean coverage | Mean ESS |")
-    L.append("|---|---|---:|---:|---:|")
-    for _, row in od.iterrows():
-        L.append(
-            f"| `{row['scenario']}` | `{row['estimator']}` | "
-            f"{row['max_abs_rel_bias']:.2%} | {row['mean_coverage']:.1%} | "
-            f"{row['mean_ess']:,.0f} |"
-        )
+    add_table(od_ids, ("naive", "ipw_ht", "dr", "audit_only"))
+    L.append("## Covariate-dependent observation")
     L.append("")
+    L.append(
+        "The post-approval report probability depends on standardized log "
+        "amount: `logit(e_report) = logit(e_approve) + 0.75 * z`. The "
+        "`covariate_*` scenarios use that mechanism. `oracle` uses the true "
+        "per-row propensity; `action` uses the action-level estimate; `model` "
+        "uses a cross-fitted per-action logistic model of `observed` on the "
+        "outcome-model features plus decision day. The delay-0.5 variants "
+        "isolate the propensity misspecification; the delay-45 variants add the "
+        "resolution gradient."
+    )
+    L.append("")
+    cov_ids = (
+        "covariate_oracle",
+        "covariate_action",
+        "covariate_model",
+        "covariate_action_delay",
+        "covariate_model_delay",
+    )
+    add_table(cov_ids, ("naive", "ipw_ht", "dr"))
     L.append("## Interpretation")
     L.append("")
     L.append(
@@ -163,6 +193,13 @@ def run_sensitivity(
         "Action-only IPW/DR are expected to fail; audit-only is the honest "
         "estimator. This is the strongest argument for the audit."
     )
+    L.append(
+        "- Under covariate-dependent observation, action-level e is misspecified "
+        "because it ignores the within-action gradient. The fitted covariate "
+        "model should recover most of the correction; if it does not, the "
+        "report must not claim a point estimate without a covariate propensity "
+        "model and overlap diagnostics."
+    )
     L.append("")
     L.append("## Caveats")
     L.append("")
@@ -173,6 +210,12 @@ def run_sensitivity(
     L.append(
         "- The noisy e uses the oracle as the center; it is a stress test, not a "
         "calibration study."
+    )
+    L.append(
+        "- The covariate model is a logistic model in the observed features. It "
+        "is correctly specified for the simulated mechanism up to the audit "
+        "mixture and the delay/resolution term; a real log may require a more "
+        "flexible model and a positivity/overlap check."
     )
     L.append(
         "- A production study should estimate e from the audit design and "

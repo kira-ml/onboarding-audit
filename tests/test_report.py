@@ -6,7 +6,7 @@ import pytest
 
 from onboarding_audit.config import load_config
 from onboarding_audit.policies import apply_capacity, choose_actions, realized_cost
-from onboarding_audit.report import run_report
+from onboarding_audit.report import estimate_propensities, run_report
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs" / "pilot.yaml"
@@ -171,3 +171,61 @@ def test_report_rejects_invalid_log(tmp_path):
 
     with pytest.raises(ValueError):
         run_report(log_path, cand_path, CONFIG, tmp_path / "out")
+
+
+def test_covariate_propensity_model_varies_within_action():
+    rng = np.random.default_rng(0)
+    n = 6000
+    amount = rng.uniform(100, 2000, n)
+    log_amount = np.log1p(amount)
+    z = (log_amount - log_amount.mean()) / log_amount.std()
+    p = 1.0 / (1.0 + np.exp(-(-3.0 + 1.0 * z)))
+    action = np.where(rng.random(n) < 0.7, "approve", "review")
+    observed = np.zeros(n, dtype=bool)
+    approve = action == "approve"
+    review = action == "review"
+    observed[approve] = rng.random(approve.sum()) < p[approve]
+    observed[review] = rng.random(review.sum()) < 0.90
+    df = pd.DataFrame(
+        {
+            "application_id": [f"a{i}" for i in range(n)],
+            "action": action,
+            "amount": amount,
+            "label": np.where(observed, 0, np.nan),
+            "audit_flag": 0,
+            "customer_age": rng.integers(18, 70, n),
+            "credit_risk_score": rng.normal(100, 20, n),
+        }
+    )
+    propensity = estimate_propensities(
+        df,
+        propensity_model="covariate",
+        feature_cols=["customer_age", "credit_risk_score"],
+    )
+    assert propensity.source == "estimated_covariate"
+    assert propensity.positivity_ok
+    assert propensity.e[approve].std() > 0.001
+    assert np.corrcoef(propensity.e[approve], p[approve])[0, 1] > 0.5
+
+
+def test_report_covariate_propensity_model_runs(tmp_path):
+    df, candidate, _, _, _ = _synthetic_log(with_propensity=False)
+    log_path = tmp_path / "log.csv"
+    cand_path = tmp_path / "candidate.csv"
+    df.to_csv(log_path, index=False)
+    candidate.to_csv(cand_path, index=False)
+
+    result = run_report(
+        log_path,
+        cand_path,
+        CONFIG,
+        tmp_path / "out",
+        capacity=0.10,
+        propensity_model="covariate",
+        propensity_features=["customer_age", "credit_risk_score", "p_fraud"],
+    )
+    assert result.propensity.source == "estimated_covariate"
+    assert result.propensity.positivity_ok
+    assert Path(result.memo_path).exists()
+    memo = Path(result.memo_path).read_text(encoding="utf-8")
+    assert "Propensity model" in memo

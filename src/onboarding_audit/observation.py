@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from scipy.special import expit, logit
 from scipy.stats import norm
 
 from .config import Observation
@@ -41,6 +42,8 @@ class ObservationModel:
     p_resolved_review: np.ndarray
     p_resolved_approve: np.ndarray
     propensity: np.ndarray
+    kappa_review_vec: np.ndarray
+    e_report_vec: np.ndarray
     e_review: float
     e_approve: float
 
@@ -60,12 +63,17 @@ def build_observation_model(
     logging_actions: np.ndarray,
     decision_day: np.ndarray,
     cfg: Observation,
+    *,
+    covariate: np.ndarray | None = None,
+    observation_mode: str = "action",
+    covariate_beta: float = 0.0,
 ) -> ObservationModel:
     actions = np.asarray(logging_actions)
     review_mask = actions == "review"
     approve_mask = actions == "approve"
     reject_mask = actions == "reject"
     in_pop = ~reject_mask
+    n = len(actions)
 
     p_rev = p_resolved(
         decision_day,
@@ -80,12 +88,23 @@ def build_observation_model(
         cfg.cutoff_day,
     )
 
-    e_review = p_rev * float(cfg.kappa_review)
-    e_approve = p_app * (
-        1.0 - (1.0 - float(cfg.e_approve)) * (1.0 - float(cfg.audit_rate))
-    )
+    kappa = np.full(n, float(cfg.kappa_review), dtype=float)
+    e_report = np.full(n, float(cfg.e_approve), dtype=float)
+    if observation_mode == "covariate":
+        if covariate is None:
+            raise ValueError("covariate observation mode requires a covariate")
+        z = np.asarray(covariate, dtype=float)
+        sd = float(z.std())
+        z = (z - float(z.mean())) / sd if sd > 0 else np.zeros_like(z)
+        kappa = expit(logit(float(cfg.kappa_review)) + covariate_beta * z)
+        e_report = expit(logit(float(cfg.e_approve)) + covariate_beta * z)
+    elif observation_mode != "action":
+        raise ValueError(f"unknown observation_mode {observation_mode!r}")
 
-    propensity = np.zeros(len(actions), dtype=float)
+    e_review = p_rev * kappa
+    e_approve = p_app * (1.0 - (1.0 - e_report) * (1.0 - float(cfg.audit_rate)))
+
+    propensity = np.zeros(n, dtype=float)
     propensity[review_mask] = e_review[review_mask]
     propensity[approve_mask] = e_approve[approve_mask]
     if (propensity[in_pop] <= 0).any():
@@ -104,6 +123,8 @@ def build_observation_model(
         p_resolved_review=p_rev,
         p_resolved_approve=p_app,
         propensity=propensity,
+        kappa_review_vec=kappa,
+        e_report_vec=e_report,
         e_review=float(cfg.kappa_review),
         e_approve=float(cfg.e_approve),
     )
@@ -142,7 +163,7 @@ def draw_observation(
     resolved_approve = (model.decision_day + delay_app) <= cfg.cutoff_day
 
     audit = (rng.random(n) < float(cfg.audit_rate)) & model.approve_mask
-    review_channel = model.review_mask & (rng.random(n) < float(cfg.kappa_review))
+    review_channel = model.review_mask & (rng.random(n) < model.kappa_review_vec)
     if outcome_dependent:
         if y is None:
             raise ValueError("outcome_dependent draws require y")
@@ -151,7 +172,7 @@ def draw_observation(
             model.approve_mask & fraud & (rng.random(n) < float(e_approve_fraud))
         )
     else:
-        approve_channel = model.approve_mask & (rng.random(n) < float(cfg.e_approve))
+        approve_channel = model.approve_mask & (rng.random(n) < model.e_report_vec)
 
     observed_review = review_channel & resolved_review
     observed_approve = model.approve_mask & (approve_channel | audit) & resolved_approve

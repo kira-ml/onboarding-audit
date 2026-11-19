@@ -27,6 +27,7 @@ from .estimators import (
     policy_bounds,
 )
 from .policies import apply_capacity, choose_actions, realized_cost
+from .propensity import fit_covariate_propensity
 from .schema import validate_log
 
 TARGET_P0 = "P0"
@@ -86,15 +87,23 @@ def estimate_propensities(
     *,
     propensity_col: str = "propensity",
     audit_col: str = "audit_flag",
+    propensity_model: str = "action",
+    feature_cols: list[str] | tuple[str, ...] | None = None,
+    amount_col: str = "amount",
+    seed: int | None = None,
 ) -> PropensityEstimate:
     """Use a provided propensity when complete for observed rows; else estimate.
 
-    The estimate is action-level:
+    The default estimate is action-level:
       e_review  = observed / reviewed
       e_approve = audit_rate + (1 - audit_rate) * observed / (approved, not audited)
 
     The audit-aware form separates the random audit from the base approve-label
     rate. If no audit flag is present, e_approve is the observed approve rate.
+
+    With ``propensity_model="covariate"``, a cross-fitted per-action logistic
+    model P(observed | action, X) is used instead. It needs numeric feature
+    columns; the design adds log amount and month when available.
     """
     actions = df["action"].astype(str).to_numpy()
     observed = df["label"].notna().to_numpy()
@@ -107,6 +116,7 @@ def estimate_propensities(
     else:
         audit = np.zeros(len(df), dtype=bool)
     audit_rate = float(audit[approve].mean()) if approve.any() else 0.0
+    design_names = list(feature_cols or [])
 
     provided = (
         propensity_col in df.columns
@@ -119,6 +129,22 @@ def estimate_propensities(
         e_review = float(e[review].mean()) if review.any() else 0.0
         e_approve = float(e[approve].mean()) if approve.any() else 0.0
         source = "provided"
+    elif propensity_model == "covariate":
+        X, names = _features(df, list(feature_cols or []), amount_col)
+        if X is None:
+            raise ValueError(
+                "covariate propensity model requires at least one numeric feature"
+            )
+        design_names = names
+        e = fit_covariate_propensity(
+            X,
+            actions,
+            observed,
+            random_state=int(seed if seed is not None else 0),
+        )
+        e_review = float(e[review].mean()) if review.any() else 0.0
+        e_approve = float(e[approve].mean()) if approve.any() else 0.0
+        source = "estimated_covariate"
     else:
         e_review = float(observed[review].mean()) if review.any() else 0.0
         if approve.any():
@@ -146,6 +172,8 @@ def estimate_propensities(
         "n_audit": int(audit.sum()),
         "audit_rate_among_approved": audit_rate,
         "provided_propensity": provided,
+        "propensity_model": propensity_model,
+        "propensity_features": design_names,
     }
     return PropensityEstimate(
         e=e,
@@ -331,6 +359,8 @@ def evaluate_report(
             ((candidate_actions == "approve") & rejected).sum()
         ),
         "propensity_source": propensity.source,
+        "propensity_model": propensity.details.get("propensity_model"),
+        "propensity_features": propensity.details.get("propensity_features", []),
         "positivity_ok": propensity.positivity_ok,
         "e_review": propensity.e_review,
         "e_approve": propensity.e_approve,
@@ -344,10 +374,30 @@ def evaluate_report(
         "max_weight_ipw": estimates["ipw_ht"]["max_weight"],
         "feature_names": names,
     }
+    if observed.any():
+        w_obs = 1.0 / e[observed]
+        diagnostics["weight_p50"] = float(np.quantile(w_obs, 0.5))
+        diagnostics["weight_p99"] = float(np.quantile(w_obs, 0.99))
+        diagnostics["weight_max"] = float(w_obs.max())
     if "label_source" in df.columns:
         diagnostics["label_source_counts"] = {
             str(k): int(v) for k, v in df["label_source"].value_counts().items()
         }
+    if "amount" in df.columns and len(df) >= 10:
+        quintile = pd.qcut(df["amount"], 5, labels=False, duplicates="drop")
+        for action in ("approve", "review"):
+            mask = actions == action
+            if mask.sum() < 10:
+                continue
+            rates = (
+                df.loc[mask]
+                .assign(_quintile=quintile[mask])
+                .groupby("_quintile")["label"]
+                .apply(lambda s: float(s.notna().mean()))
+            )
+            diagnostics[f"{action}_observed_rate_by_amount_quintile"] = [
+                float(v) for v in rates.to_numpy()
+            ]
     if "decision_time" in df.columns and "label_time" in df.columns:
         dec = pd.to_datetime(df["decision_time"], errors="coerce")
         lab = pd.to_datetime(df["label_time"], errors="coerce")
@@ -493,6 +543,17 @@ def write_memo(
         f"`e_review={d['e_review']:.3f}`, `e_approve={d['e_approve']:.3f}`, "
         f"audit rate among approved `{d['audit_rate_among_approved']:.3%}`."
     )
+    if d.get("propensity_model") == "covariate":
+        L.append(
+            f"- **Propensity model:** per-action logistic P(observed | action, X); "
+            f"features: {', '.join(d.get('propensity_features', [])) or 'n/a'}."
+        )
+        L.append(
+            "- **Propensity-model caveat:** the covariate model is only as good as "
+            "the features and the overlap. Check the weight range and ESS; a "
+            "heavy-tailed weight distribution undercovers the interval even when "
+            "the point estimate is close."
+        )
     L.append(
         f"- **Positivity:** {'OK' if d['positivity_ok'] else 'FAILED — no point estimate'}."
     )
@@ -504,6 +565,13 @@ def write_memo(
         f"- **IPW effective sample size:** {_fmt(d['ess_ipw'], 0)}; "
         f"max weight {_fmt(d['max_weight_ipw'], 2)}."
     )
+    if "weight_p99" in d:
+        L.append(
+            f"- **Weight distribution (observed rows):** median "
+            f"{_fmt(d['weight_p50'], 1)}, p99 {_fmt(d['weight_p99'], 1)}, "
+            f"max {_fmt(d['weight_max'], 1)}. Heavy tails mean the interval can "
+            "undercover even when the point estimate is close."
+        )
     L.append(
         f"- **Candidate review outside `P0`:** {d['candidate_review_outside_p0']:,}; "
         f"candidate approve outside `P0`: {d['candidate_approve_outside_p0']:,}. "
@@ -511,6 +579,15 @@ def write_memo(
     )
     if "label_source_counts" in d:
         L.append(f"- **Label-source mix:** {d['label_source_counts']}.")
+    for action in ("approve", "review"):
+        key = f"{action}_observed_rate_by_amount_quintile"
+        if key in d:
+            rates = ", ".join(f"{v:.3f}" for v in d[key])
+            L.append(
+                f"- **{action.capitalize()} observation rate by amount quintile:** "
+                f"[{rates}]. A strong gradient means action-level `e` is "
+                "misspecified; use `--propensity-model covariate`."
+            )
     if "label_delay_days" in d:
         L.append(
             f"- **Label delay (observed):** median {d['label_delay_days']['median']:.1f} days, "
@@ -611,6 +688,8 @@ def run_report(
     feature_cols: list[str] | tuple[str, ...] | None = None,
     propensity_col: str = "propensity",
     audit_col: str = "audit_flag",
+    propensity_model: str = "action",
+    propensity_features: list[str] | tuple[str, ...] | None = None,
     seed: int | None = None,
 ) -> ReportResult:
     log_path = Path(log_path)
@@ -619,6 +698,8 @@ def run_report(
     out_dir = Path(out_dir)
     if not 0.0 < capacity <= 1.0:
         raise ValueError("capacity must be in (0, 1]")
+    if propensity_model not in {"action", "covariate"}:
+        raise ValueError("propensity_model must be 'action' or 'covariate'")
 
     df = _read(log_path)
     report = validate_log(df)
@@ -626,15 +707,23 @@ def run_report(
         raise ValueError("invalid log:\n" + "\n".join(report.errors))
     candidate = _read(candidate_path)
 
-    propensity = estimate_propensities(
-        df, propensity_col=propensity_col, audit_col=audit_col
-    )
-    candidate_actions = _candidate_actions(df, candidate, config.costs, capacity)
     features = (
         list(feature_cols)
         if feature_cols is not None
         else list(config.outcome_features)
     )
+    propensity = estimate_propensities(
+        df,
+        propensity_col=propensity_col,
+        audit_col=audit_col,
+        propensity_model=propensity_model,
+        feature_cols=(
+            list(propensity_features) if propensity_features is not None else features
+        ),
+        amount_col="amount",
+        seed=seed,
+    )
+    candidate_actions = _candidate_actions(df, candidate, config.costs, capacity)
     estimates, diagnostics, bounds, audit = evaluate_report(
         df,
         candidate_actions,

@@ -24,8 +24,9 @@ read before the results.
 | **Label leakage** | Post-investigation fields can encode the outcome | The pilot uses only pre-decision features; the schema flags label/post-decision fields; no-leakage test | A real log may contain post-decision fields; the validator warns |
 | **Policy leakage** | The candidate policy must not use evaluation labels | Actions are a deterministic function of scores/amounts; permutation test | A team could accidentally tune on the evaluation window; the protocol says hold out |
 | **Cross-fitting errors** | The outcome model could overfit the observed rows | 5-fold cross-fitting; DR residual; full-observation identity test | Small samples may still overfit |
-| **Oracle propensities** | The pilot isolates estimator behavior by using known e | State it; a follow-on estimates propensities and tests sensitivity | The sensitivity study estimates action-level e and adds lognormal noise; covariate-dependent observation remains a residual risk |
-| **Action-level estimated propensities** | A real log may have covariate-dependent observation; an action-level e can be misspecified | The report labels the source; the sensitivity adds noise; a covariate model is the v0.3 extension | Measured: DR survives estimated e (max **2.67%**, coverage **91.0%**); IPW does not (**11.19%**, **73.0%**). If a covariate model changes the decision, the action-level report is insufficient. |
+| **Oracle propensities** | The pilot isolates estimator behavior by using known e | State it; a follow-on estimates propensities and tests sensitivity | The sensitivity estimates action-level e, adds lognormal noise, and adds a covariate-dependent observation mechanism; covariate-dependent observation is tested with a fitted propensity model, with a heavy-tail caveat |
+| **Action-level estimated propensities** | A real log may have covariate-dependent observation; an action-level e can be misspecified | The report labels the source and supports `--propensity-model covariate`; the sensitivity compares action-level, fitted covariate, and oracle e | Measured: DR survives estimated action-level e (max **2.67%**, coverage **91.0%**); IPW does not (**11.19%**, **73.0%**). Under covariate-dependent observation, action-level IPW fails; the fitted covariate model recovers the oracle. |
+| **Covariate-dependent observation** | `P(observed | action, X)` can depend on the application, so action-level e is misspecified even with a large sample | A cross-fitted per-action logistic propensity model; report the feature list, ESS, max weight, and weight range; compare with oracle and action-level e | The fitted model can recover the point estimate, but heavy-tailed weights can undercover the interval; the memo must not treat a within-5% point estimate as calibrated uncertainty |
 | **Outcome-dependent labels with estimated e** | The action-level e is a weighted average of the fraud and legitimate observation rates | The report exposes the label-source mix; audit-only is the fallback; the audit design is the identification device | Measured: audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR **1627.9%**. The tool must warn before reporting a point estimate. |
 | **Finite-sample bias** | IPW/DR can be biased/noisy at small audit sizes | Report MC SE, ESS, max weight; 100 reps main; 50 sweeps | The pilot may still be noisy for the audit-only estimator |
 | **Multiple scenarios** | Searching many scenarios can produce false positives | Pre-register the main scenario and H1–H6; report all scenarios; no post-hoc headline switching | The reader should treat the sweep as sensitivity, not confirmation |
@@ -63,10 +64,14 @@ read before the results.
 - The pilot includes an outcome-dependent stress test where action-only IPW
   fails and audit-only survives.
 - The tool reports overlap/ESS and a measured/assumed/unverifiable ledger.
-- A follow-on will estimate propensities and test sensitivity.
+- The sensitivity estimates action-level and covariate propensities and tests
+  both; the report supports `--propensity-model covariate`.
 - The audit design is a recommendation, not a claim that every bank can run it.
-- If the correction does not survive estimated propensities, the paper must say
-  so and narrow the claim.
+- If the correction does not survive estimated or covariate propensities, the
+  paper must say so and narrow the claim.
+- Covariate-dependent observation can produce heavy-tailed weights; a point
+  estimate within 5% is not evidence that the interval is calibrated. The memo
+  reports ESS, max weight, and the weight range.
 
 ## 6. What would change the conclusion
 

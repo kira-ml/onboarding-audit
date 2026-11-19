@@ -66,6 +66,11 @@ def cmd_report(args: argparse.Namespace) -> int:
         if args.features
         else None
     )
+    propensity_features = (
+        [f.strip() for f in args.propensity_features.split(",") if f.strip()]
+        if args.propensity_features
+        else None
+    )
     result = run_report(
         args.log,
         args.candidate,
@@ -75,6 +80,8 @@ def cmd_report(args: argparse.Namespace) -> int:
         feature_cols=feature_cols,
         propensity_col=args.propensity_col,
         audit_col=args.audit_col,
+        propensity_model=args.propensity_model,
+        propensity_features=propensity_features,
     )
     print(
         f"Applications: {result.n:,}; P0: {result.p0_n:,}; observed: {result.observed_n:,}"
@@ -137,6 +144,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_report.add_argument("--propensity-col", default="propensity")
     p_report.add_argument("--audit-col", default="audit_flag")
+    p_report.add_argument(
+        "--propensity-model",
+        choices=["action", "covariate"],
+        default="action",
+        help="estimate action-level e or a per-action covariate model",
+    )
+    p_report.add_argument(
+        "--propensity-features",
+        default=None,
+        help="comma-separated numeric features for the covariate propensity model",
+    )
     p_report.set_defaults(func=cmd_report)
 
     p_sens = sub.add_parser(

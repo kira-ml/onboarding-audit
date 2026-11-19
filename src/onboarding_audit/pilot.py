@@ -27,7 +27,11 @@ from .estimators import (
 from .metrics import bounds_summary, ranking_metrics, summarize, verdict
 from .observation import build_observation_model, draw_observation
 from .policies import build_policy, realized_cost
-from .propensity import estimate_from_draw, noisy_copy
+from .propensity import (
+    estimate_from_draw,
+    fit_covariate_propensity,
+    noisy_copy,
+)
 
 
 def build_policy_set(config: PilotConfig, scenario: Scenario) -> list[PolicySpec]:
@@ -104,7 +108,22 @@ def run_scenario(
         approve_delay_median=scenario.approve_delay_median,
         outcome_dependent=scenario.outcome_dependent,
     )
-    model = build_observation_model(logging.actions, data.decision_day, obs_cfg)
+    model = build_observation_model(
+        logging.actions,
+        data.decision_day,
+        obs_cfg,
+        covariate=(
+            data.X[:, data.feature_names.index("log1p_amount")]
+            if scenario.observation_mode == "covariate"
+            else None
+        ),
+        observation_mode=scenario.observation_mode,
+        covariate_beta=scenario.covariate_beta,
+    )
+    day = data.decision_day
+    day_sd = float(day.std())
+    day_z = (day - float(day.mean())) / day_sd if day_sd > 0 else np.zeros_like(day)
+    X_prop = np.column_stack([data.X, day_z])
 
     true_values: dict[str, dict[str, float]] = {}
     approved_mask = logging.actions == "approve"
@@ -147,6 +166,13 @@ def run_scenario(
         elif scenario.propensity_mode == "noisy":
             noise_rng = np.random.default_rng(config.seed + 7000 + rep)
             e_est = noisy_copy(model.propensity, scenario.propensity_noise, noise_rng)
+        elif scenario.propensity_mode == "covariate":
+            e_est = fit_covariate_propensity(
+                X_prop,
+                logging.actions,
+                draw.observed,
+                random_state=config.seed + rep,
+            )
         else:
             raise ValueError(f"unknown propensity_mode {scenario.propensity_mode!r}")
 

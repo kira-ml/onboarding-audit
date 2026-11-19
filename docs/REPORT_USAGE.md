@@ -70,6 +70,26 @@ names differ from the config. Feature columns must be **numeric**; one-hot
 encode categoricals before the report. If no usable features are present, the
 DR estimate is reported as `n/a`; IPW and audit-only still run.
 
+For covariate-dependent observation, add:
+
+```bash
+onboarding-audit report \
+  --log data/decisions.parquet \
+  --candidate data/candidate_scores.parquet \
+  --config configs/pilot.yaml \
+  --capacity 0.02 \
+  --propensity-model covariate \
+  --propensity-features customer_age,credit_risk_score,velocity_6h \
+  --out reports/my_policy
+```
+
+`--propensity-model covariate` fits a cross-fitted per-action logistic model
+`P(observed | action, X)` instead of the action-level rate. It is the right
+choice when the log shows different observation rates across application
+segments (for example, larger credit lines generating more post-approval
+reports). The memo reports the feature list and a weight/ESS caveat. A provided
+`propensity` column still takes precedence.
+
 Outputs:
 
 - `reports/my_policy/report.md` — the audit-ready memo.
@@ -91,10 +111,15 @@ only the full-population bounds.
 - `estimated`: the tool estimated action-level rates from the log:
   - `e_review = observed / reviewed`;
   - `e_approve = audit_rate + (1 - audit_rate) * observed / (approved, not audited)`.
+- `estimated_covariate`: the tool fit a cross-fitted per-action logistic model
+  `P(observed | action, X)` on the numeric features. Use it when observation
+  depends on application characteristics, not only on the action.
 
-The estimated version is a diagnostic, not a substitute for a designed audit.
+The estimated versions are diagnostics, not a substitute for a designed audit.
 If the audit flag is absent, the tool cannot separate the audit from the base
-approve-label rate.
+approve-label rate. Covariate-dependent observation also produces heavy-tailed
+weights: check the ESS, max weight, and the reported propensity range before
+trusting the interval.
 
 ### Estimates
 
@@ -142,6 +167,8 @@ Do not randomize approvals or rejections:
 | `candidate score missing for N applications` | The candidate file does not cover the log | Export scores for every application |
 | `positivity failure` | An action has zero observed probability | Add audit labels or report bounds |
 | `DR` is `n/a` | No usable outcome-model features | Pass `--features` or use IPW/audit-only |
+| `covariate propensity model requires at least one numeric feature` | The log has no numeric features for the model | Pass `--propensity-features`, or use the action-level model |
+| `positivity failure` under the covariate model | A fitted `e` is numerically zero for an observed row | Check the feature/overlap; add audit labels or report bounds |
 
 ## 6. Privacy
 

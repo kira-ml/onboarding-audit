@@ -329,3 +329,43 @@ suggests outcome-dependent observation.
 **Kill criteria:** The correction fails under estimated e in the main scenario;
 then the claim narrows to bounds/diagnostic and the tool recommends an audit
 before a point estimate.
+
+---
+
+## D11 — Covariate propensity model when observation depends on the application
+
+**Date:** 2026-11-20.
+**Status:** Accepted.
+
+**Options:**
+1. Keep action-level `e` and report the covariate-dependent case as an open
+   threat.
+2. Add a per-action logistic `P(observed | action, X)` with cross-fitting, and
+   compare it with action-level and oracle propensities in a pre-declared
+   scenario.
+3. Build a fully nonparametric propensity model.
+
+**Decision:** Option 2 for v0.2.1; option 3 is not justified at this sample size.
+
+**Why:**
+- The action-level sensitivity answers "what if `e` is estimated?" but not "what
+  if `e` depends on the application?"
+- A real log's observation rate plausibly depends on amount, product, or
+  segment. If so, action-level IPW is misspecified even with a large sample.
+- The covariate model is the minimum credible correction: it uses the same
+  pre-decision features as the outcome model, is cross-fitted, and reports the
+  feature list and weight diagnostics.
+- DR already includes the covariates in the outcome model, so it may be
+  partially robust. The experiment tests whether that is enough.
+
+**Expected outcome:** Action-level IPW fails; the covariate model recovers most
+of the oracle; DR is more robust than IPW but not necessarily within 5%.
+
+**Assumptions:** The observation mechanism is a function of observed,
+pre-decision features; the audit is random; the logistic form is an
+approximation; the features are available at decision time.
+
+**Review date:** 2027-01-15.
+**Kill criteria:** The covariate model does not improve on action-level `e`, or
+its weights are so heavy that the interval is uninformative; then the tool
+reports bounds/diagnostics and recommends an audit, not a point estimate.

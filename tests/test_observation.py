@@ -97,3 +97,40 @@ def test_outcome_dependent_approved_fraud_is_more_observed():
     legit_obs = draw.observed[y == 0].mean()
     assert fraud_obs == pytest.approx(0.505, abs=0.02)
     assert legit_obs == pytest.approx(0.01, abs=0.005)
+
+
+def test_covariate_observation_has_a_gradient_and_positive_propensity():
+    n = 100_000
+    actions = np.full(n, "approve")
+    day = np.zeros(n)
+    covariate = np.linspace(-3.0, 3.0, n)
+    cfg = Observation(
+        e_approve=0.05,
+        audit_rate=0.0,
+        approve_delay_median=0.5,
+        approve_delay_sigma=0.1,
+        cutoff_day=90.0,
+    )
+    model = build_observation_model(
+        actions,
+        day,
+        cfg,
+        covariate=covariate,
+        observation_mode="covariate",
+        covariate_beta=0.75,
+    )
+    assert (model.propensity > 0).all()
+    assert model.propensity[0] < model.propensity[-1]
+    draw = draw_observation(model, np.random.default_rng(0))
+    low = draw.observed[covariate < 0].mean()
+    high = draw.observed[covariate > 0].mean()
+    assert high > low + 0.02
+
+
+def test_covariate_observation_requires_a_covariate():
+    actions = np.array(["approve"] * 10)
+    day = np.zeros(10)
+    with pytest.raises(ValueError, match="requires a covariate"):
+        build_observation_model(
+            actions, day, Observation(), observation_mode="covariate"
+        )

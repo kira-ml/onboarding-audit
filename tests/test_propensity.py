@@ -1,7 +1,12 @@
 import numpy as np
+import pytest
 from types import SimpleNamespace
 
-from onboarding_audit.propensity import estimate_from_draw, noisy_copy
+from onboarding_audit.propensity import (
+    estimate_from_draw,
+    fit_covariate_propensity,
+    noisy_copy,
+)
 
 
 def _model(actions):
@@ -52,3 +57,29 @@ def test_noisy_copy_zero_sigma_is_identity():
     rng = np.random.default_rng(0)
     e = np.array([0.1, 0.2, 0.0])
     assert np.allclose(noisy_copy(e, 0.0, rng), e)
+
+
+def test_fit_covariate_propensity_recovers_a_logistic_gradient():
+    rng = np.random.default_rng(0)
+    n = 50_000
+    z = rng.normal(size=n)
+    X = np.column_stack([z, rng.normal(size=n)])
+    p = 1.0 / (1.0 + np.exp(-(-2.0 + 1.0 * z)))
+    observed = rng.random(n) < p
+    actions = np.full(n, "approve")
+    e = fit_covariate_propensity(X, actions, observed, n_splits=3)
+    assert np.corrcoef(e, p)[0, 1] > 0.8
+    assert e.mean() == pytest.approx(observed.mean(), abs=0.01)
+    assert (e > 0).all() and (e < 1).all()
+
+
+def test_fit_covariate_propensity_keeps_rejects_at_zero():
+    rng = np.random.default_rng(0)
+    n = 1_000
+    X = rng.normal(size=(n, 2))
+    actions = np.array(["approve"] * 500 + ["review"] * 300 + ["reject"] * 200)
+    observed = rng.random(n) < 0.2
+    e = fit_covariate_propensity(X, actions, observed, n_splits=2)
+    assert (e[actions == "reject"] == 0).all()
+    assert (e[actions == "approve"] > 0).all()
+    assert (e[actions == "review"] > 0).all()

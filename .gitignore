@@ -25,6 +25,8 @@ data/interim/
 # the large row-level parquet is reproducible and stays local.
 reports/smoke*/
 reports/sensitivity_smoke/
+reports/covariate_smoke/
 reports/sample_report/
+reports/sample_covariate/
 reports/*.parquet
 .serena/

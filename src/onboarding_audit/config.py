@@ -83,6 +83,8 @@ class Scenario:
     candidate_capacity: float | None = None
     propensity_mode: str = "oracle"
     propensity_noise: float = 0.0
+    observation_mode: str = "action"
+    covariate_beta: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -168,6 +170,8 @@ def load_config(path: Path | str) -> PilotConfig:
             ),
             propensity_mode=str(s.get("propensity_mode", "oracle")),
             propensity_noise=float(s.get("propensity_noise", 0.0)),
+            observation_mode=str(s.get("observation_mode", "action")),
+            covariate_beta=float(s.get("covariate_beta", 0.0)),
         )
         for s in raw["scenarios"]
     )
@@ -194,13 +198,36 @@ def load_config(path: Path | str) -> PilotConfig:
             f"false_reject_cost for {scenario.id!r} must be >= 0",
         )
         _require(
-            scenario.propensity_mode in {"oracle", "estimated", "noisy"},
-            f"propensity_mode for {scenario.id!r} must be oracle/estimated/noisy",
+            scenario.propensity_mode in {"oracle", "estimated", "noisy", "covariate"},
+            f"propensity_mode for {scenario.id!r} must be "
+            "oracle/estimated/noisy/covariate",
         )
         _require(
             scenario.propensity_noise >= 0.0,
             f"propensity_noise for {scenario.id!r} must be >= 0",
         )
+        _require(
+            scenario.observation_mode in {"action", "covariate"},
+            f"observation_mode for {scenario.id!r} must be action/covariate",
+        )
+        _require(
+            scenario.covariate_beta >= 0.0,
+            f"covariate_beta for {scenario.id!r} must be >= 0",
+        )
+        _require(
+            not (scenario.outcome_dependent and scenario.observation_mode != "action"),
+            f"scenario {scenario.id!r}: outcome_dependent and covariate observation "
+            "are separate mechanisms",
+        )
+        if scenario.observation_mode == "covariate":
+            _require(
+                0.0 < observation.kappa_review < 1.0,
+                "covariate observation needs 0 < kappa_review < 1",
+            )
+            _require(
+                0.0 < observation.e_approve < 1.0,
+                "covariate observation needs 0 < e_approve < 1",
+            )
 
     return PilotConfig(
         seed=int(raw["seed"]),

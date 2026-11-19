@@ -435,3 +435,46 @@ estimated and noisy propensities:
 The claim gate is met for **DR**, not for IPW. The paper should claim DR
 robustness, not IPW robustness. See `reports/propensity_sensitivity.md` and
 `docs/DECISIONS.md` D10.
+
+### 16. Covariate-dependent observation addendum (2026-11-20)
+
+**Motivation.** The action-level sensitivity treats observation as a function of
+the logging action only. A real log may have `P(observed | action, X)` depending
+on the application. If so, action-level `e` is misspecified even when it is
+estimated without noise.
+
+**Mechanism.** The post-approval report probability is
+`logit(e_report) = logit(e_approve) + beta * z`, where `z` is standardized
+`log1p(amount)` and `beta = 0.75`. The review channel uses the same gradient on
+`kappa_review`. The audit remains random. `z` is pre-decision, so the mechanism
+is a legitimate observation design, not label leakage. The outcome model already
+includes `log1p(amount)`, so DR has a second chance to adjust; IPW does not.
+
+**Scenarios.** Five 50-replication scenarios:
+
+| Scenario | Delay | Propensity | Purpose |
+|---|---:|---|---|
+| `covariate_oracle` | 0.5 | true per-row `e` | ceiling |
+| `covariate_action` | 0.5 | action-level estimated `e` | misspecified comparator |
+| `covariate_model` | 0.5 | cross-fitted per-action logistic `P(observed | action, X)` | fitted correction |
+| `covariate_action_delay` | 45 | action-level estimated `e` | delay + misspecification |
+| `covariate_model_delay` | 45 | cross-fitted covariate model | delay robustness |
+
+The covariate model uses the outcome-model features plus standardized decision
+day, fit with 3-fold cross-fitting within each action. The action-level estimate
+is the audit-aware marginal rate.
+
+**Pre-declared read.** The correction is adequate if the covariate model's DR/IPW
+max relative bias is within 5% and mean coverage is at least 80%. The
+action-level comparator is expected to fail IPW; DR may be partially robust
+because the outcome model includes the observation covariate. If the covariate
+model does not recover the oracle, the paper reports the propensity-sensitivity
+band and does not claim a point estimate under covariate-dependent observation.
+
+**Variance caveat.** Covariate-dependent observation creates heavy-tailed
+weights. The HT variance estimator can undercover even with oracle propensities;
+the report must show ESS, max weight, and the weight range. A point estimate
+within 5% is not evidence that the interval is calibrated.
+
+**Status.** The 50-replication run is in progress; results will be appended to
+this section and to `reports/propensity_sensitivity.md`.

@@ -68,3 +68,13 @@ scenarios:
   - {id: propensity_noisy_10, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: noisy, propensity_noise: 0.10}
   - {id: propensity_noisy_25, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: noisy, propensity_noise: 0.25}
   - {id: outcome_dependent_estimated, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, outcome_dependent: true, propensity_mode: estimated}
+  # Covariate-dependent observation: the post-approval report probability
+  # depends on log amount, not only on the action. The delay-0.5 variants
+  # isolate the propensity misspecification; the delay-45 variants add the
+  # resolution gradient. `oracle` is the ceiling; `estimated` is the
+  # misspecified action-level comparator; `covariate` is the fitted model.
+  - {id: covariate_oracle, reps: 50, audit_rate: 0.01, approve_delay_median: 0.5, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: oracle}
+  - {id: covariate_action, reps: 50, audit_rate: 0.01, approve_delay_median: 0.5, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: estimated}
+  - {id: covariate_model, reps: 50, audit_rate: 0.01, approve_delay_median: 0.5, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: covariate}
+  - {id: covariate_action_delay, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: estimated}
+  - {id: covariate_model_delay, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: covariate}
