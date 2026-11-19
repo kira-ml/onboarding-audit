@@ -81,6 +81,8 @@ class Scenario:
     false_reject_cost: float
     outcome_dependent: bool = False
     candidate_capacity: float | None = None
+    propensity_mode: str = "oracle"
+    propensity_noise: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -164,6 +166,8 @@ def load_config(path: Path | str) -> PilotConfig:
                 if s.get("candidate_capacity") is not None
                 else None
             ),
+            propensity_mode=str(s.get("propensity_mode", "oracle")),
+            propensity_noise=float(s.get("propensity_noise", 0.0)),
         )
         for s in raw["scenarios"]
     )
@@ -188,6 +192,14 @@ def load_config(path: Path | str) -> PilotConfig:
         _require(
             scenario.false_reject_cost >= 0.0,
             f"false_reject_cost for {scenario.id!r} must be >= 0",
+        )
+        _require(
+            scenario.propensity_mode in {"oracle", "estimated", "noisy"},
+            f"propensity_mode for {scenario.id!r} must be oracle/estimated/noisy",
+        )
+        _require(
+            scenario.propensity_noise >= 0.0,
+            f"propensity_noise for {scenario.id!r} must be >= 0",
         )
 
     return PilotConfig(

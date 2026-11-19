@@ -14,8 +14,9 @@
 
 1. [`SCHEMA.md`](SCHEMA.md) — the decision-log schema.
 2. [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) — the compliant audit design.
-3. [`BSP_MAPPING.md`](BSP_MAPPING.md) — the regulatory mapping.
-4. [`../configs/pilot.yaml`](../configs/pilot.yaml) — the pilot configuration.
+3. [`REPORT_USAGE.md`](REPORT_USAGE.md) — how to run and read the arbitrary-log report.
+4. [`BSP_MAPPING.md`](BSP_MAPPING.md) — the regulatory mapping.
+5. [`../configs/pilot.yaml`](../configs/pilot.yaml) — the pilot configuration.
 
 **For a researcher:**
 

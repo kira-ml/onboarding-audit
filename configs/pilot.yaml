@@ -64,3 +64,7 @@ scenarios:
   - {id: outcome_dependent, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, outcome_dependent: true}
   - {id: frej_002, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.02}
   - {id: frej_050, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.50}
+  - {id: propensity_estimated, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: estimated}
+  - {id: propensity_noisy_10, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: noisy, propensity_noise: 0.10}
+  - {id: propensity_noisy_25, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: noisy, propensity_noise: 0.25}
+  - {id: outcome_dependent_estimated, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, outcome_dependent: true, propensity_mode: estimated}

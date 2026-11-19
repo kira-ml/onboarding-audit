@@ -31,12 +31,12 @@ at least one honest correction or bound; or a well-supported null. **Met.**
 
 ## v0.2 — Usable tool (January 2027)
 
-- [ ] Arbitrary-log `report` command (bring your own log and candidate scores).
-- [ ] Propensity estimation from logs/audit; sensitivity to estimated e.
+- [x] Arbitrary-log `report` command (bring your own log and candidate scores).
+- [x] Propensity estimation from logs/audit; sensitivity to estimated e.
 - [ ] FiFAR capacity/analyst layer.
-- [ ] HTML/Markdown memo template with the measured/assumed/unverifiable ledger.
-- [ ] Example notebook on the public sample log.
-- [ ] Documentation site or a clean `docs/` reading path.
+- [x] Markdown memo template with the measured/assumed/unverifiable ledger.
+- [x] Example log and CLI walkthrough (`examples/`, `docs/REPORT_USAGE.md`).
+- [x] Documentation index and reading path (`docs/README.md`).
 
 **Exit criterion:** a data scientist can run the tool on a sample log and get a
 memo in under 30 minutes.

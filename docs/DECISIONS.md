@@ -251,3 +251,70 @@ the `P0` estimate is the identified part.
 **Kill criteria:** A reviewer proposes a valid confidence-interval construction
 for the full-population value under weaker assumptions; then adopt it and
 compare.
+
+---
+
+## D9 — Arbitrary-log report uses action-level propensities when absent
+
+**Date:** 2026-11-20.
+**Status:** Accepted.
+
+**Options:**
+1. Require a per-row propensity column and refuse to run without it.
+2. Estimate action-level propensities from the log and run with a warning.
+3. Estimate a covariate-conditional propensity model.
+
+**Decision:** Option 2 for v0.2; option 3 is a follow-on.
+
+**Why:**
+- Most real logs do not have a per-row observation propensity; requiring one
+  would make the tool unusable on the logs teams actually have.
+- The action-level estimate is the minimum viable correction:
+  `e_review = observed/reviewed`, and
+  `e_approve = audit_rate + (1-audit_rate) * observed/(approved, not audited)`.
+- The tool reports the propensity source, the observed e range, the ESS, and a
+  positivity failure. It never hides that the propensities are estimated.
+- A covariate propensity model is the right v0.3 extension, but it needs enough
+  audit labels per cell and a model-validation step.
+
+**Expected outcome:** The report runs on a log without propensities, but the
+memo labels the source as `estimated` and reports the sensitivity band.
+
+**Assumptions:** The observation mechanism is action-level in the main use case;
+the audit is random within approved applications; the audit flag is present when
+possible.
+
+**Review date:** 2027-01-15.
+**Kill criteria:** The action-level estimate produces materially different
+decisions from a covariate model; then require the covariate model.
+
+---
+
+## D10 — The propensity sensitivity is a pre-declared claim gate
+
+**Date:** 2026-11-20.
+**Status:** Accepted.
+
+**Decision:** The paper may claim that the correction works on the identified
+population only if it survives (a) action-level estimated propensities in the
+main scenario and (b) a moderate noise band. If it fails, the paper narrows to a
+propensity-sensitivity diagnostic and bounds, not a point-estimate claim.
+
+**Why:**
+- The main pilot uses oracle propensities. That is a deliberate isolation, not a
+  production assumption.
+- A correction that only works with oracle propensities is not useful to a bank.
+- The sensitivity is the cheapest test of external validity before the paper.
+
+**Expected outcome:** Estimated propensities should be close to the oracle in
+the main action-dependent scenario; noisy propensities should degrade gracefully;
+the outcome-dependent scenario should break action-only weighting and favor
+audit-only.
+
+**Assumptions:** The estimated e is action-level; the noise is a stress test,
+not a calibrated error model.
+
+**Review date:** 2027-01-15.
+**Kill criteria:** The correction fails under estimated e in the main scenario;
+then the claim narrows to bounds/diagnostic and the tool recommends an audit
+before a point estimate.

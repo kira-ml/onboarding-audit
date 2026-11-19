@@ -11,7 +11,9 @@ import pandas as pd
 
 from .config import load_config
 from .pilot import run_pilot
+from .report import run_report
 from .schema import validate_log
+from .sensitivity import run_sensitivity
 
 
 def _read_log(path: Path) -> pd.DataFrame:
@@ -58,6 +60,47 @@ def cmd_pilot(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_report(args: argparse.Namespace) -> int:
+    feature_cols = (
+        [f.strip() for f in args.features.split(",") if f.strip()]
+        if args.features
+        else None
+    )
+    result = run_report(
+        args.log,
+        args.candidate,
+        args.config,
+        args.out,
+        capacity=args.capacity,
+        feature_cols=feature_cols,
+        propensity_col=args.propensity_col,
+        audit_col=args.audit_col,
+    )
+    print(
+        f"Applications: {result.n:,}; P0: {result.p0_n:,}; observed: {result.observed_n:,}"
+    )
+    print(
+        f"Propensity source: {result.propensity.source}; positivity: {result.propensity.positivity_ok}"
+    )
+    print("\nEstimates:")
+    for name, est in result.estimates.items():
+        print(
+            f"  {name:<12} {est['value']:.6f}  target={est['target']}  ESS={est['ess']:.0f}"
+        )
+    print(
+        f"\nBounds: [{result.bounds['lower']:.6f}, {result.bounds['upper']:.6f}] width={result.bounds['width']:.6f}"
+    )
+    print(f"Memo: {result.memo_path}")
+    print(f"JSON: {result.report_path}")
+    return 0
+
+
+def cmd_sensitivity(args: argparse.Namespace) -> int:
+    config = load_config(args.config)
+    run_sensitivity(config, args.out, reps=args.reps)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="onboarding-audit",
@@ -75,6 +118,34 @@ def main(argv: list[str] | None = None) -> int:
         "--reps", default=None, type=int, help="override reps for a smoke test"
     )
     p_pilot.set_defaults(func=cmd_pilot)
+
+    p_report = sub.add_parser(
+        "report", help="Evaluate a candidate policy from a decision log."
+    )
+    p_report.add_argument("--log", required=True, type=Path)
+    p_report.add_argument("--candidate", required=True, type=Path)
+    p_report.add_argument("--config", required=True, type=Path)
+    p_report.add_argument("--out", default=Path("reports/report"), type=Path)
+    p_report.add_argument(
+        "--capacity",
+        default=0.02,
+        type=float,
+        help="candidate review capacity (fraction)",
+    )
+    p_report.add_argument(
+        "--features", default=None, help="comma-separated outcome-model features"
+    )
+    p_report.add_argument("--propensity-col", default="propensity")
+    p_report.add_argument("--audit-col", default="audit_flag")
+    p_report.set_defaults(func=cmd_report)
+
+    p_sens = sub.add_parser(
+        "sensitivity", help="Run the propensity-estimation sensitivity."
+    )
+    p_sens.add_argument("--config", required=True, type=Path)
+    p_sens.add_argument("--out", default=Path("reports"), type=Path)
+    p_sens.add_argument("--reps", default=50, type=int)
+    p_sens.set_defaults(func=cmd_sensitivity)
 
     p_val = sub.add_parser("validate", help="Validate a decision log schema.")
     p_val.add_argument("--log", required=True, type=Path)

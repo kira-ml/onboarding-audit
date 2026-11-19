@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.2.0] — 2026-11-20
+
+### Added
+
+- `onboarding-audit report`: arbitrary-log policy evaluation. It validates the
+  decision log, uses a provided propensity or estimates an action-level
+  propensity, derives candidate actions, computes naive/IPW/DR/audit-only
+  estimates and reject-margin bounds, reports overlap/ESS/label-maturity
+  diagnostics, sizes a post-hoc verification audit, and writes an audit-ready
+  memo (`report.md`) and JSON.
+- `onboarding-audit sensitivity`: pre-declared propensity sensitivity with
+  estimated, noisy (sigma 0.10/0.25), and outcome-dependent-label scenarios.
+- `src/onboarding_audit/propensity.py`: action-level propensity estimation and
+  lognormal noise for the sensitivity.
+- `docs/REPORT_USAGE.md`: how to run and read the arbitrary-log report.
+- `examples/sample_candidate.csv` and an updated CLI walkthrough.
+- Tests for the report's known-ground-truth check, missing-propensity
+  estimation, no-audit behavior, missing candidate IDs, invalid logs, and the
+  propensity helpers. 39 tests pass.
+
+### Changed
+
+- README quickstart now covers `pilot`, `report`, `sensitivity`, and `validate`.
+- Roadmap v0.2 items updated: the report and propensity sensitivity are
+  implemented; FiFAR remains the next capacity layer.
+- Version bumped to 0.2.0.
+
+### Notes
+
+- The report is still a pilot: it does not prove the observation model is
+  correct, and the reject margin is bounded, not point-identified.
+- The sensitivity uses action-level propensities; a covariate propensity model
+  is the v0.3 extension.
+
 ## [0.1.0] — 2026-11-19
 
 ### Added

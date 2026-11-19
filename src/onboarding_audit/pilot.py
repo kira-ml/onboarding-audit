@@ -6,7 +6,7 @@ import argparse
 import json
 import platform
 import time
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import numpy as np
@@ -27,6 +27,7 @@ from .estimators import (
 from .metrics import bounds_summary, ranking_metrics, summarize, verdict
 from .observation import build_observation_model, draw_observation
 from .policies import build_policy, realized_cost
+from .propensity import estimate_from_draw, noisy_copy
 
 
 def build_policy_set(config: PilotConfig, scenario: Scenario) -> list[PolicySpec]:
@@ -138,11 +139,22 @@ def run_scenario(
             )
         else:
             draw = draw_observation(model, rng)
+
+        if scenario.propensity_mode == "oracle":
+            e_est = model.propensity
+        elif scenario.propensity_mode == "estimated":
+            e_est = estimate_from_draw(model, draw)
+        elif scenario.propensity_mode == "noisy":
+            noise_rng = np.random.default_rng(config.seed + 7000 + rep)
+            e_est = noisy_copy(model.propensity, scenario.propensity_noise, noise_rng)
+        else:
+            raise ValueError(f"unknown propensity_mode {scenario.propensity_mode!r}")
+
         phat = fit_outcome_model(
             data.X,
             data.y,
             draw.observed,
-            model.propensity,
+            e_est,
             config.outcome_model,
             seed=config.seed + rep,
         )
@@ -157,14 +169,14 @@ def run_scenario(
             cost = costs_by_policy[policy.spec.name]
             estimates = {
                 "naive": naive(cost, draw.observed),
-                "ipw_ht": ipw_ht(cost, draw.observed, model.propensity, in_pop),
-                "ipw_hajek": ipw_hajek(cost, draw.observed, model.propensity, in_pop),
+                "ipw_ht": ipw_ht(cost, draw.observed, e_est, in_pop),
+                "ipw_hajek": ipw_hajek(cost, draw.observed, e_est, in_pop),
                 "dr": dr(
                     cost,
                     policy.actions,
                     data.amount,
                     draw.observed,
-                    model.propensity,
+                    e_est,
                     in_pop,
                     phat,
                     base_costs,
@@ -706,18 +718,7 @@ def run_pilot(
         if scenario_filter is None or s.id in scenario_filter
     ]
     if reps_override is not None:
-        scenarios = [
-            Scenario(
-                id=s.id,
-                reps=reps_override,
-                audit_rate=s.audit_rate,
-                approve_delay_median=s.approve_delay_median,
-                false_reject_cost=s.false_reject_cost,
-                outcome_dependent=s.outcome_dependent,
-                candidate_capacity=s.candidate_capacity,
-            )
-            for s in scenarios
-        ]
+        scenarios = [replace(s, reps=reps_override) for s in scenarios]
 
     results = []
     for idx, scenario in enumerate(scenarios):

@@ -24,7 +24,8 @@ read before the results.
 | **Label leakage** | Post-investigation fields can encode the outcome | The pilot uses only pre-decision features; the schema flags label/post-decision fields; no-leakage test | A real log may contain post-decision fields; the validator warns |
 | **Policy leakage** | The candidate policy must not use evaluation labels | Actions are a deterministic function of scores/amounts; permutation test | A team could accidentally tune on the evaluation window; the protocol says hold out |
 | **Cross-fitting errors** | The outcome model could overfit the observed rows | 5-fold cross-fitting; DR residual; full-observation identity test | Small samples may still overfit |
-| **Oracle propensities** | The pilot isolates estimator behavior by using known e | State it; a follow-on estimates propensities and tests sensitivity | Estimated propensities could remove the correction advantage |
+| **Oracle propensities** | The pilot isolates estimator behavior by using known e | State it; a follow-on estimates propensities and tests sensitivity | The sensitivity study estimates action-level e and adds lognormal noise; covariate-dependent observation remains a residual risk |
+| **Action-level estimated propensities** | A real log may have covariate-dependent observation; an action-level e can be misspecified | The report labels the source; the sensitivity adds noise; a covariate model is the v0.3 extension | If the covariate model changes the decision, the action-level report is insufficient |
 | **Finite-sample bias** | IPW/DR can be biased/noisy at small audit sizes | Report MC SE, ESS, max weight; 100 reps main; 50 sweeps | The pilot may still be noisy for the audit-only estimator |
 | **Multiple scenarios** | Searching many scenarios can produce false positives | Pre-register the main scenario and H1–H6; report all scenarios; no post-hoc headline switching | The reader should treat the sweep as sensitivity, not confirmation |
 

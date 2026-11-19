@@ -90,3 +90,37 @@ population.
 
 **Health:** The pilot supports the premise and the correction; the project is
 ready for external review and the v0.2 tool layer.
+
+---
+
+## 2026-11-20 — Arbitrary-log report + propensity sensitivity
+
+**Done:**
+
+- `onboarding-audit report`: validates a decision log, estimates or reads
+  propensities, derives candidate actions, computes naive/IPW/DR/audit-only
+  estimates and reject-margin bounds, reports overlap/ESS/label-maturity
+  diagnostics, sizes an audit, and writes an audit-ready memo.
+- `onboarding-audit sensitivity`: estimated, noisy (sigma 0.10/0.25), and
+  outcome-dependent propensity scenarios.
+- CLI now exposes `pilot`, `report`, `sensitivity`, `validate`.
+- 39 tests pass, including the report's known-ground-truth check (DR closer to
+  the true `P0` value than naive), missing-propensity estimation, no-audit
+  behavior, missing candidate IDs, and invalid logs.
+- Docs: `docs/REPORT_USAGE.md`, updated README quickstart, roadmap, examples.
+
+**In progress:** the 50-replication propensity sensitivity is running; results
+go to `reports/propensity_sensitivity.md`/`.json`.
+
+**Next:**
+
+1. Fill the sensitivity results in `docs/CLAIMS.md`, `docs/THREATS.md`, README,
+   and the worklog.
+2. If estimated/noisy propensities preserve the correction, keep the claim; if
+   not, narrow to a propensity-sensitivity band or bounds/diagnostic.
+3. FiFAR capacity/analyst layer.
+4. Two external readers.
+5. Paper draft and public release.
+
+**Health:** The tool surface is now usable on a real log; the remaining
+scientific question is whether the correction survives estimated propensities.

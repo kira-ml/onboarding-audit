@@ -24,4 +24,6 @@ data/interim/
 # Generated outputs: keep the report and the small JSON evidence file;
 # the large row-level parquet is reproducible and stays local.
 reports/smoke*/
+reports/sensitivity_smoke/
+reports/sample_report/
 reports/*.parquet

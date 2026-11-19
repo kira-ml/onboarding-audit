@@ -42,8 +42,9 @@ On the BAF account-opening test window (227,491 applications, known labels):
   confidence intervals.
 
 Full report: [`reports/pilot.md`](reports/pilot.md). Claim ledger:
-[`docs/CLAIMS.md`](docs/CLAIMS.md). This is a simulation on public synthetic
-data; it is not a production estimate.
+[`docs/CLAIMS.md`](docs/CLAIMS.md). Propensity sensitivity:
+[`reports/propensity_sensitivity.md`](reports/propensity_sensitivity.md).
+This is a simulation on public synthetic data; it is not a production estimate.
 
 ---
 
@@ -95,16 +96,28 @@ pytest -q
 # 2. Run the pre-registered pilot (uses data/scored_test.parquet)
 onboarding-audit pilot --config configs/pilot.yaml --out reports
 
-# 3. Validate a decision log before running an evaluation
+# 3. Evaluate a candidate policy from a decision log
+onboarding-audit report \
+  --log data/decisions.parquet \
+  --candidate data/candidate_scores.parquet \
+  --config configs/pilot.yaml \
+  --capacity 0.02 \
+  --out reports/my_policy
+
+# 4. Run the propensity-estimation sensitivity
+onboarding-audit sensitivity --config configs/pilot.yaml --out reports --reps 50
+
+# 5. Validate a decision log before running an evaluation
 onboarding-audit validate --log data/decisions.parquet
 
-# 4. Inspect the generated memo
+# 6. Inspect the generated memo
 #    reports/pilot.md
+#    reports/my_policy/report.md
 ```
 
-v0.1 supports `pilot` and `validate`. The arbitrary-log `report` command
-(estimation from a team's own log) is the v0.2 milestone; the schema and
-estimators are already in place.
+v0.2 supports `pilot`, `report`, `sensitivity`, and `validate`. The report is
+the arbitrary-log product surface; it is still a pilot, not a production
+approval. See [docs/REPORT_USAGE.md](docs/REPORT_USAGE.md).
 
 The pilot data is a processed BAF test-window file. To build it from the public
 BAF dataset, see `docs/DATA.md` (the raw data is not redistributed here).
@@ -142,6 +155,7 @@ Philippine cyber-fraud losses.
 - [Pilot specification](docs/PILOT_SPEC.md)
 - [Decision-log schema](docs/SCHEMA.md)
 - [Audit design](docs/AUDIT_DESIGN.md)
+- [Report usage](docs/REPORT_USAGE.md)
 - [BSP/AFASA/NPC mapping](docs/BSP_MAPPING.md)
 - [Related work / gap map](docs/RELATED_WORK.md)
 - [Threats to validity](docs/THREATS.md)
