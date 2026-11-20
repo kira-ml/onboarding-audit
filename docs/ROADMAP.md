@@ -74,6 +74,8 @@ author; external readers remain.**
 
 - [ ] Paper draft (IMRaD) built from `docs/METHODS.md`, `docs/RESULTS.md`, and
   `docs/CLAIMS.md`; no new headline during drafting.
+- [ ] Execute the adoption plan in [`CREDIBILITY_PLAN.md`](CREDIBILITY_PLAN.md):
+  validation report, model card, pilot protocol, business case, external readers.
 - [ ] Second public dataset or a transaction-fraud extension.
 - [ ] Sensitivity: costs, capacity, delay, audit size.
 - [ ] Bootstrap/randomization-inference interval for the heavy-weight scenarios.
