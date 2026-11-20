@@ -236,6 +236,15 @@ access and external validation, not code.
 **Decision:** D14 — C+ convex barbell: 80% Level 2 package, 20%
 outreach/information, 0% new methods.
 
+**Revision (same day):** switched to **C-seq, finish-first** — package freeze by
+2026-12-05; reviewer shortlist in late November; reviewer search 2026-12-08 to
+2026-12-23. The expected-value difference from C+ is within the subjective
+noise; the focus constraint decides.
+
+**Red-team review received:** six findings, verdict FAIL on the current framing;
+saved to `docs/RED_TEAM_CREDIBILITY_PLAN.md`. Triage deferred to 2026-11-20
+20:00. Do not change public claims until the findings are verified.
+
 **Why:** The binding constraint is access to a real log and a risk-team
 reviewer, not code. C is convex; D is a high-variance bet on a low-probability
 partner.

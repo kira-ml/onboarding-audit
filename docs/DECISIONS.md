@@ -491,31 +491,40 @@ pilot.
 - E. Pivot / new project.
 - F. Application package only.
 
-**Decision:** C+ (or C if the schedule is tight). Allocate 80% to the Level 2
-package, 20% to outreach and information, and 0% to new methods.
+**Decision:** C-seq, finish-first. Allocate 100% to the Level 2 package until
+2026-12-05; prepare a reviewer shortlist in late November; run the reviewer
+search 2026-12-08 to 2026-12-23; 0% to new methods.
 
 **Why:**
 - The binding constraint is access to a real log and a risk-team reviewer, not
   code.
-- C is convex: the package is valuable in every state; outreach buys
-  information; the pilot is upside.
+- C-seq is convex: the package is valuable in every state; the reviewer search
+  is the December information purchase; the pilot is upside.
+- C+ is marginally higher in the model, but it assumes parallel attention. The
+  difference is within the subjective noise; the explicit focus constraint
+  decides for C-seq.
 - D is a high-variance bet on a low-probability partner; B has diminishing
   returns; A leaves the project at Level 1.
 
-**Expected value (subjective):** C **79.7** (net 73.2); C+ **81.3** (net 73.8);
-D **60.4** (net 53.9); F **63.2** (net 60.2); B **60.0** (net 55.0); A **50.0**
-(net 49.5). Sensitivity: C wins across P(S3) 0.05–0.40. D only becomes
-competitive with a warm partner.
+**Expected value (subjective):** C-seq **78.4** (net 71.9); C **79.7** (net
+73.2); C+ **81.3** (net 73.8); D **60.4** (net 53.9); F **63.2** (net 60.2); B
+**60.0** (net 55.0); A **50.0** (net 49.5). Sensitivity: C-seq is within about
+two points of C+ across P(S3) 0.05–0.40. D only becomes competitive with a warm
+partner.
 
 **Assumptions:** 65–75 hours available over six weeks; 10–12 hours/week cap; no
 warm partner at the start; public/synthetic data only until a DPA; the package
 is reusable.
 
-**Expected outcome:** Level 2 package by 2026-12-31; two external readers; a
-pilot lead or a public real-action fallback.
+**Expected outcome:** Level 2 package frozen by 2026-12-05; reviewer packet sent
+2026-12-08 to 2026-12-15; two reviewer calls by 2026-12-23; a pilot lead or a
+public real-action fallback.
 
-**Review dates:** 2026-12-15 (mid-point) and 2026-12-31 (end-of-period).
-**Kill criteria:** No reader/practitioner response after 10 targeted asks by
-2026-12-15; package work exceeds 75 hours or GPA/applications/health slip; a
-partner asks for PII/proprietary data without a DPA/sandbox; the risk team finds
-the assumptions untenable.
+**Review dates:** 2026-12-05 (package freeze), 2026-12-15 (reviewer status), and
+2026-12-31 (end-of-period).
+**Kill criteria:** Package not frozen by 2026-12-05 → cut scope to the validation
+report, model card, and pilot protocol. No reviewer call by 2026-12-15 → use the
+red-team plus one strong peer, and plan January. Package work exceeds 75 hours
+or GPA/applications/health slip → stop. A partner asks for PII/proprietary data
+without a DPA/sandbox → decline. The risk team finds the assumptions untenable
+→ narrow the claim to a methods paper; do not claim a pilot.

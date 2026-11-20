@@ -7,7 +7,8 @@ internship and a durable research project?
 **Decision owner:** Ken Ira Lacson Talingting.
 **Date:** 2026-11-20.
 **Horizon:** 2026-11-20 to 2026-12-31 (6 weeks).
-**Status:** Proposed; to be accepted or amended after the 2026-12-15 review.
+**Status:** Revised 2026-11-20 — finish-first sequence: package freeze by
+2026-12-05; external reviewer search 2026-12-08 to 2026-12-23.
 
 **Models used:** 2 (constraints and opportunity cost), 9 (expected value and
 value of information), 10 (fat tails, ruin, margin of safety), 11 (convexity and
@@ -59,9 +60,10 @@ option is designed to do both.
 
 ### 1.4 Smallest acceptable outcome
 
-A **Level 2 review-ready package**: validation report, model card, pilot
-protocol, business case, real-log adapter, one-command demo, CI, and at least
-one external reader. A completed pilot is upside, not the minimum.
+A **Level 2 review-ready package by 2026-12-05**: validation report, model card,
+pilot protocol, business case, real-log adapter, one-command demo, CI, and the
+reviewer packet. The external reviewer search happens in December. A completed
+pilot is upside, not the minimum.
 
 ---
 
@@ -72,6 +74,7 @@ one external reader. A completed pilot is upside, not the minimum.
 | **A. Do nothing / maintain** | Freeze the repo; use the current artifact in applications; no new work | 5 h |
 | **B. Research polish** | More docs, paper draft, more scenarios, README polish; no external evidence | 50 h |
 | **C. Level 2 package + outreach** | Validation report, model card, pilot protocol, business case, real-log adapter, demo, CI, security/privacy/maintainers; 10 practitioner asks; 2 readers | 65 h |
+| **C-seq. Finish-first** | Package by Dec 5; reviewer shortlist prepared in late November; reviewer search Dec 8–23; no parallel outreach | 65 h |
 | **C+. Convex barbell** | C plus a public real-action fallback and 20% pilot scouting; preserve the option to convert to D | 75 h |
 | **D. Full pilot push** | Spend the six weeks chasing a partner and a data-sharing agreement; build only what the partner needs | 65 h |
 | **E. Pivot** | Start a new project or a transaction-fraud extension | 65 h |
@@ -124,6 +127,7 @@ subjective; the sensitivity analysis tests the ranking.
 | A. Do nothing | 50 | 50 | 50 |
 | B. Research polish | 58 | 62 | 60 |
 | C. Level 2 package + outreach | 72 | 82 | 88 |
+| C-seq. Finish-first | 72 | 80 | 86 |
 | C+. Convex barbell | 72 | 82 | 88 |
 | D. Full pilot push | 48 | 58 | 90 |
 | E. Pivot | 45 | 50 | 55 |
@@ -131,9 +135,12 @@ subjective; the sensitivity analysis tests the ranking.
 
 **Why C is high in every state:** the package is valuable even if no one
 responds. It makes the project review-ready, gives you a concrete artifact to
-send, and doubles as application material. **Why D is low in S1/S2:** if the
-partner does not engage, the six weeks produce an incomplete package and no
-pilot. **Why D is high in S3:** a real pilot is the strongest evidence.
+send, and doubles as application material. **Why C-seq is slightly lower in
+S2/S3:** the reviewer feedback arrives later, so less of it can be incorporated
+by December 31. The package quality is higher because attention is not split.
+**Why D is low in S1/S2:** if the partner does not engage, the six weeks produce
+an incomplete package and no pilot. **Why D is high in S3:** a real pilot is the
+strongest evidence.
 
 ### 3.4 Expected values
 
@@ -144,15 +151,17 @@ Using the base probabilities (S1 0.35, S2 0.45, S3 0.20):
 | A. Do nothing | 50.0 | 5 | 49.5 |
 | B. Research polish | 60.0 | 50 | 55.0 |
 | **C. Level 2 package + outreach** | **79.7** | **65** | **73.2** |
+| **C-seq. Finish-first** | **78.4** | **65** | **71.9** |
 | C+. Convex barbell | 81.3 | 75 | 73.8 |
 | D. Full pilot push | 60.4 | 65 | 53.9 |
 | E. Pivot | 49.0 | 65 | 42.5 |
 | F. Application package only | 63.2 | 30 | 60.2 |
 
-**C and C+ dominate.** C+ is marginally better if you can sustain 75 hours and
-the public real-action fallback is viable; C is the safer version if the
-schedule is tight. The difference between C and C+ is within the noise of the
-subjective estimates, so choose based on time and energy, not the decimal.
+**C, C-seq, and C+ dominate.** C+ is marginally higher in the model (net 73.8
+vs 71.9), but it assumes parallel attention and a higher coordination cost. The
+difference is within the noise of the subjective estimates. Given the explicit
+focus constraint, **C-seq is the chosen implementation**: finish the package
+first, then run the reviewer search in December.
 
 ---
 
@@ -191,7 +200,9 @@ pilots, and the paper.
 The ranking is **robust to reasonable changes**. The decision is not fragile to
 the exact probabilities. The one condition that flips it is a **warm partner**:
 if a practitioner is already willing to run a pilot, D becomes competitive, and
-you should shift time toward the pilot while keeping the package.
+you should shift time toward the pilot while keeping the package. C-seq is
+within about two points of C+ across the plausible range; the choice is about
+focus and sequencing, not a meaningful expected-value difference.
 
 ---
 
@@ -202,15 +213,16 @@ information cheaply before committing the full six weeks.
 
 | Information | Cost | What it changes | Value |
 |---|---:|---|---|
-| Send a 1-page pilot brief to 10 targeted practitioners | 5–8 h | If 0 responses, P(S3) drops; pivot to the package + public fallback. If 2+ respond, invest in the pilot. | **High** |
+| Prepare a 1-page pilot brief in late November; send it Dec 8–15 | 5–8 h | If 0 responses, P(S3) drops; pivot to the package + public fallback. If 2+ respond, invest in the pilot. | **High** |
 | One 30-minute review with a practitioner using the memo template | 1–2 h | Reveals whether the reject margin, cost matrix, or audit design is a blocker | **High** |
 | Check a public real-action dataset (credit approval/reject inference) | 5 h | Creates a credible fallback if no bank partner | **Medium-high** |
 | Check paper venue/reviewer fit | 2 h | Changes the paper target, not the November decision | **Low** |
 | Run more simulations or add an estimator | 20–40 h | Does not change the adoption probability | **Low** |
 
-**Sequence:** write the 1-page brief first, send it, then build the package
-while waiting. Do not build the full package before testing whether anyone
-will engage. The brief is the cheapest information purchase.
+**Sequence (revised):** finish the package by **2026-12-05**. Prepare the
+reviewer shortlist and one-pager in late November, but send the packet
+**2026-12-08 to 2026-12-15**. The package is the information asset; the reviewer
+calls are the December information purchase. Do not split attention in November.
 
 ---
 
@@ -279,34 +291,40 @@ does appear. That is bounded downside with open upside.
 
 ## 8. Recommendation
 
-**Choose C+ (the convex barbell), or C if the schedule is tight.**
+**Choose C-seq: finish the Level 2 package by 2026-12-05, then run the external
+review search in December.**
 
 ### 8.1 Allocation
 
-- **80% — Level 2 package:** validation report, model card, pilot protocol,
-  business case, real-log adapter, one-command demo, CI,
+- **Until Dec 5 — 100% Level 2 package:** validation report, model card, pilot
+  protocol, business case, real-log adapter, one-command demo, CI,
   security/privacy/maintainers.
-- **20% — Information and outreach:** 1-page pilot brief to 10 practitioners,
-  2 external readers, public real-action fallback check.
+- **Late November — reviewer shortlist only:** names and a 1-page brief, no
+  outreach yet. This preserves focus and makes December faster.
+- **Dec 8–23 — reviewer search:** send the packet to 10 targeted practitioners,
+  schedule 2 calls, record objections.
 - **0% — New methods:** no new estimators, scenarios, or simulation depth.
 
-### 8.2 Six-week plan
+### 8.2 Finish-first plan
 
-| Week | Dates | Deliverables |
+| Dates | Focus | Deliverables |
 |---|---|---|
-| 1 | Nov 20–26 | 1-page pilot brief; target list of 10; send; start validation report and model card |
-| 2 | Nov 27–Dec 3 | Pilot protocol and business case; follow up; start real-log adapter |
-| 3 | Dec 4–10 | Real-log adapter, demo, CI; reader calls; revise |
-| 4 | Dec 11–17 | Security/privacy/maintainers; reader feedback; **mid-point review Dec 15** |
-| 5 | Dec 18–24 | Public real-action fallback check; case-study skeleton; update README |
-| 6 | Dec 25–31 | Freeze v0.3; reviewer's guide; application package; **end-of-period review Dec 31** |
+| Nov 20–24 | Freeze scope; reviewer-critical docs | `docs/VALIDATION_REPORT.md`, `docs/MODEL_CARD.md` |
+| Nov 25–30 | Pilot and business case | `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`; reviewer shortlist |
+| Dec 1–5 | Make it runnable and reviewable | Real-log adapter, one-command demo, CI, `SECURITY.md`, `PRIVACY.md`, `MAINTAINERS.md`; **freeze v0.3** |
+| Dec 6–7 | Buffer; apply red-team findings | Fix only critical issues; no new features |
+| Dec 8–15 | Reviewer search | Reviewer packet, 10-person shortlist, 2 calls scheduled |
+| Dec 16–23 | Review calls | `docs/EXTERNAL_REVIEW.md`; update claims/threats |
+| Dec 24–31 | Freeze and plan January | Reviewer response, v0.3.1 if needed, January pilot plan |
 
 ### 8.3 Kill criteria
 
-- **No reader/practitioner response after 10 targeted asks by Dec 15** → stop
-  the pilot pursuit; pivot to the public real-action case study and the paper.
-- **Package work exceeds 75 hours**, or GPA/applications/health slip → freeze at
-  the current level; no more project work this year.
+- **Dec 5:** if the package is not frozen, cut scope to the validation report,
+  model card, and pilot protocol. Ship those; defer the rest.
+- **Dec 15:** if no reviewer has agreed to a call, use the red-team review plus
+  one strong peer reviewer, and plan the external review for January.
+- **Any time:** if GPA, applications, sleep, or health slip, stop. The project
+  can wait; the internship window cannot.
 - **A partner asks for PII or proprietary data without a DPA/sandbox** →
   decline; keep the public/synthetic path.
 - **The risk team finds the assumptions untenable** → narrow the claim to a
@@ -314,16 +332,18 @@ does appear. That is bounded downside with open upside.
 
 ### 8.4 Review dates
 
-- **2026-12-15:** mid-point. Decide whether to continue the pilot probe or pivot
-  to the public fallback.
+- **2026-12-05:** package freeze. If not met, cut scope.
+- **2026-12-15:** reviewer status. If no call, use the red-team + peer and plan
+  January.
 - **2026-12-31:** end-of-period. Decide whether to continue to a 2027 pilot or
   freeze at Level 2.
 
 ### 8.5 What would change the decision
 
-- **A warm partner in hand:** shift 30–40% of time from C to D, but keep the
-  package.
-- **A usable public real-action dataset:** move to C+ with a case study.
+- **A warm partner in hand:** contact them in late November and shift 30–40% of
+  time to the pilot, but keep the package.
+- **A usable public real-action dataset:** add a case study after the package
+  freeze.
 - **A health/GPA constraint:** drop to A or F; the project can wait.
 - **A red-team finding that the package is the wrong shape:** revise the package,
   not the decision to build one.
@@ -340,11 +360,10 @@ does appear. That is bounded downside with open upside.
   lower than the package suggests. If the job market is the binding constraint,
   F (application package) or a reduced C is better.
 - **Not verified:** No practitioner has been asked; no partner exists; no
-  public real-action dataset has been checked. The red-team review of the
-  credibility plan is still an input.
-- **Next action:** Write the 1-page pilot brief and send it to 10 targeted
-  practitioners this week. If there is no response by Dec 15, pivot to the
-  package + public fallback.
+  public real-action dataset has been checked. The red-team review found six
+  issues that must be triaged before the package freeze.
+- **Next action:** Freeze the package by Dec 5; send the reviewer packet Dec 8.
+  If there is no call by Dec 15, use the red-team + peer and plan January.
 
 ## 10. Related documents
 

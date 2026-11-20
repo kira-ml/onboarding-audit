@@ -40,7 +40,8 @@ disagree, the precedence in §5 applies.
 | [`RESULTS.md`](RESULTS.md) | The consolidated measured findings and verdicts |
 | [`CLAIMS.md`](CLAIMS.md) | The claim ledger: what may be said, with evidence and status |
 | [`THREATS.md`](THREATS.md) | The strongest counter-case and mitigations |
-| [`DECISIONS.md`](DECISIONS.md) | The decision journal (D1–D12) |
+| [`RED_TEAM_CREDIBILITY_PLAN.md`](RED_TEAM_CREDIBILITY_PLAN.md) | Adversarial review of the credibility plan; six findings to triage |
+| [`DECISIONS.md`](DECISIONS.md) | The decision journal (D1–D14) |
 | [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) | What is not answered, and how to resolve it |
 | [`RELATED_WORK.md`](RELATED_WORK.md) | The gap map and the closest work |
 | [`REFERENCES.md`](REFERENCES.md) | The curated, checked bibliography for the paper |
