@@ -75,6 +75,7 @@ disagree, the precedence in §5 applies.
 |---|---|
 | [`COMMUNICATION.md`](COMMUNICATION.md) | 60-second pitch, 10-minute walkthrough, hard questions |
 | [`CREDIBILITY_PLAN.md`](CREDIBILITY_PLAN.md) | Adoption and hostile-review plan: credibility ladder, pilot protocol, 90-day roadmap |
+| [`DECISION_MEMO_2026-11.md`](DECISION_MEMO_2026-11.md) | The Nov–Dec 2026 strategic decision: options, expected value, tail risk, recommendation |
 | [`ONE_PAGER.md`](ONE_PAGER.md) | The one-page reviewer brief |
 | [`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) | The pre-release claim, data, code, and docs checklist |
 | [`ROADMAP.md`](ROADMAP.md) | The milestones and review dates |

@@ -228,3 +228,25 @@ uncertainty calibration, and the paper.
 
 **Health:** The scientific foundation is strong; the binding constraint is now
 access and external validation, not code.
+
+---
+
+## 2026-11-20 — November–December strategic decision
+
+**Decision:** D14 — C+ convex barbell: 80% Level 2 package, 20%
+outreach/information, 0% new methods.
+
+**Why:** The binding constraint is access to a real log and a risk-team
+reviewer, not code. C is convex; D is a high-variance bet on a low-probability
+partner.
+
+**Next:**
+
+1. Write the 1-page pilot brief; send it to 10 targeted practitioners.
+2. Write the validation report, model card, pilot protocol, and business case.
+3. Add the real-log adapter, one-command demo, CI, and maintainer/security/
+   privacy files.
+4. Mid-point review 2026-12-15; end-of-period review 2026-12-31.
+
+**Health:** The project is at Level 1; the decision is to build the Level 2
+package, not to add methods.
