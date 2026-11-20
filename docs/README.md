@@ -64,6 +64,7 @@ disagree, the precedence in §5 applies.
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Module map, data flow, invariants, extension points |
 | [`TESTING.md`](TESTING.md) | Test strategy, coverage, gaps |
 | [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) | Environment, data, commands, seeds, outputs, runtime |
+| [`EVALS.md`](EVALS.md) | After-action reviews and process rule changes |
 | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) | Research and code contribution rules |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | Version history |
 | [`../pyproject.toml`](../pyproject.toml) | Package metadata and dependencies |

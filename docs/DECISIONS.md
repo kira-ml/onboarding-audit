@@ -435,3 +435,41 @@ covariate 50-replication run is the last measurement before the freeze.
 **Kill criteria:** A documentation change forces a new measurement or a headline
 change; then update the claim ledger and the pre-registration first, and delay
 the freeze.
+
+---
+
+## D13 — Prioritize a real-log pilot and external validation over more methods
+
+**Date:** 2026-11-20.
+**Status:** Accepted.
+
+**Options:**
+1. Add more estimators, scenarios, and simulation depth.
+2. Build the Level 2 review package (validation report, model card, pilot
+   protocol, business case) and pursue a real-log pilot in parallel.
+3. Wait for a bank partner before building anything else.
+
+**Decision:** Option 2. Freeze the method set; build the review package; pursue a
+historical-log pilot or a public real-action fallback. Do not add another
+estimator or simulation scenario before the pilot.
+
+**Why:**
+- The binding constraint is access to a real log and a risk-team sponsor, not
+  code.
+- A hostile reviewer can dismiss another simulation; a pre-registered real-log
+  pilot with external review is a much larger likelihood ratio.
+- The project already has enough methods, tests, and scenarios for a pilot
+  (47 tests; 22 configured scenarios; 11 sensitivity scenarios).
+- Adding features now is optimizing a non-bottleneck.
+
+**Expected outcome:** A review-ready package in 4 weeks; two external readers in
+8 weeks; a historical-log pilot or a public real-action case study in 12 weeks.
+
+**Assumptions:** A partner can be found; the log has the required fields;
+legal/privacy can approve a read-only sandbox; the cost matrix can be elicited.
+
+**Review date:** 2026-12-15.
+**Kill criteria:** No partner by 2027-01-15, or the log lacks the required
+fields, or the risk team finds the assumptions untenable; then narrow to a
+public real-action case study and a methodological paper, and do not claim a
+pilot.

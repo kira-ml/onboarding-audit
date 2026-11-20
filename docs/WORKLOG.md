@@ -196,3 +196,35 @@ model-specific: DR with an estimated action-level `e` for action-dependent
 observation; a covariate propensity model for covariate-dependent observation;
 audit-only for outcome-dependent labels. The remaining work is external validity,
 uncertainty calibration, and the paper.
+
+---
+
+## 2026-11-20 — Credibility and adoption plan
+
+**Done:**
+
+- Wrote `docs/CREDIBILITY_PLAN.md`: credibility ladder, risk-team adoption
+  checklist, hostile-reviewer attack table, minimum evidence package, 90-day
+  plan, pilot protocol, business case, and model-risk package.
+- Pushed the repo to `https://github.com/kira-ml/onboarding-audit` (public);
+  corrected the GitHub URL from `keniralacson` to `kira-ml`.
+- Recorded D13: prioritize a real-log pilot and external validation over more
+  methods.
+
+**State:**
+
+- Level 1 (reproducible research artifact) is strong.
+- Level 2 (review-ready tool) is the next target.
+- Level 3 (pilot-proven) is the 2027 target; Level 4 requires a sponsor.
+
+**Next:**
+
+1. Write `docs/VALIDATION_REPORT.md`, `docs/MODEL_CARD.md`,
+   `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`.
+2. Add a real-log adapter, one-command demo, CI, and maintainer/security/privacy
+   files.
+3. Contact five practitioners; get two external readers.
+4. Run a red-team review of the credibility plan.
+
+**Health:** The scientific foundation is strong; the binding constraint is now
+access and external validation, not code.
