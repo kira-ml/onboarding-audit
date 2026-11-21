@@ -292,6 +292,19 @@ cross-fitting. Reject rows have `e = 0`. If an action has too few rows or one
 class, the action mean is used. The model is a diagnostic correction, not a
 claim that the observation mechanism is logistic.
 
+### 6.9 Double robustness
+
+The DR estimator is consistent if either the propensity model or the outcome
+model is correct:
+
+```
+E[DR] = V  if  e_hat = e  or  mu_hat = E[cost | X, action].
+```
+
+`docs/RESULTS.md` §10 tests this directly on a semi-synthetic outcome with a
+known interaction. The test is a mechanism check, not a proof: it uses one
+data-generating process and one misspecification.
+
 ## 7. Metrics
 
 | Metric | Definition | What it answers |

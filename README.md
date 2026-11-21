@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-82%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-84%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-0.2.1-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-research%20pilot-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
@@ -19,7 +19,7 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **82 tests pass.** The documentation is
+> **Status:** `v0.2.1` research pilot. **84 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
@@ -88,7 +88,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 82 tests · not production |
+| **Status** | v0.2.1 research pilot · 84 tests · not production |
 
 ## Headline results
 
@@ -101,6 +101,7 @@ scenario and 50 for the sweeps and sensitivity studies.
 | Naive ranking | **1.00 / 0%** | mean pairwise inversions / P(select true best) |
 | Observation-rate sweep | **12/12** cells >5% (max across policies); DR mean ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
 | Doubly robust (DR) | **0.94% / 96.0%** | mean relative bias / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
+| Double robustness | DR **+0.14%** (wrong outcome model), **+0.36%** (wrong propensity) | known-truth test; IPW **−36.7%** with wrong `e`, plug-in **+5.1%** with wrong outcome |
 | IPW | **1.18% / 94.5%** | max relative bias / mean coverage |
 | Audit-only at 1% | **2.98% / 84.5% / 1,271** | max bias / coverage / mean ESS |
 | Outcome-dependent labels | audit-only **−2.37% to −1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** | relative bias |
@@ -213,7 +214,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 82 tests, including negative controls
+├── tests/                 # 84 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -265,7 +266,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 82 tests, including negative controls |
+| Test suite | **Implemented** | 84 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |

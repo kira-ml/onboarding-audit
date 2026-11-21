@@ -46,6 +46,9 @@ pilot output or a cited primary source does not appear in the paper.
 | Covariate-dependent observation breaks action-level IPW | **Measured** (post-hoc S1) | Action-level IPW max **67.52%**, coverage **1.0%** (delay 0.5); **64.27% / 10.0%** (delay 45) | A different observation gradient, or an outcome model that fully absorbs it |
 | Covariate-dependent observation also breaks action-level DR | **Measured** (post-hoc S1) | Action-level DR max **21.25%**, coverage **72.5%** (delay 0.5); **20.27% / 79.0%** (delay 45) | A covariate propensity model; DR alone is not enough |
 | A fitted covariate propensity model recovers the oracle under covariate-dependent observation | **Measured** (post-hoc S1) | Covariate model: IPW **1.97%/91.5%**, DR **2.48%/89.5%** (delay 0.5); **3.35%/90.5%** and **3.68%/89.5%** (delay 45); oracle **3.01%/90.0%** and **2.63%/89.0%** | A misspecified covariate model, or a real log with unmeasured observation drivers |
+| DR is approximately unbiased when either the propensity or the outcome model is correct | **Measured** (double-robustness test) | Correct `e`/wrong outcome **+0.14%**; wrong `e`/correct outcome **+0.36%**; 200 reps (`reports/double_robustness.json`) | A different outcome model, a much stronger misspecification, or a different observation mechanism |
+| IPW fails when the propensity is wrong, and the plug-in fails when the outcome model is wrong | **Measured** (double-robustness test) | Wrong `e`: IPW **−36.72%**; wrong outcome: plug-in **+5.09%** | A different misspecification magnitude |
+| DR degrades gracefully when both nuisances are wrong | **Measured** (one DGP) | Both wrong: DR **+2.09%**, IPW **−36.87%**, plug-in **+5.33%** | A different data-generating process; this is not a guarantee |
 | Heavy weights undercover even with oracle propensities | **Measured** (caveat) | Covariate-oracle coverage **89–90%**, covariate-model **89.5–91.5%**, below nominal 95% | A bootstrap/randomization-inference interval, or a different weight estimator |
 | The audit stays approximately unbiased when approved labels are outcome-dependent | **Measured** (H6 supported) | Audit-only bias **-2.37% to -1.98%**, coverage **80-86%** (below nominal); IPW **+43.90% to +368.25%**; DR **+596.41% to +1301.53%** | An observation mechanism that is action-dependent after all |
 | The reject margin is not point-identified from logs alone | **Measured** (H5 supported) | Widest **0.009942** in the main scenario; **0.203** in `frej_002` (12.3% reject share); incumbent width **0.001581** with **34%** coverage of the true full value | A controlled approval design or a defensible assumption |
@@ -99,3 +102,9 @@ pilot output or a cited primary source does not appear in the paper.
    mechanism, and report the weight diagnostics. A point estimate within 5% is
    not evidence that the interval is calibrated; covariate-oracle coverage is
    **89–90%**, not 95%.
+7. **DR has the double-robustness property it claims.** In a known-truth test,
+   DR is approximately unbiased when either the propensity or the outcome model
+   is correct (**0.14%** and **0.36%**), while IPW fails with a wrong propensity
+   (−36.7%) and the plug-in fails with a wrong outcome model (+5.1%). When both
+   are wrong, DR is no longer guaranteed (+2.1%). The practical rule: get one of
+   the two models right, and report which one you trust.

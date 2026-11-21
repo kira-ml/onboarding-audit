@@ -291,7 +291,32 @@ Naive bias in the same scenarios is **226.03%** (delay 0.5) and **301.68%**
    model and report the weight diagnostics. If the rate is action-level, DR with
    an estimated action-level `e` is adequate.
 
-## 10. Verdicts
+## 10. Double robustness (semi-synthetic)
+
+The pilot uses BAF's real labels, so the outcome model's misspecification is
+unknown. A separate 200-replication experiment makes it known: the outcome is
+generated from a logistic model with an interaction (`x1*x2`); the analyst fits
+either a main-effects model (misspecified) or the interaction model (correct).
+The propensity is either the true one or a biased copy (`1.6x`).
+
+| Arm | Plug-in | IPW | DR |
+|---|---:|---:|---:|
+| Correct `e`, wrong outcome model | **+5.09%** | +0.69% | **+0.14%** |
+| Wrong `e`, correct outcome model | +0.34% | **−36.72%** | **+0.36%** |
+| Both wrong | +5.33% | −36.87% | +2.09% |
+
+**Read:** DR is approximately unbiased when *either* nuisance is correct
+(**0.14%** and **0.36%**). IPW fails when `e` is wrong (−36.7%); the plug-in
+fails when the outcome model is wrong (+5.1%). When both are wrong, DR degrades
+gracefully (+2.1%) but is no longer guaranteed. This is the double-robustness
+property the method relies on, tested directly rather than asserted.
+
+**Caveat:** one data-generating process, one misspecification, 200 replications.
+It demonstrates the mechanism; it does not prove robustness in every setting.
+Artifact: `reports/double_robustness.json`; script:
+`scripts/double_robustness.py`.
+
+## 11. Verdicts
 
 | Hypothesis | Verdict | Key number |
 |---|---|---|
@@ -306,9 +331,9 @@ Naive bias in the same scenarios is **226.03%** (delay 0.5) and **301.68%**
 S1 is post-hoc, not pre-registered. It is a sensitivity result, not a new
 headline. The pre-registered H1–H6 remain the primary verdicts.
 
-## 11. Negative controls
+## 12. Negative controls
 
-`pytest -q`: **82 passed**, including:
+`pytest -q`: **84 passed**, including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);
@@ -323,7 +348,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 The tests protect the implementation, not the external validity of the
 simulation.
 
-## 12. What the results do not show
+## 13. What the results do not show
 
 - No production or Philippine bank estimate.
 - No causal deployment effect.
@@ -335,7 +360,7 @@ simulation.
 - No claim that the intervals are calibrated under heavy weights; coverage is
   89–91.5% in the covariate scenarios.
 
-## 13. Related documents
+## 14. Related documents
 
 - Methods: [`METHODS.md`](METHODS.md)
 - Claim ledger: [`CLAIMS.md`](CLAIMS.md)

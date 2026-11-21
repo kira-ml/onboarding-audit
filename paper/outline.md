@@ -179,6 +179,12 @@ coverage **84.5%**, ESS **1,271**. The corrected ranking is much better than
 naive but not perfect: DR mean inversions **0.29**, P(select true best) **72%**,
 cost of misranking **0.000093** (naive: **1.00 / 0% / 0.000333**).
 
+A known-truth double-robustness test (200 replications) shows DR at **+0.14%**
+with a wrong outcome model and **+0.36%** with a wrong propensity; IPW is
+**−36.7%** with the wrong propensity and the plug-in is **+5.1%** with the wrong
+outcome model. When both are wrong, DR is **+2.1%**, so the property is a
+safety net, not a guarantee.
+
 ### 6.3 Audit value
 
 At a 5% approved-label base rate, the audit's marginal RMSE gain is modest:
@@ -211,7 +217,7 @@ reject margin is not point-identified from logs alone.
 
 ### 6.7 Negative controls
 
-`pytest -q`: 82 tests pass, including full-observation identity, full-audit
+`pytest -q`: 84 tests pass, including full-observation identity, full-audit
 identity, propensity recovery, bounds validity, capacity, no leakage, schema
 validation, the arbitrary-log report's known-ground-truth check, and the
 propensity/covariate helpers.

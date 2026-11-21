@@ -92,6 +92,7 @@ one the business is asking.
 | Estimated `e`: DR max bias / coverage | **1.43% / 93.5%** |
 | Estimated `e`: IPW max bias / coverage | **2.92% / 92.0%** |
 | Noisy `e` (sigma 0.25): DR / IPW | **1.58% / 96.5%** vs **7.01% / 93.0%** |
+| Double robustness: DR wrong outcome / wrong `e` | **+0.14% / +0.36%**; IPW −36.7%, plug-in +5.1% |
 | Outcome-dependent + estimated `e`: audit-only | **2.58% / 82.5%**; IPW/DR fail |
 | Covariate observation: action IPW / DR | **67.52% / 21.25%** |
 | Covariate observation: model IPW / DR | **1.97% / 2.48%** |

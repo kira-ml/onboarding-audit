@@ -29,7 +29,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **82 passed** |
+| Test result | **84 passed** |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12 |
 
@@ -47,7 +47,8 @@ Actions run is the remaining CI evidence.
 | Gate integration in the report | `tests/test_report.py` | pass |
 | 20-row demo withholds estimates | `tests/test_report.py::test_report_withholds_point_estimate_on_small_log` | pass |
 | End-to-end demo | `tests/test_demo.py` | pass |
-| Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (27/27) |
+| Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (32/32) |
+| Double robustness | `scripts/double_robustness.py`, `tests/test_double_robustness.py` | pass |
 | Bounds widen with the `P0` standard error | `tests/test_estimators.py` | pass |
 | F5 fields in the summary | `tests/test_metrics.py` | pass |
 

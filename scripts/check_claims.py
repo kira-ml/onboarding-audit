@@ -219,6 +219,45 @@ def main() -> int:
         )
     )
 
+    # Double robustness.
+    dr_test = _load(ROOT / "reports" / "double_robustness.json")
+    arms = dr_test["arms"]
+    checks.append(
+        (
+            "DR correct e / wrong outcome",
+            arms["correct_e_wrong_outcome"]["dr"]["rel_bias"],
+            0.0014,
+        )
+    )
+    checks.append(
+        (
+            "plug-in correct e / wrong outcome",
+            arms["correct_e_wrong_outcome"]["plug_in"]["rel_bias"],
+            0.0509,
+        )
+    )
+    checks.append(
+        (
+            "DR wrong e / correct outcome",
+            arms["wrong_e_correct_outcome"]["dr"]["rel_bias"],
+            0.0036,
+        )
+    )
+    checks.append(
+        (
+            "IPW wrong e / correct outcome",
+            arms["wrong_e_correct_outcome"]["ipw"]["rel_bias"],
+            -0.3672,
+        )
+    )
+    checks.append(
+        (
+            "DR both wrong",
+            arms["wrong_e_wrong_outcome"]["dr"]["rel_bias"],
+            0.0209,
+        )
+    )
+
     failures = 0
     for name, computed, expected in checks:
         ok = abs(computed - expected) <= TOL

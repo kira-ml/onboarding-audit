@@ -128,6 +128,7 @@ These are outputs, not editable sources:
 | `reports/obs_sweep/pilot.md` | no | Generated sweep report; the compact `obs_sweep.md` is the committed summary |
 | `reports/obs_sweep/pilot_rows.parquet` | no | Generated row-level sweep output |
 | [`../reports/propensity_sensitivity.json`](../reports/propensity_sensitivity.json) | yes | `onboarding-audit sensitivity` |
+| [`../reports/double_robustness.json`](../reports/double_robustness.json) | yes | `scripts/double_robustness.py` |
 | [`../reports/propensity_sensitivity.md`](../reports/propensity_sensitivity.md) | yes | `onboarding-audit sensitivity` |
 | `reports/pilot_rows.parquet` | no | `onboarding-audit pilot` |
 | `reports/sample_report/` | no | `onboarding-audit report` |

@@ -131,6 +131,8 @@ public synthetic data**, not a production estimate.
 | DR coverage, known propensities | **84.5% to 96.0%** | `reports/obs_sweep/pilot.json` |
 | DR P(select the true best policy) | **64%** at `e_approve=0.01`; **96–100%** at `e_approve=0.50` | `reports/obs_sweep/pilot.json` |
 | DR with estimated action-level propensities | max **1.43%**, coverage **93.5%** | `reports/propensity_sensitivity.json` |
+| DR with a wrong outcome model but correct `e` | **+0.14%** | `reports/double_robustness.json` |
+| DR with a wrong `e` but correct outcome model | **+0.36%** | `reports/double_robustness.json` |
 | Covariate propensity model under covariate-dependent observation | DR **2.48% / 89.5%**; IPW **1.97% / 91.5%** | `reports/propensity_sensitivity.json` |
 
 ### 7.3 Where it fails
@@ -141,6 +143,7 @@ public synthetic data**, not a production estimate.
 | Outcome-dependent approved labels | IPW **1,350.76%**, DR **1,627.90%**, coverage **0%** | `reports/propensity_sensitivity.json` |
 | Action-level IPW under covariate-dependent observation | max **67.52%**, coverage **1.5%** | `reports/propensity_sensitivity.json` |
 | Heavy weights | coverage **89–91.5%**, below nominal 95% | `reports/propensity_sensitivity.json` |
+| Both nuisances wrong | DR **+2.09%**, IPW **−36.87%**; DR is no longer guaranteed | `reports/double_robustness.json` |
 | Reject-margin bounds | incumbent covers the true full value in **34%** of replications (narrow interval); F5 **15/88** narrow, **77/88** widened | `reports/pilot.json` |
 
 The last row is the reason the bounds are labeled **partial-identification
