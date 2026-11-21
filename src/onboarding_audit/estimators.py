@@ -27,6 +27,9 @@ class Bounds:
     upper: float
     width: float
     n_rejected: int
+    lower_unconditional: float = float("nan")
+    upper_unconditional: float = float("nan")
+    width_unconditional: float = float("nan")
 
 
 def effective_sample_size(w: np.ndarray) -> float:
@@ -198,17 +201,29 @@ def policy_bounds(
     in_pop: np.ndarray,
     rejected: np.ndarray,
     v_pop: float,
+    v_pop_se: float = 0.0,
 ) -> Bounds:
     """Partial-identification bounds for the full-population value.
 
     The unobserved logging-rejected rows are bounded by the min/max cost of the
-    candidate action; the identified population uses the supplied estimate.
+    candidate action; the identified population uses the supplied estimate. The
+    unconditional interval widens the bounds by the `P0` estimate's standard
+    error, scaled by the `P0` share. It is a diagnostic, not a confidence
+    interval for the full population.
     """
     n = len(actions)
     n_pop = int(in_pop.sum())
     n_rej = int(rejected.sum())
     if n_rej == 0 or n == 0:
-        return Bounds(v_pop, v_pop, 0.0, n_rej)
+        return Bounds(
+            v_pop,
+            v_pop,
+            0.0,
+            n_rej,
+            v_pop,
+            v_pop,
+            0.0,
+        )
     if not np.isfinite(v_pop):
         return Bounds(float("nan"), float("nan"), float("nan"), n_rej)
 
@@ -227,7 +242,18 @@ def policy_bounds(
 
     lower = (n_pop / n) * v_pop + (n_rej / n) * float(min_cost[rejected].mean())
     upper = (n_pop / n) * v_pop + (n_rej / n) * float(max_cost[rejected].mean())
-    return Bounds(lower, upper, upper - lower, n_rej)
+    se_term = 1.96 * (n_pop / n) * max(float(v_pop_se), 0.0)
+    lower_u = lower - se_term
+    upper_u = upper + se_term
+    return Bounds(
+        lower,
+        upper,
+        upper - lower,
+        n_rej,
+        lower_u,
+        upper_u,
+        upper_u - lower_u,
+    )
 
 
 def coverage(estimate: Estimate, truth: float) -> float:

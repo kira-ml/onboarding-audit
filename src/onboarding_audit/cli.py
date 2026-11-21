@@ -114,6 +114,31 @@ def cmd_sensitivity(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_demo(args: argparse.Namespace) -> int:
+    result = run_report(
+        Path("examples/demo_log.csv"),
+        Path("examples/demo_candidate.csv"),
+        args.config,
+        args.out,
+        capacity=0.10,
+    )
+    print(
+        f"Applications: {result.n:,}; P0: {result.p0_n:,}; "
+        f"observed: {result.observed_n:,}"
+    )
+    print(f"Identification: {'passed' if result.identification.passed else 'FAILED'}")
+    if result.identification.passed:
+        print(
+            f"DR: {result.estimates['dr']['value']:.6f}; "
+            f"naive: {result.estimates['naive']['value']:.6f}"
+        )
+    else:
+        for reason in result.identification.reasons:
+            print(f"  - {reason}")
+    print(f"Memo: {result.memo_path}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="onboarding-audit",
@@ -170,6 +195,13 @@ def main(argv: list[str] | None = None) -> int:
     p_sens.add_argument("--out", default=Path("reports"), type=Path)
     p_sens.add_argument("--reps", default=50, type=int)
     p_sens.set_defaults(func=cmd_sensitivity)
+
+    p_demo = sub.add_parser(
+        "demo", help="Run the end-to-end demo on the synthetic log."
+    )
+    p_demo.add_argument("--config", default=Path("configs/pilot.yaml"), type=Path)
+    p_demo.add_argument("--out", default=Path("reports/demo"), type=Path)
+    p_demo.set_defaults(func=cmd_demo)
 
     p_val = sub.add_parser("validate", help="Validate a decision log schema.")
     p_val.add_argument("--log", required=True, type=Path)

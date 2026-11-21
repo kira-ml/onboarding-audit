@@ -1,5 +1,16 @@
 # Examples
 
+## Run the end-to-end demo
+
+```bash
+onboarding-audit demo --out reports/demo
+```
+
+This uses `examples/demo_log.csv` (2,500 rows, no `propensity` column) and
+`examples/demo_candidate.csv`. It exercises the estimated-propensity path, the
+identification gate, the report, and the memo. The known true `P0` value is in
+`examples/demo_truth.json`; this is a usability fixture, not a research result.
+
 ## Validate a decision log
 
 ```bash
@@ -28,8 +39,9 @@ onboarding-audit report \
 ```
 
 This is a 20-row schema/CLI smoke example, not a research result. The estimates
-are volatile at this size; use the pilot benchmark or a real log for inference.
-The generated memo is `reports/sample_report/report.md`.
+are volatile at this size; the identification gate correctly reports **“Not
+identified”** and withholds the point estimates. The generated memo is
+`reports/sample_report/report.md`.
 
 Because the sample log has a `propensity` column, the report uses it as the
 `provided` source. To exercise the covariate model, drop the `propensity` column

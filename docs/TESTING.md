@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **57 passed** on the v0.2.1 tree. The suite uses only synthetic or
+Expected: **60 passed** on the v0.2.1 tree. The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 Optional:
@@ -120,6 +120,11 @@ They protect the implementation, not the external validity of the simulation.
 - Candidate actions outside `P0` and estimated propensities without an audit
   warn without blocking a valid `P0` estimate.
 
+### `tests/test_demo.py`
+
+- The end-to-end demo passes the gate, uses the estimated-propensity path, writes
+  a memo with “Measured,” and DR is closer to the known true `P0` than naive.
+
 ### `tests/test_propensity.py`
 
 - Action-level review and approve estimates, including the audit-aware approve
@@ -159,7 +164,7 @@ They protect the implementation, not the external validity of the simulation.
 | **No real-log test** | The report is tested on a synthetic 2,500-row log | Add a partner log or a public transaction log |
 | **No performance test** | The pilot is ~1.1k s for 700 replications; the report is fast | Add a timing smoke test if the CLI grows |
 | **No test that the memo numbers match the JSON** | The memo is generated from the same objects, but a formatting bug is possible | Add a snapshot test on a small log |
-| **No CI configuration** | The suite is local-only | Add GitHub Actions with Python 3.10–3.12 |
+| **CI is basic** | The workflow runs tests, the demo, and the link check on 3.10–3.12; it does not lint or type-check yet | Add `ruff` and `mypy` |
 
 ## 5. Adding a test
 

@@ -97,6 +97,18 @@ Outputs:
 - `reports/my_policy/report.md` — the audit-ready memo.
 - `reports/my_policy/report.json` — the machine-readable result.
 
+### Quick demo
+
+```bash
+onboarding-audit demo --out reports/demo
+```
+
+The demo uses a 2,500-row synthetic log with **no propensity column**, so it
+exercises the estimated-propensity path and the identification gate. The known
+true `P0` is in `examples/demo_truth.json`. The 20-row `sample_log.csv` is a
+schema smoke example; at that size the gate reports “Not identified” and
+withholds the point estimates.
+
 ## 4. How to read the memo
 
 ### Target population

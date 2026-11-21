@@ -86,6 +86,9 @@ def _empty_row(
         "lower": np.nan,
         "upper": np.nan,
         "width": np.nan,
+        "lower_unconditional": np.nan,
+        "upper_unconditional": np.nan,
+        "width_unconditional": np.nan,
         "n_rejected": n_rejected,
     }
 
@@ -251,13 +254,19 @@ def run_scenario(
                 )
                 rows.append(row)
 
+            v_pop_est = (
+                estimates["dr"]
+                if np.isfinite(estimates["dr"].value)
+                else estimates["ipw_ht"]
+            )
             b = policy_bounds(
                 policy.actions,
                 data.amount,
                 base_costs,
                 in_pop,
                 rejected,
-                v_pop=estimates["ipw_ht"].value,
+                v_pop=v_pop_est.value,
+                v_pop_se=v_pop_est.se,
             )
             row = _empty_row(
                 scenario.id,
@@ -276,6 +285,9 @@ def run_scenario(
                     "lower": b.lower,
                     "upper": b.upper,
                     "width": b.width,
+                    "lower_unconditional": b.lower_unconditional,
+                    "upper_unconditional": b.upper_unconditional,
+                    "width_unconditional": b.width_unconditional,
                 }
             )
             rows.append(row)
@@ -647,6 +659,9 @@ def write_report(payload: dict, path: Path) -> None:
                     "upper",
                     "width",
                     "coverage_full",
+                    "f5_coverage",
+                    "unconditional_coverage",
+                    "width_unconditional",
                     "n_rejected",
                     "true_full",
                 ],
@@ -655,18 +670,32 @@ def write_report(payload: dict, path: Path) -> None:
                     "upper": "{:.6f}",
                     "width": "{:.6f}",
                     "coverage_full": "{:.1%}",
+                    "f5_coverage": "{:.1%}",
+                    "unconditional_coverage": "{:.1%}",
+                    "width_unconditional": "{:.6f}",
                     "true_full": "{:.6f}",
                 },
             )
         )
     L.append("")
     L.append(
+        "F5 passes when `coverage_full >= 90%`. The unconditional interval "
+        "widens the bounds by the `P0` standard error; it is a diagnostic, not "
+        "a confidence interval for the full population."
+    )
+    L.append("")
+    if not b.empty and "incumbent" in set(b["policy"]):
+        inc_cov = float(b.loc[b["policy"] == "incumbent", "coverage_full"].mean())
+        inc_text = f"{inc_cov:.0%}"
+    else:
+        inc_text = "n/a"
+    L.append(
         "These are **partial-identification intervals conditional on the P0 "
         "estimate**, not confidence intervals. Coverage of the true "
         "full-population value is a diagnostic: a narrow interval on a noisy "
-        "P0 estimate can miss. The incumbent's narrow interval covers the true "
-        "full value in only about one-third of replications in the pilot. Do "
-        "not interpret the bounds as 95% coverage."
+        f"P0 estimate can miss. The incumbent's narrow interval covers the true "
+        f"full value in {inc_text} of replications. Do not interpret the bounds "
+        "as 95% coverage."
     )
     L.append("")
     L.append(

@@ -1,0 +1,9 @@
+{
+  "n": 2500,
+  "p0_n": 2499,
+  "candidate_capacity": 0.1,
+  "true_p0": 0.07278677592008961,
+  "true_full": 0.07275766120972157,
+  "true_approved": 0.07292551146368344,
+  "note": "Synthetic demo fixture; not a research result."
+}

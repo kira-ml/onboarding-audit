@@ -16,13 +16,14 @@ src/onboarding_audit/
   policies.py     Cost-sensitive actions, review capacity, realized cost
   observation.py  Observation model, delay resolution, audit, label draws
   propensity.py   Action-level, noisy, and covariate propensity estimation
+  gates.py        Identification gate for the arbitrary-log report
   estimators.py   Naive, IPW-HT, IPW-Hajek, DR, audit-only, bounds
   metrics.py      Bias, RMSE, coverage, ESS, ranking, bounds summaries, verdict
   pilot.py        Scenario runner, pilot report writer, CLI entry point
   sensitivity.py  Propensity/covariate sensitivity runner and report
   report.py       Arbitrary-log validation, evaluation, memo, JSON
   schema.py       Decision-log schema validation
-  cli.py          `pilot`, `report`, `sensitivity`, `validate`
+  cli.py          `pilot`, `report`, `sensitivity`, `validate`, `demo`
 ```
 
 The package is intentionally small and flat. There is no service, database, or
@@ -274,6 +275,7 @@ The policy's decision cost may differ from the evaluation cost through
 | `test_schema.py` | Required fields, action/flag consistency, invalid logs |
 | `test_report.py` | Known-truth report, missing propensity, no audit, missing IDs, covariate model |
 | `test_gates.py` | Positivity, overlap/ESS, sample size, cost support, candidate outside P0 |
+| `test_demo.py` | End-to-end demo: gate passes, memo “Measured,” DR closer than naive |
 | `test_propensity.py` | Action-level estimate, noise, covariate recovery, reject zeros |
 | `test_sensitivity.py` | Markdown rendering from the committed JSON; no invented numbers |
 | `test_config.py` | Scenario parsing and covariate fields |

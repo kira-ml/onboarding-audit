@@ -17,9 +17,9 @@
 | Bounds F5 (E2) | **Not started** | Record F5; compute unconditional interval | None |
 | Report gate (E3) | **Done** | Demo log + CI next | None |
 | Reproducibility (E4) | **Not started** | Add `scripts/prepare_baf.py`; hash scores | Public BAF data |
-| Adapter/demo (E5) | **Not started** | Add no-propensity demo log; time the run | None |
+| Adapter/demo (E5) | **Done** | Demo log + `demo` command; no-propensity path | None |
 | Review package | **Not started** | Model card, validation report, pilot protocol, business case | None |
-| CI/tests | **Not started** | GitHub Actions; 50+ tests | None |
+| CI/tests | **Local done** | 60 tests pass; workflow added; first GitHub run pending | None |
 | External review | **Not started** | Reviewer packet; 10-person shortlist | Calendar |
 | Release | **Not started** | v1.0.0 tag | Prior phases |
 
@@ -37,11 +37,11 @@
 ## 3. Next actions (top five)
 
 1. Record F5 in `pilot.json`/`pilot.md`; compute the unconditional interval.
-2. Add `examples/demo_log.csv` (no propensity) and the one-command demo; wire CI.
-3. Create `docs/VALIDATION_REPORT.md`, `docs/MODEL_CARD.md`,
+2. Create `docs/VALIDATION_REPORT.md`, `docs/MODEL_CARD.md`,
    `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`.
-4. Write the V1 validation report's observation-sweep and gate sections.
-5. Add the F5 and gate results to `docs/CLAIMS.md`.
+3. Write the V1 validation report's observation-sweep and gate sections.
+4. Add the F5 and gate results to `docs/CLAIMS.md`.
+5. Add `prepare_baf.py` and the score provenance, or narrow the Level 1 claim.
 
 ## 4. Blockers
 

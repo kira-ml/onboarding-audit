@@ -53,7 +53,7 @@ no unresolved critical finding is left untriaged.
 **Tasks:**
 - [x] Add `src/onboarding_audit/gates.py` with `IdentificationReport`.
 - [x] Integrate the gate into `report.py`; remove the hardcoded "Measured."
-- [ ] Add `examples/demo_log.csv` (no propensity, known truth).
+- [x] Add `examples/demo_log.csv` (no propensity, known truth).
 - [x] Add `test_gates.py` and the adversarial-log tests.
 - [x] Fix the 20-row demo so it no longer prints "Measured."
 - [ ] Record F5 in `pilot.json`/`pilot.md`; use DR for both pilot and report
@@ -85,8 +85,8 @@ an unidentified log; F5 recorded; `pytest` passes.
       Level 1 claim.
 - [ ] Add `docs/MODEL_CARD.md`, `docs/VALIDATION_REPORT.md`,
       `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`.
-- [ ] Add `docs/PRIVACY.md`, `docs/MAINTAINERS.md`, `docs/SUPPORT.md`.
-- [ ] Add `.github/workflows/ci.yml` with tests, lint, smoke, link check.
+- [x] Add `docs/PRIVACY.md`, `docs/MAINTAINERS.md`, `docs/SUPPORT.md`.
+- [x] Add `.github/workflows/ci.yml` with tests, lint, smoke, link check.
 - [ ] Add `ruff` to dev dependencies and fix lint.
 - [ ] Add the one-command demo.
 - [ ] Update the README and `docs/README.md`.

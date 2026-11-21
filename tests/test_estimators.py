@@ -65,6 +65,29 @@ def test_bounds_contain_true_full_value():
     assert b.lower <= true_full <= b.upper
 
 
+def test_unconditional_bounds_widen_with_standard_error():
+    n = 100
+    amount = np.full(n, 100.0)
+    actions = np.array(["approve"] * n, dtype=object)
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    in_pop = np.zeros(n, dtype=bool)
+    in_pop[:80] = True
+    rejected = ~in_pop
+    base = policy_bounds(actions, amount, costs, in_pop, rejected, 0.10)
+    widened = policy_bounds(
+        actions, amount, costs, in_pop, rejected, 0.10, v_pop_se=0.01
+    )
+    assert widened.lower_unconditional < base.lower
+    assert widened.upper_unconditional > base.upper
+    assert widened.width_unconditional > base.width
+    assert widened.lower_unconditional == pytest.approx(base.lower - 1.96 * 0.8 * 0.01)
+
+
 def test_audit_only_full_audit_is_unbiased():
     n = 1000
     rng = np.random.default_rng(0)

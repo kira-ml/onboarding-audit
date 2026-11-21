@@ -33,3 +33,7 @@ reports/*.parquet
 reports/obs_sweep_smoke/
 reports/obs_sweep/pilot.md
 reports/obs_sweep/pilot_rows.parquet
+reports/f5_smoke/
+reports/demo/
+reports/demo_ci/
+reports/demo_cli/

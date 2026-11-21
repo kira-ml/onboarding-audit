@@ -123,6 +123,14 @@ def bounds_summary(rows: pd.DataFrame) -> pd.DataFrame:
         true_full = part["true_full"].to_numpy(dtype=float)
         lower = part["lower"].to_numpy(dtype=float)
         upper = part["upper"].to_numpy(dtype=float)
+        if "lower_unconditional" in part.columns:
+            lower_u = part["lower_unconditional"].to_numpy(dtype=float)
+            upper_u = part["upper_unconditional"].to_numpy(dtype=float)
+        else:
+            lower_u = np.full(len(part), np.nan)
+            upper_u = np.full(len(part), np.nan)
+        coverage_full = float(np.nanmean((lower <= true_full) & (true_full <= upper)))
+        coverage_u = float(np.nanmean((lower_u <= true_full) & (true_full <= upper_u)))
         out.append(
             {
                 "scenario": scenario,
@@ -131,9 +139,13 @@ def bounds_summary(rows: pd.DataFrame) -> pd.DataFrame:
                 "lower": float(np.nanmean(lower)),
                 "upper": float(np.nanmean(upper)),
                 "width": float(np.nanmean(upper - lower)),
-                "coverage_full": float(
-                    np.nanmean((lower <= true_full) & (true_full <= upper))
-                ),
+                "coverage_full": coverage_full,
+                "f5_pass": bool(coverage_full >= 0.90),
+                "f5_coverage": coverage_full,
+                "lower_unconditional": float(np.nanmean(lower_u)),
+                "upper_unconditional": float(np.nanmean(upper_u)),
+                "width_unconditional": float(np.nanmean(upper_u - lower_u)),
+                "unconditional_coverage": coverage_u,
                 "true_full": float(np.nanmean(true_full)),
                 "n_rejected": int(part["n_rejected"].mean()),
             }

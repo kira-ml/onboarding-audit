@@ -135,7 +135,8 @@ V1 is done when:
 - [x] The report gate refuses or flags every adversarial unidentified log.
 - [ ] The benchmark pipeline reproduces the scores within tolerance, or the
       Level 1 claim is narrowed.
-- [ ] `pytest` passes with at least 50 tests; CI is green.
+- [x] `pytest` passes with 60 tests.
+- [ ] CI is green on GitHub (workflow added; first run pending).
 - [ ] The model card, validation report, pilot protocol, and business case are
       complete.
 - [ ] Two external readers have reviewed the package.

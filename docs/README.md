@@ -56,6 +56,7 @@ disagree, the precedence in §5 applies.
 | [`SCHEMA.md`](SCHEMA.md) | The decision-log schema and validation rules |
 | [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`REPORT_USAGE.md`](REPORT_USAGE.md) | How to run and read the arbitrary-log report |
+| [`PRIVACY.md`](PRIVACY.md) | Data handling, PII, sandbox, and incident rules |
 | [`MEMO_TEMPLATE.md`](MEMO_TEMPLATE.md) | The audit-ready policy-change memo template |
 
 ### 2.4 Engineering
@@ -66,6 +67,8 @@ disagree, the precedence in §5 applies.
 | [`TESTING.md`](TESTING.md) | Test strategy, coverage, gaps |
 | [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) | Environment, data, commands, seeds, outputs, runtime |
 | [`EVALS.md`](EVALS.md) | After-action reviews and process rule changes |
+| [`MAINTAINERS.md`](MAINTAINERS.md) | Owner, responsibilities, release process, bus factor |
+| [`SUPPORT.md`](SUPPORT.md) | How to ask for help and what not to post |
 | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) | Research and code contribution rules |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | Version history |
 | [`../pyproject.toml`](../pyproject.toml) | Package metadata and dependencies |
