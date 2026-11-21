@@ -19,7 +19,7 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **49 tests pass.** The documentation is
+> **Status:** `v0.2.1` research pilot. **57 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
@@ -86,7 +86,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 49 tests · not production |
+| **Status** | v0.2.1 research pilot · 57 tests · not production |
 
 ## Headline results
 
@@ -204,7 +204,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 47 tests, including negative controls
+├── tests/                 # 57 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -256,7 +256,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 49 tests, including negative controls |
+| Test suite | **Implemented** | 57 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |

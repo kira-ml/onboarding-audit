@@ -15,7 +15,7 @@
 | Sweep config + analyzer | **Done** | — | None |
 | Observation sweep (E1) | **Done** | Claim updated; start E2 F5 | None |
 | Bounds F5 (E2) | **Not started** | Record F5; compute unconditional interval | None |
-| Report gate (E3) | **Not started** | Add `gates.py`; integrate into `report.py` | None |
+| Report gate (E3) | **Done** | Demo log + CI next | None |
 | Reproducibility (E4) | **Not started** | Add `scripts/prepare_baf.py`; hash scores | Public BAF data |
 | Adapter/demo (E5) | **Not started** | Add no-propensity demo log; time the run | None |
 | Review package | **Not started** | Model card, validation report, pilot protocol, business case | None |
@@ -37,12 +37,11 @@
 ## 3. Next actions (top five)
 
 1. Record F5 in `pilot.json`/`pilot.md`; compute the unconditional interval.
-2. Add `gates.py` with `IdentificationReport`; add the five adversarial-log
-   tests.
+2. Add `examples/demo_log.csv` (no propensity) and the one-command demo; wire CI.
 3. Create `docs/VALIDATION_REPORT.md`, `docs/MODEL_CARD.md`,
    `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`.
-4. Add `examples/demo_log.csv` (no propensity) and the one-command demo; wire CI.
-5. Write the V1 validation report's observation-sweep section.
+4. Write the V1 validation report's observation-sweep and gate sections.
+5. Add the F5 and gate results to `docs/CLAIMS.md`.
 
 ## 4. Blockers
 
@@ -91,6 +90,7 @@
 | 2026-11-21 | Phase 0 | V1 docs created; red-team findings accepted for triage |
 | 2026-11-21 | Phase 0 | Scenario overrides, 12-cell sweep config, and analyzer added; 49 tests pass; full sweep running |
 | 2026-11-21 | Phase 0 | E1 complete: naive bias 7.8–538.5%, >5% in 12/12; DR max 1.89%; DR P(best) 64% at low `e`; V1 claim updated |
+| 2026-11-21 | Phase 1 | Identification gate implemented: positivity, sample, ESS, cost support; 20-row demo withholds estimates; 57 tests pass |
 | | | |
 
 ## 9. Related documents

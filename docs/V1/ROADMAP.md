@@ -51,11 +51,11 @@ no unresolved critical finding is left untriaged.
 **Goal:** Make the product safe and the bounds honest.
 
 **Tasks:**
-- [ ] Add `src/onboarding_audit/gates.py` with `IdentificationReport`.
-- [ ] Integrate the gate into `report.py`; remove the hardcoded "Measured."
+- [x] Add `src/onboarding_audit/gates.py` with `IdentificationReport`.
+- [x] Integrate the gate into `report.py`; remove the hardcoded "Measured."
 - [ ] Add `examples/demo_log.csv` (no propensity, known truth).
-- [ ] Add `test_gates.py` and the adversarial-log tests.
-- [ ] Fix the 20-row demo so it no longer prints "Measured."
+- [x] Add `test_gates.py` and the adversarial-log tests.
+- [x] Fix the 20-row demo so it no longer prints "Measured."
 - [ ] Record F5 in `pilot.json`/`pilot.md`; use DR for both pilot and report
       bounds (or record both).
 - [ ] Add `test_pilot.py` for F5 and bounds.

@@ -55,7 +55,7 @@ these facts.
 
 The current v0.2.1 is a strong **Level 1 reproducible research artifact**:
 
-- 47 tests, a schema, an audit design, a report/memo, 22 configured scenarios,
+- 57 tests, a schema, an audit design, a report/memo, 22 configured scenarios,
   and 11 sensitivity scenarios.
 - A public repository at `https://github.com/kira-ml/onboarding-audit`.
 - A documentation set covering methods, results, claims, threats, decisions,

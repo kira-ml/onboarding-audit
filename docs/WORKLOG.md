@@ -282,12 +282,14 @@ package, not to add methods.
 - DR with known propensities max **1.89%**; coverage **84.5–96.0%**.
 - DR P(select true best) **64%** at `e_approve=0.01`, **96–100%** at `0.50`.
 - The premise survives; the universal magnitude does not. V1 claim updated.
+- Identification gate implemented (`gates.py`): positivity, sample size, ESS,
+  max weight, and cost support; the 20-row demo now withholds estimates. 57 tests
+  pass.
 
 **Next:**
 
-1. Analyze the sweep; update the V1 claim to its measured conditions.
-2. Record F5; add the report identification gate.
-3. Build the review package (model card, validation report, pilot protocol,
+1. Record F5; add the unconditional interval.
+2. Build the review package (model card, validation report, pilot protocol,
    business case).
 
 **Health:** V1 is a credibility release; the observation sweep is the first

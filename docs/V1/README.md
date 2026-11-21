@@ -132,7 +132,7 @@ V1 is done when:
       conditions.
 - [ ] F5 is recorded as pass/fail; the bounds are reported without a coverage
       claim if it fails.
-- [ ] The report gate refuses or flags every adversarial unidentified log.
+- [x] The report gate refuses or flags every adversarial unidentified log.
 - [ ] The benchmark pipeline reproduces the scores within tolerance, or the
       Level 1 claim is narrowed.
 - [ ] `pytest` passes with at least 50 tests; CI is green.

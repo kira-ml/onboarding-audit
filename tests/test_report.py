@@ -102,8 +102,11 @@ def test_report_runs_and_dr_beats_naive(tmp_path):
     )
     assert result.propensity.source == "provided"
     assert result.propensity.positivity_ok
+    assert result.identification.passed
     assert Path(result.memo_path).exists()
     assert Path(result.report_path).exists()
+    memo = Path(result.memo_path).read_text(encoding="utf-8")
+    assert "Measured" in memo
 
     truth = _true_p0(df, candidate, y, amount, capacity=0.10)
     naive_err = abs(result.estimates["naive"]["value"] - truth)
@@ -128,6 +131,7 @@ def test_report_estimates_propensity_when_missing(tmp_path):
     )
     assert result.propensity.source == "estimated"
     assert result.propensity.positivity_ok
+    assert result.identification.passed
     assert 0 < result.propensity.e_review <= 1
     assert 0 < result.propensity.e_approve <= 1
 
@@ -171,6 +175,27 @@ def test_report_rejects_invalid_log(tmp_path):
 
     with pytest.raises(ValueError):
         run_report(log_path, cand_path, CONFIG, tmp_path / "out")
+
+
+def test_report_withholds_point_estimate_on_small_log(tmp_path):
+    df, candidate, _, _, _ = _synthetic_log(n=20)
+    log_path = tmp_path / "log.csv"
+    cand_path = tmp_path / "candidate.csv"
+    df.to_csv(log_path, index=False)
+    candidate.to_csv(cand_path, index=False)
+
+    result = run_report(
+        log_path,
+        cand_path,
+        CONFIG,
+        tmp_path / "out",
+        capacity=0.10,
+    )
+    assert not result.identification.passed
+    memo = Path(result.memo_path).read_text(encoding="utf-8")
+    assert "Not identified" in memo
+    assert "Point estimates are withheld" in memo
+    assert "| `P0` policy value is estimated | Measured |" not in memo
 
 
 def test_covariate_propensity_model_varies_within_action():
@@ -226,6 +251,7 @@ def test_report_covariate_propensity_model_runs(tmp_path):
     )
     assert result.propensity.source == "estimated_covariate"
     assert result.propensity.positivity_ok
+    assert result.identification.passed
     assert Path(result.memo_path).exists()
     memo = Path(result.memo_path).read_text(encoding="utf-8")
     assert "Propensity model" in memo

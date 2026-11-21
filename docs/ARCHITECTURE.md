@@ -273,6 +273,7 @@ The policy's decision cost may differ from the evaluation cost through
 | `test_no_leakage.py` | Permutation/no-leakage control |
 | `test_schema.py` | Required fields, action/flag consistency, invalid logs |
 | `test_report.py` | Known-truth report, missing propensity, no audit, missing IDs, covariate model |
+| `test_gates.py` | Positivity, overlap/ESS, sample size, cost support, candidate outside P0 |
 | `test_propensity.py` | Action-level estimate, noise, covariate recovery, reject zeros |
 | `test_sensitivity.py` | Markdown rendering from the committed JSON; no invented numbers |
 | `test_config.py` | Scenario parsing and covariate fields |

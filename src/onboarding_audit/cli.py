@@ -89,14 +89,20 @@ def cmd_report(args: argparse.Namespace) -> int:
     print(
         f"Propensity source: {result.propensity.source}; positivity: {result.propensity.positivity_ok}"
     )
-    print("\nEstimates:")
-    for name, est in result.estimates.items():
+    print(f"Identification: {'passed' if result.identification.passed else 'FAILED'}")
+    if not result.identification.passed:
+        for reason in result.identification.reasons:
+            print(f"  - {reason}")
+        print("Point estimates withheld; see the memo for diagnostics.")
+    else:
+        print("\nEstimates:")
+        for name, est in result.estimates.items():
+            print(
+                f"  {name:<12} {est['value']:.6f}  target={est['target']}  ESS={est['ess']:.0f}"
+            )
         print(
-            f"  {name:<12} {est['value']:.6f}  target={est['target']}  ESS={est['ess']:.0f}"
+            f"\nBounds: [{result.bounds['lower']:.6f}, {result.bounds['upper']:.6f}] width={result.bounds['width']:.6f}"
         )
-    print(
-        f"\nBounds: [{result.bounds['lower']:.6f}, {result.bounds['upper']:.6f}] width={result.bounds['width']:.6f}"
-    )
     print(f"Memo: {result.memo_path}")
     print(f"JSON: {result.report_path}")
     return 0

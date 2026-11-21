@@ -106,6 +106,23 @@ applications the incumbent policy approved or reviewed. Logging-rejected
 applications have no outcome and are outside the primary estimate. They enter
 only the full-population bounds.
 
+### Identification gate
+
+Before printing a point estimate, the report checks:
+
+- positivity on `P0`;
+- at least 100 observed labels and at least 30 per non-rejected action;
+- ESS at least 100 and max weight at most 100;
+- non-negative candidate costs.
+
+If a check fails, the memo says **"Not identified"**, withholds the point
+estimates, and lists the reasons. The JSON keeps the diagnostic estimates, but
+they are not a policy value. The CLI also prints the gate status and withholds
+the estimates.
+
+Warnings (not refusals) cover candidate actions outside `P0`, ESS below 500,
+max weight above 50, and action-level propensities estimated without an audit.
+
 ### Propensity source
 
 - `provided`: the log has a `propensity` column for the observed rows. Use it

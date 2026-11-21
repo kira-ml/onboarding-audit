@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **49 passed** on the v0.2.1 tree. The suite uses only synthetic or
+Expected: **57 passed** on the v0.2.1 tree. The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 Optional:
@@ -112,6 +112,13 @@ They protect the implementation, not the external validity of the simulation.
 | `test_report_rejects_invalid_log` | The report refuses an invalid log |
 | `test_covariate_propensity_model_varies_within_action` | The covariate model recovers a known within-action gradient |
 | `test_report_covariate_propensity_model_runs` | The covariate report path writes the memo and exposes the model |
+
+### `tests/test_gates.py`
+
+- A valid log passes the identification gate.
+- Positivity, negative cost, small sample, and low ESS fail with reasons.
+- Candidate actions outside `P0` and estimated propensities without an audit
+  warn without blocking a valid `P0` estimate.
 
 ### `tests/test_propensity.py`
 

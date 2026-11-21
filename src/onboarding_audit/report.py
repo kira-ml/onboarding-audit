@@ -26,6 +26,7 @@ from .estimators import (
     naive,
     policy_bounds,
 )
+from .gates import IdentificationReport, check_identification
 from .policies import apply_capacity, choose_actions, realized_cost
 from .propensity import fit_covariate_propensity
 from .schema import validate_log
@@ -56,6 +57,7 @@ class ReportResult:
     action_counts: dict
     candidate_action_counts: dict
     propensity: PropensityEstimate
+    identification: IdentificationReport
     estimates: dict
     diagnostics: dict
     bounds: dict
@@ -266,7 +268,7 @@ def evaluate_report(
     *,
     feature_cols: list[str] | tuple[str, ...],
     seed: int | None = None,
-) -> tuple[dict, dict, dict, dict]:
+) -> tuple[dict, dict, dict, dict, IdentificationReport]:
     """Return estimates, diagnostics, bounds, audit recommendation."""
     y = df["label"].fillna(0).astype(int).to_numpy()
     observed = df["label"].notna().to_numpy()
@@ -275,8 +277,23 @@ def evaluate_report(
     in_pop = actions != "reject"
     rejected = ~in_pop
     e = propensity.e
+    audit = (
+        df["audit_flag"].fillna(0).astype(bool).to_numpy()
+        if "audit_flag" in df.columns
+        else np.zeros(len(df), dtype=bool)
+    )
 
     cost = realized_cost(candidate_actions, y, amount, config.costs)
+    identification = check_identification(
+        actions=actions,
+        candidate_actions=candidate_actions,
+        observed=observed,
+        propensity=e,
+        cost=cost,
+        positivity_ok=propensity.positivity_ok,
+        propensity_source=propensity.source,
+        has_audit=bool(audit.any()),
+    )
     estimates: dict[str, dict] = {}
 
     def add(name: str, est: Estimate, target: str) -> None:
@@ -413,7 +430,7 @@ def evaluate_report(
     audit_rec = _audit_recommendation(
         df, cost, observed, audit, config.costs, estimates
     )
-    return estimates, diagnostics, bounds, audit_rec
+    return estimates, diagnostics, bounds, audit_rec, identification
 
 
 def _audit_recommendation(
@@ -511,29 +528,55 @@ def write_memo(
     L.append("")
     L.append("## 2. Estimate")
     L.append("")
-    L.append("| Estimator | Target | Value | SE | 95% CI | n used | ESS | Max weight |")
-    L.append("|---|---|---:|---:|---|---:|---:|---:|")
-    for name, est in result.estimates.items():
-        value = est["value"]
-        se = est["se"]
-        if (
-            isinstance(value, float)
-            and np.isfinite(value)
-            and isinstance(se, float)
-            and np.isfinite(se)
-        ):
-            ci = f"[{value - 1.96 * se:.6f}, {value + 1.96 * se:.6f}]"
-        else:
-            ci = "n/a"
+    if not result.identification.passed:
         L.append(
-            f"| `{name}` | {est['target']} | {_fmt(value)} | {_fmt(se)} | {ci} | "
-            f"{est['n_used']:,} | {_fmt(est['ess'], 0)} | {_fmt(est['max_weight'], 2)} |"
+            "**Not identified.** The log does not support a point estimate for "
+            "the `P0` population."
         )
-    L.append("")
-    L.append(
-        "**Target note:** `P0` is the logging non-rejected population; `approved` is "
-        "the audit-only target; `full` is the reject-margin bounds target."
-    )
+        L.append("")
+        for reason in result.identification.reasons:
+            L.append(f"- {reason}")
+        if result.identification.warnings:
+            L.append("")
+            L.append("**Warnings:**")
+            for warning in result.identification.warnings:
+                L.append(f"- {warning}")
+        L.append("")
+        L.append(
+            "Point estimates are withheld from this memo. The JSON retains the "
+            "diagnostic estimates, but they are not a policy value."
+        )
+    else:
+        L.append(
+            "| Estimator | Target | Value | SE | 95% CI | n used | ESS | Max weight |"
+        )
+        L.append("|---|---|---:|---:|---|---:|---:|---:|")
+        for name, est in result.estimates.items():
+            value = est["value"]
+            se = est["se"]
+            if (
+                isinstance(value, float)
+                and np.isfinite(value)
+                and isinstance(se, float)
+                and np.isfinite(se)
+            ):
+                ci = f"[{value - 1.96 * se:.6f}, {value + 1.96 * se:.6f}]"
+            else:
+                ci = "n/a"
+            L.append(
+                f"| `{name}` | {est['target']} | {_fmt(value)} | {_fmt(se)} | {ci} | "
+                f"{est['n_used']:,} | {_fmt(est['ess'], 0)} | {_fmt(est['max_weight'], 2)} |"
+            )
+        L.append("")
+        L.append(
+            "**Target note:** `P0` is the logging non-rejected population; `approved` is "
+            "the audit-only target; `full` is the reject-margin bounds target."
+        )
+        if result.identification.warnings:
+            L.append("")
+            L.append("**Warnings:**")
+            for warning in result.identification.warnings:
+                L.append(f"- {warning}")
     L.append("")
     L.append("## 3. Diagnostics")
     L.append("")
@@ -602,6 +645,11 @@ def write_memo(
     L.append(f"- **Width:** {_fmt(b['width'])}")
     L.append(f"- **Logging-rejected rows:** {b['n_rejected']:,}")
     L.append("")
+    if not result.identification.passed:
+        L.append(
+            "**Because `P0` is not identified, these bounds are diagnostic only.**"
+        )
+        L.append("")
     L.append(
         "These are **partial-identification intervals conditional on the `P0` "
         "estimate**, not confidence intervals. Do not interpret them as 95% "
@@ -627,19 +675,28 @@ def write_memo(
                 f"{t['additional_labels']:,} additional; "
                 f"additional review cost {t['additional_review_cost']:.2f} cost units."
             )
-    if "policy_value_target_5pct" in a:
+    if "policy_value_target_5pct" in a and result.identification.passed:
         t = a["policy_value_target_5pct"]
         L.append(
             f"- **Policy value, 5% relative SE:** {t['labels_needed']:,} labels; "
             f"{t['additional_labels']:,} additional; "
             f"additional review cost {t['additional_review_cost']:.2f} cost units."
         )
+    elif not result.identification.passed:
+        L.append(
+            "- **Policy-value precision:** not reported because `P0` is not identified."
+        )
     L.append("")
     L.append("## 6. Claim ledger")
     L.append("")
     L.append("| Claim | Status | Evidence |")
     L.append("|---|---|---|")
-    L.append(f"| `P0` policy value is estimated | Measured | `{result.report_path}` |")
+    if result.identification.passed:
+        L.append(
+            f"| `P0` policy value is estimated | Measured | `{result.report_path}` |"
+        )
+    else:
+        L.append("| `P0` policy value | **Not identified** | see §2 reasons |")
     L.append(
         f"| Propensities are `{d['propensity_source']}` | Assumed | log's audit/observation design |"
     )
@@ -724,7 +781,7 @@ def run_report(
         seed=seed,
     )
     candidate_actions = _candidate_actions(df, candidate, config.costs, capacity)
-    estimates, diagnostics, bounds, audit = evaluate_report(
+    estimates, diagnostics, bounds, audit, identification = evaluate_report(
         df,
         candidate_actions,
         propensity,
@@ -742,6 +799,7 @@ def run_report(
         action_counts=diagnostics["action_counts"],
         candidate_action_counts=diagnostics["candidate_action_counts"],
         propensity=propensity,
+        identification=identification,
         estimates=estimates,
         diagnostics=diagnostics,
         bounds=bounds,
@@ -757,6 +815,7 @@ def run_report(
             "observed_n": result.observed_n,
             "action_counts": result.action_counts,
             "candidate_action_counts": result.candidate_action_counts,
+            "identification": result.identification.to_dict(),
             "estimates": estimates,
             "diagnostics": diagnostics,
             "bounds": bounds,
