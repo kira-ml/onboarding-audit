@@ -39,3 +39,4 @@ reports/demo_ci/
 reports/demo_cli/
 reports/decision_check*/
 reports/case_study/
+reports/*_check/
