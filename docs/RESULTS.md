@@ -316,7 +316,26 @@ It demonstrates the mechanism; it does not prove robustness in every setting.
 Artifact: `reports/double_robustness.json`; script:
 `scripts/double_robustness.py`.
 
-## 11. Verdicts
+## 11. Temporal stability (month 5 vs month 6)
+
+The main scenario re-run separately on each test month, 100 replications, the
+same observation mechanism and cost matrix.
+
+| Month | n | Fraud rate | Naive max bias | DR max bias | DR coverage | Naive P(best) | DR P(best) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 5 | 119,323 | 1.18% | **230.37%** | **0.89%** | 94.0% | **0%** | 65% |
+| 6 | 108,168 | 1.34% | **254.99%** | **0.43%** | 91.0% | **0%** | 63% |
+
+**Read:** the sign and the ranking conclusion hold in both months. The naive
+bias is 230–255%; DR is 0.43–0.89%; the naive rule never selects the true best
+policy in either month, while DR does 63–65% of the time. The level is stable;
+the exact percentage is not. This is a within-dataset stability check, not
+external validity.
+
+Artifact: `reports/temporal_stability.json`; script:
+`scripts/temporal_stability.py`.
+
+## 12. Verdicts
 
 | Hypothesis | Verdict | Key number |
 |---|---|---|
@@ -331,9 +350,9 @@ Artifact: `reports/double_robustness.json`; script:
 S1 is post-hoc, not pre-registered. It is a sensitivity result, not a new
 headline. The pre-registered H1–H6 remain the primary verdicts.
 
-## 12. Negative controls
+## 13. Negative controls
 
-`pytest -q`: **87 passed**, including:
+`pytest -q`: **92 passed**, including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);
@@ -348,7 +367,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 The tests protect the implementation, not the external validity of the
 simulation.
 
-## 13. What the results do not show
+## 14. What the results do not show
 
 - No production or Philippine bank estimate.
 - No causal deployment effect.
@@ -360,7 +379,7 @@ simulation.
 - No claim that the intervals are calibrated under heavy weights; coverage is
   89–91.5% in the covariate scenarios.
 
-## 14. Related documents
+## 15. Related documents
 
 - Methods: [`METHODS.md`](METHODS.md)
 - Claim ledger: [`CLAIMS.md`](CLAIMS.md)

@@ -780,6 +780,7 @@ def run_pilot(
         month_col=config.month_col,
         outcome_features=config.outcome_features,
         seed=config.seed,
+        months=config.months,
     )
     scenarios = [
         s

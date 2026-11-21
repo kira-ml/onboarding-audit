@@ -133,6 +133,7 @@ public synthetic data**, not a production estimate.
 | DR with estimated action-level propensities | max **1.43%**, coverage **93.5%** | `reports/propensity_sensitivity.json` |
 | DR with a wrong outcome model but correct `e` | **+0.14%** | `reports/double_robustness.json` |
 | DR with a wrong `e` but correct outcome model | **+0.36%** | `reports/double_robustness.json` |
+| Temporal stability, month 5 / month 6 | naive **230% / 255%**; DR **0.89% / 0.43%**; naive P(best) **0% / 0%** | `reports/temporal_stability.json` |
 | Covariate propensity model under covariate-dependent observation | DR **2.48% / 89.5%**; IPW **1.97% / 91.5%** | `reports/propensity_sensitivity.json` |
 
 ### 7.3 Where it fails

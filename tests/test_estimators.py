@@ -240,3 +240,12 @@ def test_compare_policies_prefers_the_cheaper_policy():
     assert comp["p_candidate_better"] > 0.5
     assert comp["decision"] == "prefer candidate"
     assert comp["regret_candidate"] < comp["regret_incumbent"]
+
+
+def test_labels_for_power_known_value():
+    from onboarding_audit.estimators import labels_for_power
+
+    # z = 1.96 + 0.8416 = 2.8016; 1000 * (2.8016 * 0.01 / 0.01)^2 = 7849
+    assert labels_for_power(0.01, 0.01, 1000) == 7849
+    assert labels_for_power(0.0, 0.01, 1000) == 0
+    assert labels_for_power(0.01, 0.0, 1000) == 0

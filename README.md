@@ -5,8 +5,9 @@
 **Audit-ready evaluation of account-opening fraud policies under selective and delayed labels.**
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-87%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-92%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-0.2.1-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-research%20pilot-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
@@ -19,7 +20,7 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **87 tests pass.** The documentation is
+> **Status:** `v0.2.1` research pilot. **92 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
@@ -88,7 +89,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 87 tests · not production |
+| **Status** | v0.2.1 research pilot · 92 tests · not production |
 
 ## Headline results
 
@@ -108,6 +109,7 @@ scenario and 50 for the sweeps and sensitivity studies.
 | Reject-margin bounds | **0.009942** main; **0.203** in `frej_002`; incumbent coverage **34%**; F5 **failed** for the narrow interval (**15/88**), **passed** for the widened interval (**77/88**) | width / coverage of true full value — the narrow interval is **not** a confidence interval |
 | DR ranking at low approve-label rate | **64%** [50–76%] vs naive **0%** | P(select the true best policy), 95% Wilson interval |
 | Case study | naive **+6.3% worse**; true **−12.4% better**; report **P=0.984** | the naive backtest would keep the worse policy |
+| Temporal stability | naive **230% / 255%**; DR **0.89% / 0.43%**; naive P(best) **0% / 0%** | month 5 vs month 6, 100 reps each |
 | Estimated action-level `e` | DR **1.43% / 93.5%**; IPW **2.92% / 92.0%** | max relative bias / mean coverage |
 | Covariate-dependent observation | action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage **89–91.5%** | relative bias; coverage is reported separately |
 
@@ -216,7 +218,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 87 tests, including negative controls
+├── tests/                 # 92 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -268,7 +270,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 87 tests, including negative controls |
+| Test suite | **Implemented** | 92 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |
@@ -310,7 +312,7 @@ onboarding-audit demo --out reports/demo
 python scripts/check_claims.py
 ```
 
-Expected: **87 passed**, the demo memo, and **35/35** claim checks.
+Expected: **92 passed**, the demo memo, and **43/43** claim checks.
 
 ## Documentation
 

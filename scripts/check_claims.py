@@ -258,6 +258,33 @@ def main() -> int:
         )
     )
 
+    # Temporal stability.
+    temporal = _load(ROOT / "reports" / "temporal_stability.json")["results"]
+    for month in ("month_5", "month_6"):
+        r = temporal[month]
+        checks.append(
+            (
+                f"{month} naive bias > 200%",
+                r["naive_max_abs_rel_bias"],
+                2.3037 if month == "month_5" else 2.5499,
+            )
+        )
+        checks.append(
+            (
+                f"{month} DR bias < 1%",
+                r["dr_max_abs_rel_bias"],
+                0.0089 if month == "month_5" else 0.0043,
+            )
+        )
+        checks.append((f"{month} naive P(best)", float(r["naive_p_best"]), 0.0))
+        checks.append(
+            (
+                f"{month} DR P(best) > 60%",
+                float(r["dr_p_best"]),
+                0.65 if month == "month_5" else 0.63,
+            )
+        )
+
     # Case study.
     case = _load(ROOT / "examples" / "case_truth.json")
     checks.append(

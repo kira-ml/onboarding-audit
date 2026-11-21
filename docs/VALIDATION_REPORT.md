@@ -29,7 +29,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **87 passed** |
+| Test result | **92 passed** |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12 |
 
@@ -49,6 +49,7 @@ Actions run is the remaining CI evidence.
 | End-to-end demo | `tests/test_demo.py` | pass |
 | Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (32/32) |
 | Double robustness | `scripts/double_robustness.py`, `tests/test_double_robustness.py` | pass |
+| Temporal stability | `scripts/temporal_stability.py`, `reports/temporal_stability.json` | pass (both months) |
 | Bounds widen with the `P0` standard error | `tests/test_estimators.py` | pass |
 | F5 fields in the summary | `tests/test_metrics.py` | pass |
 
@@ -178,7 +179,7 @@ hash and the per-score column hashes, is in
 | Model card | **pass** |
 | Pilot protocol | **pass** |
 | Business case | **pass** |
-| CI green on GitHub | pending |
+| CI green on GitHub | **pass** (run [44918141562](https://github.com/kira-ml/onboarding-audit/actions/runs/44918141562)) |
 
 ## 10. Reviewer checklist
 

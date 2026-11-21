@@ -215,6 +215,25 @@ def _dr_parts(
     return value, psi, w
 
 
+def labels_for_power(
+    se: float,
+    delta: float,
+    n_observed: int,
+    *,
+    power: float = 0.80,
+    alpha: float = 0.05,
+) -> int:
+    """Labels needed to detect `delta` at the given power.
+
+    Approximate: assumes the comparison standard error scales as
+    1/sqrt(n_labels) and that the label noise dominates. Planning only.
+    """
+    if not np.isfinite(se) or se <= 0 or delta <= 0 or n_observed <= 0:
+        return 0
+    z = float(norm.ppf(1 - alpha / 2) + norm.ppf(power))
+    return int(np.ceil(n_observed * (z * se / delta) ** 2))
+
+
 def compare_policies(
     cost_candidate: np.ndarray,
     actions_candidate: np.ndarray,
@@ -302,6 +321,16 @@ def compare_policies(
             "decision": decision,
         }
     )
+    power_targets = {}
+    for rel in (0.05, 0.10):
+        delta = rel * abs(v_i)
+        needed = labels_for_power(se, delta, int(observed.sum()))
+        power_targets[f"delta_{int(rel * 100)}pct"] = {
+            "delta": delta,
+            "labels_needed": needed,
+            "additional_labels": max(0, needed - int(observed.sum())),
+        }
+    out["power"] = power_targets
     return out
 
 

@@ -97,6 +97,7 @@ class PilotConfig:
     amount_col: str
     month_col: str
     outcome_features: tuple[str, ...]
+    months: tuple[int, ...]
     costs: Costs
     observation: Observation
     outcome_model: OutcomeModel
@@ -254,6 +255,7 @@ def load_config(path: Path | str) -> PilotConfig:
         amount_col=str(data.get("amount_col", "amount_proxy")),
         month_col=str(data.get("month_col", "month")),
         outcome_features=tuple(data["outcome_features"]),
+        months=tuple(int(m) for m in data.get("months", [5, 6])),
         costs=costs,
         observation=observation,
         outcome_model=outcome,

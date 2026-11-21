@@ -23,7 +23,8 @@
 | Audit-only resolution | **Done** | Post-stratified by follow-up; complete-case fallback | None |
 | Decision layer | **Done** | P(candidate cheaper), expected regret, recommendation | None |
 | Case study | **Done** | 20k-row reproducible case; naive flips the ranking; report prefers the candidate | None |
-| CI/tests | **Local done** | 87 tests pass; workflow added; first GitHub run pending | None |
+| Temporal stability | **Done** | Month 5 vs 6: naive 230%/255%, DR 0.89%/0.43%, naive P(best) 0%/0% | None |
+| CI/tests | **Done** | 92 tests pass; GitHub Actions green | None |
 | External review | **Not started** | Reviewer packet; 10-person shortlist | Calendar |
 | Release | **Not started** | v1.0.0 tag | Prior phases |
 
@@ -93,8 +94,8 @@
 | 2026-11-21 | Phase 0 | Scenario overrides, 12-cell sweep config, and analyzer added; 49 tests pass; full sweep running |
 | 2026-11-21 | Phase 0 | E1 complete: naive bias 7.8–538.5%, >5% in 12/12; DR max 1.89%; DR P(best) 64% at low `e`; V1 claim updated |
 | 2026-11-21 | Phase 1 | Identification gate implemented: positivity, sample, ESS, cost support; 20-row demo withholds estimates; 57 tests pass |
-| 2026-11-21 | Phase 1 | F5 failed: 15/88 cells at ≥90%; coverage claim removed. Benchmark rebuild verified byte-for-byte (SHA-256 match). Demo, CI, model card, validation report, pilot protocol, business case added; 87 tests pass |
-| 2026-11-21 | Phase 1 | Red-team corrections: zero-propensity crash, `e_approve` resolution bug, HT variance, memo outside-`P0` key, and gate silent-pass paths fixed; propensity calibration added. IPW under estimated `e` is 2.92%, not 11.19% — the old claim was a bug. MC bounds, per-policy naive bias, and the `frej_002` bounds width added. F5: narrow 15/88, widened 77/88. 87 tests pass |
+| 2026-11-21 | Phase 1 | F5 failed: 15/88 cells at ≥90%; coverage claim removed. Benchmark rebuild verified byte-for-byte (SHA-256 match). Demo, CI, model card, validation report, pilot protocol, business case added; 92 tests pass |
+| 2026-11-21 | Phase 1 | Red-team corrections: zero-propensity crash, `e_approve` resolution bug, HT variance, memo outside-`P0` key, and gate silent-pass paths fixed; propensity calibration added. IPW under estimated `e` is 2.92%, not 11.19% — the old claim was a bug. MC bounds, per-policy naive bias, and the `frej_002` bounds width added. F5: narrow 15/88, widened 77/88. 92 tests pass |
 | | | |
 
 ## 9. Related documents

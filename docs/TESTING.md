@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **87 passed** on the v0.2.1 tree. The suite uses only synthetic or
+Expected: **92 passed** on the v0.2.1 tree. The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 The headline numbers are also checked directly against the committed JSON:

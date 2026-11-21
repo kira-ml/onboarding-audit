@@ -26,6 +26,9 @@
   candidate at P=0.984.
 - Post-stratified audit-only estimate by follow-up time, with a complete-case
   fallback.
+- Labels-needed (80% power) calculation in the candidate-vs-incumbent decision.
+- Month-by-month stability runs (`configs/pilot_m5.yaml`, `pilot_m6.yaml`) and
+  `scripts/temporal_stability.py`.
 - End-to-end `demo` command and a no-propensity demo log.
 
 ### Fixed

@@ -1,0 +1,35 @@
+{
+  "note": "Month-by-month stability of the main scenario; 100 reps each.",
+  "results": {
+    "month_5": {
+      "months": [
+        5
+      ],
+      "n": 119323,
+      "fraud_rate": 0.01182504630289215,
+      "naive_max_abs_rel_bias": 2.3037482907041786,
+      "dr_max_abs_rel_bias": 0.008873551849788105,
+      "dr_mean_coverage": 0.94,
+      "ipw_max_abs_rel_bias": 0.006950691935069991,
+      "naive_p_best": 0.0,
+      "dr_p_best": 0.65,
+      "naive_inversions": 1.0,
+      "dr_inversions": 0.56
+    },
+    "month_6": {
+      "months": [
+        6
+      ],
+      "n": 108168,
+      "fraud_rate": 0.013405073589231566,
+      "naive_max_abs_rel_bias": 2.5499404064378717,
+      "dr_max_abs_rel_bias": 0.004276041592540562,
+      "dr_mean_coverage": 0.91,
+      "ipw_max_abs_rel_bias": 0.005561551520286979,
+      "naive_p_best": 0.0,
+      "dr_p_best": 0.63,
+      "naive_inversions": 1.84,
+      "dr_inversions": 0.41
+    }
+  }
+}

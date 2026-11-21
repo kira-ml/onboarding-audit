@@ -131,6 +131,8 @@ These are outputs, not editable sources:
 | `reports/obs_sweep/pilot_rows.parquet` | no | Generated row-level sweep output |
 | [`../reports/propensity_sensitivity.json`](../reports/propensity_sensitivity.json) | yes | `onboarding-audit sensitivity` |
 | [`../reports/double_robustness.json`](../reports/double_robustness.json) | yes | `scripts/double_robustness.py` |
+| [`../reports/temporal_stability.json`](../reports/temporal_stability.json) | yes | `scripts/temporal_stability.py` |
+| [`../reports/temporal_stability.md`](../reports/temporal_stability.md) | yes | `scripts/temporal_stability.py` |
 | [`../reports/propensity_sensitivity.md`](../reports/propensity_sensitivity.md) | yes | `onboarding-audit sensitivity` |
 | `reports/pilot_rows.parquet` | no | `onboarding-audit pilot` |
 | `reports/sample_report/` | no | `onboarding-audit report` |

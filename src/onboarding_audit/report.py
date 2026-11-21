@@ -781,6 +781,16 @@ def write_memo(
             "nuisance-estimation uncertainty; it is not a production decision on "
             "its own."
         )
+        power = comp.get("power", {})
+        if power:
+            L.append("")
+            L.append("**Labels needed (approximate, 80% power):**")
+            for key, target in power.items():
+                L.append(
+                    f"- `{key}`: **{target['labels_needed']:,}** labels "
+                    f"({target['additional_labels']:,} additional) to detect a "
+                    f"{target['delta']:.4f} difference."
+                )
     else:
         L.append(
             "Not reported: `P0` is not identified, so a candidate-vs-incumbent "

@@ -159,6 +159,7 @@ unidentified quantity.
 | DR recovers the `P0` value with known propensities | E2 | mean bias ≤1.89%, MC upper 4.3–9.6% |
 | DR is doubly robust | E2 (known-truth test) | +0.14% / +0.36% |
 | The ranking can flip | E2 | naive P(best) 0%, DR 64–100% |
+| The result holds across both test months | E2 (split-sample) | naive 230–255%, DR 0.43–0.89%, naive P(best) 0% in both |
 | The reject margin is not point-identified | E2 (bounds + F5) | narrow 15/88, widened 77/88 |
 | The method works on a bank's log | **not established** | no partner log, no independent validator |
 | The reject margin can be estimated from logs alone | **false** | F5 narrow failure |

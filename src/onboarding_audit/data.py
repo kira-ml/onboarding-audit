@@ -22,15 +22,26 @@ class EvalData:
     n: int
 
 
-def _decision_day(month: np.ndarray, rng: np.random.Generator) -> np.ndarray:
-    """Uniform decision day within the two test months; cutoff is day 90."""
+def _decision_day(
+    month: np.ndarray,
+    rng: np.random.Generator,
+    months: tuple[int, ...] | list[int] | None = None,
+) -> np.ndarray:
+    """Uniform decision day within each evaluation month; cutoff is day 90.
+
+    The months are mapped to consecutive 30-day windows starting at day 0, so a
+    single-month run uses days 0-30 and a two-month run uses days 0-60. This
+    keeps the delay/cutoff comparison meaningful when the window is split.
+    """
+    months = tuple(sorted(months if months is not None else (5, 6)))
     day = np.empty(len(month), dtype=float)
-    is_m5 = month == 5
-    is_m6 = month == 6
-    if not (is_m5 | is_m6).all():
-        raise ValueError("evaluation months must be 5 and 6")
-    day[is_m5] = rng.uniform(0.0, 30.0, is_m5.sum())
-    day[is_m6] = 30.0 + rng.uniform(0.0, 30.0, is_m6.sum())
+    present = set(np.unique(month).tolist())
+    if not present <= set(months):
+        raise ValueError(f"evaluation months must be a subset of {months}")
+    for i, m in enumerate(months):
+        mask = month == m
+        if mask.any():
+            day[mask] = 30.0 * i + rng.uniform(0.0, 30.0, int(mask.sum()))
     return day
 
 
@@ -42,6 +53,7 @@ def load_eval_data(
     month_col: str,
     outcome_features: list[str] | tuple[str, ...],
     seed: int,
+    months: tuple[int, ...] | list[int] | None = None,
 ) -> EvalData:
     """Load a scored BAF test-window parquet and build the outcome-model matrix.
 
@@ -50,6 +62,10 @@ def load_eval_data(
     unsupervised preprocessing choice stated in the pilot spec.
     """
     df = pd.read_parquet(path)
+    if months is not None:
+        df = df[df[month_col].isin(tuple(months))].reset_index(drop=True)
+        if df.empty:
+            raise ValueError(f"no rows in months {tuple(months)}")
     required = {label_col, amount_col, month_col, *outcome_features}
     missing = required - set(df.columns)
     if missing:
@@ -64,7 +80,7 @@ def load_eval_data(
         raise ValueError("amount must be finite and non-negative")
 
     rng = np.random.default_rng(seed)
-    decision_day = _decision_day(month, rng)
+    decision_day = _decision_day(month, rng, months)
 
     features = list(outcome_features)
     X = df[features].to_numpy(dtype=float)

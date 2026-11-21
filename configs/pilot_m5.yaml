@@ -1,0 +1,81 @@
+# Onboarding-audit pilot configuration.
+# See docs/PILOT_SPEC.md for the pre-registered protocol.
+
+seed: 20261120
+
+data:
+  path: data/scored_test.parquet
+  label_col: fraud_bool
+  amount_col: amount_proxy
+  month_col: month
+  months: [5]
+  outcome_features:
+    - p_fraud
+    - p_fraud_lgbm
+    - customer_age
+    - credit_risk_score
+    - velocity_6h
+    - velocity_24h
+    - velocity_4w
+    - bank_months_count
+    - zip_count_4w
+    - session_length_in_minutes
+
+costs:
+  fraud_loss_rate: 0.0019187869
+  review_cost: 0.02
+  false_reject_cost: 0.10
+  residual_fraud_loss: 0.30
+  amount_scaled: true
+
+observation:
+  kappa_review: 0.90
+  e_approve: 0.05
+  audit_rate: 0.01
+  review_delay_median: 3.0
+  review_delay_sigma: 0.5
+  approve_delay_median: 45.0
+  approve_delay_sigma: 0.8
+  cutoff_day: 90.0
+  outcome_dependent: false
+  e_approve_fraud: 0.30
+
+outcome_model:
+  C: 0.5
+  max_iter: 300
+  n_splits: 5
+
+policies:
+  - {name: incumbent, score_col: p_fraud, review_capacity: 0.02, decision_false_reject_cost: null}
+  - {name: better_model, score_col: p_fraud_lgbm, review_capacity: 0.02, decision_false_reject_cost: null}
+  - {name: strict_cost, score_col: p_fraud_lgbm, review_capacity: 0.02, decision_false_reject_cost: 0.02}
+  - {name: lenient_cost, score_col: p_fraud_lgbm, review_capacity: 0.02, decision_false_reject_cost: 0.50}
+
+scenarios:
+  - {id: main, reps: 100, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10}
+  - {id: audit_0, reps: 50, audit_rate: 0.0, approve_delay_median: 45.0, false_reject_cost: 0.10}
+  - {id: audit_05, reps: 50, audit_rate: 0.005, approve_delay_median: 45.0, false_reject_cost: 0.10}
+  - {id: audit_2, reps: 50, audit_rate: 0.02, approve_delay_median: 45.0, false_reject_cost: 0.10}
+  - {id: capacity_1, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, candidate_capacity: 0.01}
+  - {id: capacity_5, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, candidate_capacity: 0.05}
+  - {id: capacity_10, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, candidate_capacity: 0.10}
+  - {id: delay_0, reps: 50, audit_rate: 0.01, approve_delay_median: 0.5, false_reject_cost: 0.10}
+  - {id: delay_30, reps: 50, audit_rate: 0.01, approve_delay_median: 30.0, false_reject_cost: 0.10}
+  - {id: delay_90, reps: 50, audit_rate: 0.01, approve_delay_median: 90.0, false_reject_cost: 0.10}
+  - {id: outcome_dependent, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, outcome_dependent: true}
+  - {id: frej_002, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.02}
+  - {id: frej_050, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.50}
+  - {id: propensity_estimated, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: estimated}
+  - {id: propensity_noisy_10, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: noisy, propensity_noise: 0.10}
+  - {id: propensity_noisy_25, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, propensity_mode: noisy, propensity_noise: 0.25}
+  - {id: outcome_dependent_estimated, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, outcome_dependent: true, propensity_mode: estimated}
+  # Covariate-dependent observation: the post-approval report probability
+  # depends on log amount, not only on the action. The delay-0.5 variants
+  # isolate the propensity misspecification; the delay-45 variants add the
+  # resolution gradient. `oracle` is the ceiling; `estimated` is the
+  # misspecified action-level comparator; `covariate` is the fitted model.
+  - {id: covariate_oracle, reps: 50, audit_rate: 0.01, approve_delay_median: 0.5, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: oracle}
+  - {id: covariate_action, reps: 50, audit_rate: 0.01, approve_delay_median: 0.5, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: estimated}
+  - {id: covariate_model, reps: 50, audit_rate: 0.01, approve_delay_median: 0.5, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: covariate}
+  - {id: covariate_action_delay, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: estimated}
+  - {id: covariate_model_delay, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10, observation_mode: covariate, covariate_beta: 0.75, propensity_mode: covariate}

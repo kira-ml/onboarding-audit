@@ -44,7 +44,7 @@ python -c "import onboarding_audit; print(onboarding_audit.__version__)"
 pytest -q
 ```
 
-Expected: the version string and **87 passed**.
+Expected: the version string and **92 passed**.
 
 ## 3. Data
 
@@ -172,6 +172,19 @@ The sample log is a 20-row schema/CLI smoke example, not a research result.
 ```bash
 onboarding-audit validate --log examples/sample_log.csv
 ```
+
+### 4.8 Temporal stability
+
+The `data.months` field filters the evaluation window. The month configs use
+`months: [5]` and `months: [6]`:
+
+```bash
+onboarding-audit pilot --config configs/pilot_m5.yaml --scenarios main --out reports/temporal/m5
+onboarding-audit pilot --config configs/pilot_m6.yaml --scenarios main --out reports/temporal/m6
+python scripts/temporal_stability.py
+```
+
+This writes the committed `reports/temporal_stability.json` and `.md`.
 
 ## 5. Seeds and common random numbers
 
