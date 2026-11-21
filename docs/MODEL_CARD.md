@@ -70,6 +70,10 @@ The estimate is valid only when all of the following hold:
 6. **Covariate coverage.** If observation depends on covariates, the propensity
    model must include them. Action-level propensities are not enough (measured:
    action-level IPW relative bias up to **67.52%**, coverage **1.5%**).
+7. **Action-invariant outcome.** The applicant's fraud status does not depend on
+   the action; the label measures it rather than resulting from review. If
+   "confirmed fraud" exists only for reviewed applications, the pooled outcome
+   model is misspecified and DR relies on the propensity model.
 
 The report's identification gate checks positivity, sample size, effective
 sample size, max weight, cost support, and the declared observation mechanism. It

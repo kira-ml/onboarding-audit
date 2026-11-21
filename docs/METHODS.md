@@ -73,6 +73,11 @@ The `P0` estimand is identified under:
    institution's decision costs.
 6. **No interference / no anticipation:** one application's label does not
    depend on another application's action.
+7. **Action-invariant outcome:** the applicant's fraud status does not depend on
+   the action. The label measures that status; it is not a consequence of review.
+   If "confirmed fraud" exists only for reviewed applications, the pooled outcome
+   model is misspecified and the DR estimate relies on the propensity model being
+   correct. The pilot satisfies this by construction; a real log must argue it.
 
 The reject margin is **not** identified from logs alone: rejected applicants
 never become customers, so `Y` is structurally missing. Bounds require the cost

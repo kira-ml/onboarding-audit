@@ -41,6 +41,7 @@ disagree, the precedence in §5 applies.
 | [`RESULTS.md`](RESULTS.md) | The consolidated measured findings and verdicts |
 | [`MODEL_CARD.md`](MODEL_CARD.md) | Intended use, estimand, assumptions, performance, limitations |
 | [`VALIDATION_REPORT.md`](VALIDATION_REPORT.md) | The V1 validation record: commands, results, gates, open items |
+| [`AUDIT_REPORT.md`](AUDIT_REPORT.md) | The adversarial red-team audit: gates, findings, verdict |
 | [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) | The partner-institution shadow-evaluation protocol |
 | [`BUSINESS_CASE.md`](BUSINESS_CASE.md) | The decision framework and break-even condition |
 | [`CLAIMS.md`](CLAIMS.md) | The claim ledger: what may be said, with evidence and status |

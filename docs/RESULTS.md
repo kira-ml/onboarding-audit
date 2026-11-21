@@ -165,15 +165,22 @@ holds in **15 of 88** policy–scenario cells. In the main scenario the coverage
 **34% (incumbent), 68% (strict cost), 86% (lenient cost), and 87% (better
 model)**. The unconditional interval — the bounds widened by the `P0` standard
 error, scaled by the `P0` share — covers **99–100%** in the main scenario, but it
-is a conservative diagnostic, not a sharp identification result, and it collapses
-to **0%** under outcome-dependent labels where the `P0` estimate itself is biased.
+is roughly four times wider (incumbent **0.006780** vs **0.001581**), and it
+collapses to **0%** under outcome-dependent labels where the `P0` estimate itself
+is biased.
 
-The bounds are **not** confidence intervals. The low coverage is a diagnostic
-that the narrow interval is not a 95% interval; it does not mean the bounds are
-"wrong." It means the full-population value is not point-identified from logs
-alone. Per the E2 decision rule, the coverage claim is removed; the bounds are
-reported as a partial-identification range with the reject share and the
-unconditional width.
+The correct reading is:
+
+- The **narrow** interval is not a confidence interval and fails F5.
+- The **widened** interval is a conservative 95% interval for the identified set
+  *under the identification assumptions* (action-dependent observation, correct
+  cost range). It is valid but wide; the width is the price of the `P0`
+  uncertainty.
+- Neither interval is valid when the observation mechanism is outcome-dependent.
+
+Per the E2 decision rule, the coverage claim for the narrow interval is removed.
+The bounds are reported as a partial-identification range with the reject share,
+the unconditional width, and the assumption they require.
 
 ## 7. Propensity sensitivity: estimated and noisy `e`
 

@@ -102,7 +102,8 @@ scenario and 50 for the sweeps and sensitivity studies.
 | IPW | **1.18% / 95.0%** | max relative bias / mean coverage |
 | Audit-only at 1% | **2.98% / 84.5% / 1,271** | max bias / coverage / mean ESS |
 | Outcome-dependent labels | audit-only **−2.37% to −1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** | relative bias |
-| Reject-margin bounds | widest **0.009942**; incumbent coverage **34%** | width / coverage of true full value — **not** a confidence interval |
+| Reject-margin bounds | widest **0.009942**; incumbent coverage **34%**; F5 gate **failed** (**15/88** cells ≥90%) | width / coverage of true full value — **not** a confidence interval |
+| DR ranking at low approve-label rate | **64%** [50–76%] vs naive **0%** | P(select the true best policy), 95% Wilson interval |
 | Estimated action-level `e` | DR **2.67% / 91.0%**; IPW **11.19% / 73.0%** | max relative bias / mean coverage |
 | Covariate-dependent observation | action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage **89–91.5%** | relative bias; coverage is reported separately |
 
@@ -294,6 +295,7 @@ discipline, not a new estimator. The closest work is mapped in
 | [`docs/RESULTS.md`](docs/RESULTS.md) | Consolidated measured findings and H1–H6 verdicts |
 | [`docs/CLAIMS.md`](docs/CLAIMS.md) | The claim ledger: what may be said, with evidence |
 | [`docs/THREATS.md`](docs/THREATS.md) | The strongest counter-case and mitigations |
+| [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) | The adversarial red-team audit and verdict |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`docs/REPORT_USAGE.md`](docs/REPORT_USAGE.md) | How to run and read the arbitrary-log report |
