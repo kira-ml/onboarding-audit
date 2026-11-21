@@ -1,10 +1,10 @@
 # Paper Workspace
 
-**Status:** Research notes only. No paper draft and no PDF are produced in
-v1.0.0. This folder exists so the paper is easier to write when the project
-decides to start it.
+**Status:** Initial IEEEtran draft, v1.0.0 (2026-11-22). The manuscript is
+`main.tex`; `main.pdf` is the compiled two-column rendering. The canonical
+content remains the research documentation; the paper is a derived artifact.
 
-**Purpose:** Keep the paper-specific planning separate from the canonical
+**Purpose:** Keep the paper-specific material separate from the canonical
 research documentation, without duplicating the claims, methods, or results.
 
 ---
@@ -13,14 +13,44 @@ research documentation, without duplicating the claims, methods, or results.
 
 | File | What it is | What it is not |
 |---|---|---|
+| [`main.tex`](main.tex) | The IEEEtran conference manuscript | The claim ledger |
+| [`references.bib`](references.bib) | The verified bibliography | A literature review |
+| [`main.pdf`](main.pdf) | The compiled two-column draft (6 pages) | A submission-ready camera copy |
+| [`make_figures.py`](make_figures.py) | Regenerates the three figures from committed JSON | A result |
+| [`figures/`](figures/) | The vector figures used by the paper | Source data |
 | [`brief.md`](brief.md) | A 2-page research brief for a reviewer | The paper |
 | [`outline.md`](outline.md) | An IMRaD skeleton with measured numbers | A draft |
 
-Both files are **derived** from the canonical documents. If they disagree with
+The manuscript is **derived** from the canonical documents. If it disagrees with
 [`../docs/CLAIMS.md`](../docs/CLAIMS.md) or
 [`../docs/RESULTS.md`](../docs/RESULTS.md), the canonical document wins.
 
-## 2. What the paper should be built from
+## 2. Build
+
+The draft uses `IEEEtran` in conference mode, two columns, 10pt. It compiles
+with Tectonic, `latexmk`, or Overleaf:
+
+```bash
+# Tectonic (no local TeX install; fetches the bundle on first run)
+tectonic main.tex
+
+# latexmk with a TeX distribution
+latexmk -pdf main.tex
+```
+
+Overleaf: upload `main.tex`, `references.bib`, and `figures/`; the compiler is
+pdfLaTeX or XeLaTeX.
+
+To regenerate the figures:
+
+```bash
+python paper/make_figures.py
+```
+
+The draft is 6 pages. IEEE conference limits vary by venue; the current length
+fits a 6-page paper and leaves room for one page of revisions.
+
+## 3. What the paper is built from
 
 Do not start from a blank page. Start from these documents, in this order:
 
@@ -44,84 +74,50 @@ Do not start from a blank page. Start from these documents, in this order:
 9. **Decisions and open questions:** [`../docs/DECISIONS.md`](../docs/DECISIONS.md),
    [`../docs/OPEN_QUESTIONS.md`](../docs/OPEN_QUESTIONS.md).
 
-## 3. What is already finalized
+## 4. What the draft covers
 
-- The problem brief and the evidence-backed Philippine context.
-- The estimand, identification assumptions, estimators, and metrics.
-- The pre-registered pilot and the sensitivity designs.
-- The measured pilot, action-level sensitivity, and covariate sensitivity.
-- The claim ledger, threats register, decision journal, and open questions.
-- The schema, audit design, regulatory mapping, and report usage guide.
-- The reproducibility, architecture, testing, and publication checklists.
+- The `P0` estimand and the seven identification assumptions.
+- Naive, IPW-HT, IPW-Hájek, DR, audit-only, and partial-identification bounds.
+- The identification gate, the observation-mechanism declaration, and propensity
+  calibration.
+- The paired decision layer: difference, interval, P(candidate cheaper), regret,
+  and labels needed for 80% power.
+- The BAF benchmark, the 12-cell sweep, the propensity and covariate
+  sensitivity, the double-robustness test, the month-by-month stability check,
+  and the case study.
+- The negative results: outcome-dependent labels, the F5 bounds failure, and the
+  ranking gap.
 
-The remaining paper work is **writing and interpretation**, not new measurement.
+## 5. Before submission
 
-## 4. What is not finalized
+- [ ] Choose the venue and confirm its page limit and template version.
+- [ ] Replace the affiliation/email if needed.
+- [ ] Re-check every number against `docs/CLAIMS.md`.
+- [ ] Re-run `python scripts/check_claims.py`.
+- [ ] Confirm the bibliography entries marked **verify** in
+      [`../docs/REFERENCES.md`](../docs/REFERENCES.md) are not cited; the current
+      draft cites only verified entries.
+- [ ] Add the venue's required acknowledgments, data statement, and artifact
+      appendix.
+- [ ] Have an independent reader check the identification section.
 
-- The full covariate 50-replication results are in
-  [`../docs/RESULTS.md`](../docs/RESULTS.md) §9.
-- Two external readers.
-- A bootstrap/randomization-inference interval.
-- The FiFAR capacity layer.
-- A bank partner or a Philippine log.
-
-These are limitations or future work, not blockers to a paper draft.
-
-## 5. Before drafting
-
-- [ ] Read `docs/RESULTS.md` and `docs/CLAIMS.md` end to end.
-- [ ] Confirm every headline number traces to a committed JSON.
-- [ ] Decide the venue and the length.
-- [ ] Decide whether the paper is a methods/measurement paper or an applied
-      case study. The current evidence supports a measurement paper with an
-      applied benchmark.
-- [ ] Freeze the claim set. Do not add a new headline during drafting.
-- [ ] Re-run `pytest -q` and the pilot/sensitivity if the code changed.
-- [ ] Run the link and stale-number check in
-      [`../docs/PUBLICATION_CHECKLIST.md`](../docs/PUBLICATION_CHECKLIST.md).
-
-## 6. Suggested paper shape
-
-The outline is already in [`outline.md`](outline.md). The short version:
-
-1. **Introduction:** the decision, the selection/delay/capacity problem, the
-   regulatory gap, the contributions.
-2. **Related work:** selective labels, reject inference, PU learning, delayed
-   feedback, OPE, BAF, FiFAR, 2026 finance work.
-3. **Problem formulation:** actions, costs, observation model, estimands,
-   identification.
-4. **Estimators:** naive, IPW, DR, audit-only, bounds, propensity estimation.
-5. **Benchmark:** BAF, policies, scenarios, metrics, negative controls.
-6. **Results:** naive bias/rank flips, estimator comparison, audit value,
-   capacity/delay, outcome-dependent labels, bounds, propensity and covariate
-   sensitivity.
-7. **Practice:** schema, audit design, memo, regulatory mapping.
-8. **Limitations:** simulation, BAF, costs, oracle/estimated propensities,
-   reject margin, no PH data, no causal deployment claim.
-9. **Conclusion:** the measurement layer, not a new detector.
-
-## 7. Writing rules
+## 6. Writing rules
 
 - Every number in the abstract must appear in `docs/RESULTS.md`.
 - Every claim must appear in `docs/CLAIMS.md`.
 - Every limitation must appear in `docs/THREATS.md`.
 - Do not introduce a new scenario or a new estimator in the paper without
   adding it to the pre-registration and the claim ledger.
-- Do not describe the bounds as confidence intervals.
+- Do not describe the narrow bounds as confidence intervals.
 - Do not describe the audit as random approvals/rejections.
 - Do not claim production, a specific bank, or a causal deployment effect.
 - Cite the closest work; do not claim a new estimator.
 
-## 8. When the paper starts
-
-The first draft should be a **Markdown or LaTeX manuscript**, not a PDF-first
-artifact. The PDF is a rendering step. The canonical content lives in the docs
-and the paper folder; the PDF should not become the source of truth.
-
-## 9. Related documents
+## 7. Related documents
 
 - Documentation index: [`../docs/README.md`](../docs/README.md)
 - Methods: [`../docs/METHODS.md`](../docs/METHODS.md)
+- Technical note: [`../docs/TECHNICAL_NOTE.md`](../docs/TECHNICAL_NOTE.md)
 - Results: [`../docs/RESULTS.md`](../docs/RESULTS.md)
 - Claims: [`../docs/CLAIMS.md`](../docs/CLAIMS.md)
 - Publication checklist: [`../docs/PUBLICATION_CHECKLIST.md`](../docs/PUBLICATION_CHECKLIST.md)

@@ -42,3 +42,8 @@ reports/case_study/
 reports/*_check/
 reports/temporal/
 reports/*check*/
+paper/main.aux
+paper/main.log
+paper/main.blg
+paper/main.out
+paper/main.xdv

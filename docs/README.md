@@ -93,7 +93,9 @@ disagree, the precedence in §5 applies.
 | [`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) | The pre-release claim, data, code, and docs checklist |
 | [`RELEASE_NOTES_v1.0.0.md`](RELEASE_NOTES_v1.0.0.md) | The release: what is in, what changed, how to verify |
 | [`ROADMAP.md`](ROADMAP.md) | The milestones and review dates |
-| [`../paper/README.md`](../paper/README.md) | The paper workspace: research notes, not the paper |
+| [`../paper/README.md`](../paper/README.md) | The paper workspace: IEEEtran draft and build instructions |
+| [`../paper/main.tex`](../paper/main.tex) | The IEEEtran conference manuscript |
+| [`../paper/main.pdf`](../paper/main.pdf) | The compiled two-column draft |
 | [`../paper/brief.md`](../paper/brief.md) | The 2-page research brief |
 | [`../paper/outline.md`](../paper/outline.md) | The IMRaD outline |
 
@@ -188,7 +190,8 @@ the canonical one.
 
 ## 7. What is not here
 
-- No paper draft or PDF. See [`../paper/README.md`](../paper/README.md).
+- No submission-ready camera copy; the initial IEEEtran draft is
+  [`../paper/main.pdf`](../paper/main.pdf).
 - No production system, API, database, or dashboard.
 - No Philippine bank data or proprietary log.
 - No legal opinion. [`BSP_MAPPING.md`](BSP_MAPPING.md) is a mapping, not advice.

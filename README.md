@@ -21,7 +21,8 @@
 ---
 
 > **Status:** `v1.0.0` review release. **92 tests pass.** The documentation is
-> research-ready; the paper is not drafted. This is a simulation on public
+> research-ready; an initial IEEEtran draft is in
+> [`paper/main.pdf`](paper/main.pdf). This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
 >
@@ -326,6 +327,7 @@ Expected: **92 passed**, the demo memo, and **43/43** claim checks.
 | [`docs/CLAIMS.md`](docs/CLAIMS.md) | The claim ledger: what may be said, with evidence |
 | [`docs/THREATS.md`](docs/THREATS.md) | The strongest counter-case and mitigations |
 | [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md) | The v1.0.0 release notes |
+| [`paper/main.pdf`](paper/main.pdf) | The initial IEEEtran two-column draft |
 | [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) | The adversarial red-team audit and verdict |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |

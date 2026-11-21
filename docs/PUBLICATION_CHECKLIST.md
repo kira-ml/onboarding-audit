@@ -84,8 +84,8 @@ document to read before a tag, a blog post, or a paper submission.
       **verify** entry has been checked or removed.
 - [ ] [`GLOSSARY.md`](GLOSSARY.md) defines every acronym used in the README and
       the paper.
-- [ ] [`../paper/README.md`](../paper/README.md) states that the paper is not
-      drafted and points to the canonical docs.
+- [x] [`../paper/README.md`](../paper/README.md) states the draft status, the
+      build command, and the canonical docs it derives from.
 - [ ] [`README.md`](README.md) lists every canonical document and the update
       rules.
 - [ ] No broken relative links (run the link check in §9).
