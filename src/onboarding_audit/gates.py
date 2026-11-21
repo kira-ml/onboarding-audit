@@ -47,6 +47,7 @@ def check_identification(
     propensity_source: str,
     has_audit: bool,
     observation_assumption: str = "unknown",
+    calibration_ratio: float = float("nan"),
     min_observed_total: int = 100,
     min_observed_per_action: int = 30,
     min_ess: float = 100.0,
@@ -98,9 +99,42 @@ def check_identification(
     elif n_pop and (e[in_pop] <= 0).any():
         reasons.append("positivity failure: a P0 row has zero observation probability")
 
-    # Cost support: negative costs are not a valid decision input.
-    if (cost < 0).any():
+    # Cost support: negative or non-finite costs are not a valid decision input.
+    if not np.isfinite(cost).all():
+        reasons.append(
+            "cost support failure: at least one candidate cost is not finite"
+        )
+    elif (cost < 0).any():
         reasons.append("cost support failure: at least one candidate cost is negative")
+
+    # Actions must be one of the three known values; an unknown string would
+    # silently enter P0 and receive a zero cost downstream.
+    unknown_actions = sorted(set(np.unique(actions)) - {"approve", "review", "reject"})
+    if unknown_actions:
+        reasons.append(f"unknown action value(s): {unknown_actions}")
+
+    # A propensity is a probability; a percent-scaled column would pass every
+    # other check and scale the estimate by 1/100.
+    if (e[in_pop] > 1.0).any():
+        reasons.append("positivity failure: a P0 propensity exceeds 1")
+
+    # Propensity calibration: the observed count must not exceed what the stated
+    # e allows. A ratio far below 1 means e is too high or labels are heavily
+    # censored; it is a warning, because delay can produce it legitimately.
+    calibration_flagged = False
+    if np.isfinite(calibration_ratio):
+        if calibration_ratio > 1.5:
+            reasons.append(
+                f"propensity calibration failure: observed/expected = "
+                f"{calibration_ratio:.2f} > 1.5; the provided e is too low"
+            )
+        elif calibration_ratio < 0.5:
+            calibration_flagged = True
+            warnings.append(
+                f"propensity calibration: observed/expected = "
+                f"{calibration_ratio:.2f} < 0.5; the provided e may be too high "
+                "or the labels heavily censored"
+            )
 
     # Sample size.
     if n_obs < min_observed_total:
@@ -176,6 +210,8 @@ def check_identification(
         "candidate_outside_p0_share": float(outside_share),
         "cost_min": float(cost.min()) if n else 0.0,
         "min_observed_action": float(min(per_action.values())) if per_action else 0.0,
+        "calibration_ratio": float(calibration_ratio),
+        "calibration_flagged": float(calibration_flagged),
     }
     return IdentificationReport(
         passed=not reasons,

@@ -27,7 +27,8 @@ document to read before a tag, a blog post, or a paper submission.
 - [ ] The regulatory language is precise: BSP 1213 is an FMS circular; the MRM
       guidelines are a draft; BSP AI principles are voluntary; NPC Advisory
       2024-04 is binding for explainability/fairness.
-- [ ] The IPW caveat is present: IPW is not robust to estimated propensities;
+- [ ] The IPW caveat is present: IPW is less robust under noisy or
+  covariate-dependent propensities;
       DR is the recommended corrected estimator.
 - [ ] The covariate caveat is present: action-level IPW fails when observation
       depends on application features; the covariate model is the correction,
@@ -48,7 +49,7 @@ document to read before a tag, a blog post, or a paper submission.
 
 ## 3. Code and tests
 
-- [ ] `pytest -q` passes (68 tests on v0.2.1).
+- [ ] `pytest -q` passes (82 tests on v0.2.1).
 - [ ] The version in `pyproject.toml`, `src/onboarding_audit/__init__.py`, and
       `CITATION.cff` agree.
 - [ ] `CHANGELOG.md` has an entry for the release.

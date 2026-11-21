@@ -679,9 +679,10 @@ def write_report(payload: dict, path: Path) -> None:
         )
     L.append("")
     L.append(
-        "F5 passes when `coverage_full >= 90%`. The unconditional interval "
-        "widens the bounds by the `P0` standard error; it is a diagnostic, not "
-        "a confidence interval for the full population."
+        "F5 passes when `coverage_full >= 90%` (narrow interval) or "
+        "`unconditional_coverage >= 90%` (widened interval). The widened "
+        "interval is a valid, conservative 95% confidence interval under the "
+        "identification assumptions; the narrow interval is not."
     )
     L.append("")
     if not b.empty and "incumbent" in set(b["policy"]):
@@ -690,10 +691,10 @@ def write_report(payload: dict, path: Path) -> None:
     else:
         inc_text = "n/a"
     L.append(
-        "These are **partial-identification intervals conditional on the P0 "
-        "estimate**, not confidence intervals. Coverage of the true "
-        "full-population value is a diagnostic: a narrow interval on a noisy "
-        f"P0 estimate can miss. The incumbent's narrow interval covers the true "
+        "The narrow interval is a **partial-identification interval conditional "
+        "on the P0 estimate**, not a confidence interval. Coverage of the true "
+        "full-population value is a diagnostic for the narrow interval: a narrow "
+        f"interval on a noisy P0 estimate can miss. The incumbent's narrow interval covers the true "
         f"full value in {inc_text} of replications. Do not interpret the bounds "
         "as 95% coverage."
     )

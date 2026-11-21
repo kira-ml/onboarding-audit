@@ -144,3 +144,69 @@ def test_declared_action_dependent_passes_without_the_warning():
     report = _check(observation_assumption="action")
     assert report.passed
     assert not any("not declared" in warning for warning in report.warnings)
+
+def test_propensity_above_one_refuses():
+    actions, candidate, observed, e, cost = _valid_inputs()
+    e = e.copy()
+    e[actions == "approve"] = 1.5
+    report = check_identification(
+        actions=actions,
+        candidate_actions=candidate,
+        observed=observed,
+        propensity=e,
+        cost=cost,
+        positivity_ok=True,
+        propensity_source="provided",
+        has_audit=True,
+    )
+    assert not report.passed
+    assert any("exceeds 1" in reason for reason in report.reasons)
+
+
+def test_non_finite_cost_refuses():
+    actions, candidate, observed, e, cost = _valid_inputs()
+    cost = cost.copy()
+    cost[0] = np.nan
+    report = check_identification(
+        actions=actions,
+        candidate_actions=candidate,
+        observed=observed,
+        propensity=e,
+        cost=cost,
+        positivity_ok=True,
+        propensity_source="provided",
+        has_audit=True,
+    )
+    assert not report.passed
+    assert any("not finite" in reason for reason in report.reasons)
+
+
+def test_unknown_action_refuses():
+    actions, candidate, observed, e, cost = _valid_inputs()
+    actions = actions.copy()
+    actions[0] = "Rejected"
+    report = check_identification(
+        actions=actions,
+        candidate_actions=candidate,
+        observed=observed,
+        propensity=e,
+        cost=cost,
+        positivity_ok=True,
+        propensity_source="provided",
+        has_audit=True,
+    )
+    assert not report.passed
+    assert any("unknown action" in reason for reason in report.reasons)
+
+
+def test_impossible_calibration_refuses():
+    report = _check(calibration_ratio=2.0)
+    assert not report.passed
+    assert any("calibration failure" in reason for reason in report.reasons)
+
+
+def test_low_calibration_warns_and_flags():
+    report = _check(calibration_ratio=0.2)
+    assert report.passed
+    assert report.metrics["calibration_flagged"] == 1.0
+    assert any("calibration" in warning for warning in report.warnings)

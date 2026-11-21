@@ -35,9 +35,10 @@ at least one honest correction or bound; or a well-supported null. **Met.**
 
 - [x] Arbitrary-log `report` command (bring your own log and candidate scores).
 - [x] Propensity estimation from logs/audit; sensitivity to estimated e.
-  **Result:** DR survives estimated `e` when observation is action-dependent
-  (**2.67% / 91.0%**); IPW does not (**11.19% / 73.0%**); outcome-dependent
-  labels with estimated `e` require audit-only (**2.58% / 82.5%**).
+  **Result:** both DR and IPW survive estimated `e` when observation is
+  action-dependent (DR **1.43% / 93.5%**, IPW **2.92% / 92.0%**); DR is better
+  under noise. Outcome-dependent labels with estimated `e` require audit-only
+  (**2.58% / 82.5%**).
 - [x] Covariate-dependent observation: fitted per-action propensity model,
   `--propensity-model covariate`, and a 50-replication sensitivity.
   **Result:** action-level IPW **67.52%**, DR **21.25%**; covariate model

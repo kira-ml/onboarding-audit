@@ -164,15 +164,17 @@ The naive estimate has a mean **1.00** pairwise inversion and selects the true
 best policy **0%** of the time. Practical consequence: the naive evaluation
 would reject the better model.
 
-A 12-cell observation-rate sweep shows the magnitude is conditional: naive bias
-ranges **7.8–538.5%**, but exceeds 5% in **12/12** cells. DR with known
-propensities stays within **1.89%**, but its P(select true best) falls to **64%**
-at the lowest approve-label rate.
+A 12-cell observation-rate sweep shows the magnitude is conditional: the maximum
+naive bias across policies ranges **7.8–538.5%**, and exceeds 5% in **12/12**
+cells; the incumbent's own bias is **1.5–218%**. DR with known propensities has a
+mean bias of at most **1.89%** (95% MC upper bound 4.3% for `e>=0.05`, 9.6% at
+`e=0.01`), but its P(select true best) falls to **64%** at the lowest report
+probability.
 
 ### 6.2 Estimator comparison
 
 DR: max |relative bias| **0.94%**, mean coverage **96.0%**, mean ESS **7,864**.
-IPW: max **1.18%**, mean coverage **95.0%**. Audit-only at 1%: max **2.98%**,
+IPW: max **1.18%**, mean coverage **94.5%**. Audit-only at 1%: max **2.98%**,
 coverage **84.5%**, ESS **1,271**. The corrected ranking is much better than
 naive but not perfect: DR mean inversions **0.29**, P(select true best) **72%**,
 cost of misranking **0.000093** (naive: **1.00 / 0% / 0.000333**).
@@ -200,26 +202,29 @@ action-only IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%**; naive
 
 ### 6.6 Reject-margin bounds
 
-Widest bounds interval **0.009942**; the incumbent's width is **0.001581** with
-**34%** coverage of the true full-population value. The bounds are
-partial-identification intervals conditional on the P0 estimate, not confidence
-intervals. The reject margin is not point-identified from logs alone.
+Main-scenario bounds interval **0.009942**; with a low false-reject cost
+(`frej_002`) it is **0.203**. The incumbent's width is **0.001581** with
+**34%** coverage of the true full-population value. The narrow interval is a
+partial-identification interval conditional on the P0 estimate, not a confidence
+interval; the widened interval is a conservative 95% interval but ~4× wider. The
+reject margin is not point-identified from logs alone.
 
 ### 6.7 Negative controls
 
-`pytest -q`: 68 tests pass, including full-observation identity, full-audit
+`pytest -q`: 82 tests pass, including full-observation identity, full-audit
 identity, propensity recovery, bounds validity, capacity, no leakage, schema
 validation, the arbitrary-log report's known-ground-truth check, and the
 propensity/covariate helpers.
 
 ### 6.8 Propensity sensitivity
 
-When `e` is estimated from the log: DR max |relative bias| **2.67%**, mean
-coverage **91.0%**; IPW max **11.19%**, coverage **73.0%**. At lognormal noise
-sigma 0.25: DR **1.58% / 96.5%**, IPW **7.01% / 93.5%**. Under outcome-dependent
-labels with estimated `e`: audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR
-**1627.9%**. The paper should recommend DR, not IPW, when `e` is estimated, and
-audit-only when the label-source mix suggests outcome-dependent observation.
+When `e` is estimated from the log: DR mean |relative bias| **1.43%**, mean
+coverage **93.5%**; IPW **2.92%**, coverage **92.0%**. At lognormal noise
+sigma 0.25: DR **1.58% / 96.5%**, IPW **7.01% / 93.0%**. Under outcome-dependent
+labels with estimated `e`: audit-only **2.58% / 82.5%**; IPW **2064.9%**; DR
+**1737.0%**. The paper should recommend DR when `e` is noisy or
+covariate-dependent, and audit-only when the label-source mix suggests
+outcome-dependent observation.
 
 ### 6.9 Covariate-dependent observation
 
@@ -227,8 +232,8 @@ When the post-approval report probability depends on standardized log amount,
 action-level `e` is misspecified. The 50-replication study compares oracle,
 action-level, and cross-fitted covariate propensities, with and without the
 45-day delay. Action-level IPW is **67.52%** biased (coverage **1.5%**) and
-action-level DR **21.25%** (coverage **72.5%**); with the delay, **51.72%** and
-**17.59%**. The fitted covariate model recovers the oracle: IPW **1.97%** / DR
+action-level DR **21.25%** (coverage **72.5%**); with the delay, **64.27%** and
+**20.27%**. The fitted covariate model recovers the oracle: IPW **1.97%** / DR
 **2.48%** (coverage **91.5% / 89.5%**), and **3.35% / 3.68%** with the delay.
 The oracle itself covers **89–90%**, so the shortfall from 95% is the heavy-tail
 variance, not the model. The paper should claim covariate-model robustness, not

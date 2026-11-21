@@ -96,12 +96,12 @@ def estimate_propensities(
 ) -> PropensityEstimate:
     """Use a provided propensity when complete for observed rows; else estimate.
 
-    The default estimate is action-level:
+    The default estimate is the marginal action-level rate:
       e_review  = observed / reviewed
-      e_approve = audit_rate + (1 - audit_rate) * observed / (approved, not audited)
+      e_approve = observed / approved
 
-    The audit-aware form separates the random audit from the base approve-label
-    rate. If no audit flag is present, e_approve is the observed approve rate.
+    The marginal rate is the propensity. An earlier audit-aware decomposition
+    omitted the resolution factor on the audit channel and overstated e.
 
     With ``propensity_model="covariate"``, a cross-fitted per-action logistic
     model P(observed | action, X) is used instead. It needs numeric feature
@@ -127,7 +127,12 @@ def estimate_propensities(
     )
     if provided:
         e = np.zeros(len(df), dtype=float)
-        e[observed] = df.loc[observed, propensity_col].astype(float).to_numpy()
+        column = df[propensity_col].astype(float)
+        provided_all = bool(column.notna().all())
+        if provided_all:
+            e = column.to_numpy(dtype=float)
+        else:
+            e[observed] = column.loc[observed].to_numpy(dtype=float)
         e_review = float(e[review].mean()) if review.any() else 0.0
         e_approve = float(e[approve].mean()) if approve.any() else 0.0
         source = "provided"
@@ -149,22 +154,35 @@ def estimate_propensities(
         source = "estimated_covariate"
     else:
         e_review = float(observed[review].mean()) if review.any() else 0.0
-        if approve.any():
-            non_audit = approve & ~audit
-            base = float(observed[non_audit].mean()) if non_audit.any() else 0.0
-            e_approve = audit_rate + (1.0 - audit_rate) * base
-        else:
-            e_approve = 0.0
+        e_approve = float(observed[approve].mean()) if approve.any() else 0.0
         e = np.zeros(len(df), dtype=float)
         e[review] = e_review
         e[approve] = e_approve
         source = "estimated"
 
     if provided:
-        positivity_ok = bool(observed.any() and (e[observed] > 0).all())
+        if provided_all:
+            in_pop = ~reject
+            positivity_ok = bool(in_pop.any() and (e[in_pop] > 0).all())
+        else:
+            positivity_ok = bool(observed.any() and (e[observed] > 0).all())
     else:
         in_pop = ~reject
         positivity_ok = bool(in_pop.any() and (e[in_pop] > 0).all())
+
+    # Propensity calibration: compare the expected number of observed P0 rows
+    # under the stated e to the actual number. Only computable when e covers all
+    # P0 rows. A ratio far below 1 means e is too high or the labels are heavily
+    # censored; a ratio above 1 is impossible under the stated e.
+    calibration_ratio = float("nan")
+    expected_observed = float("nan")
+    actual_observed = float("nan")
+    if provided and provided_all:
+        in_pop = ~reject
+        expected_observed = float(e[in_pop].sum())
+        actual_observed = float(observed[in_pop].sum())
+        if expected_observed > 0:
+            calibration_ratio = actual_observed / expected_observed
     details = {
         "n_review": int(review.sum()),
         "n_approve": int(approve.sum()),
@@ -174,6 +192,10 @@ def estimate_propensities(
         "n_audit": int(audit.sum()),
         "audit_rate_among_approved": audit_rate,
         "provided_propensity": provided,
+        "provided_all_rows": bool(provided and provided_all),
+        "expected_observed": expected_observed,
+        "actual_observed": actual_observed,
+        "calibration_ratio": calibration_ratio,
         "propensity_model": propensity_model,
         "propensity_features": design_names,
     }
@@ -295,6 +317,9 @@ def evaluate_report(
         propensity_source=propensity.source,
         has_audit=bool(audit.any()),
         observation_assumption=observation_assumption,
+        calibration_ratio=float(
+            propensity.details.get("calibration_ratio", float("nan"))
+        ),
     )
     estimates: dict[str, dict] = {}
 
@@ -349,11 +374,26 @@ def evaluate_report(
     v_pop = estimates["dr"]["value"]
     if not np.isfinite(v_pop):
         v_pop = estimates["ipw_ht"]["value"]
-    b = policy_bounds(candidate_actions, amount, config.costs, in_pop, rejected, v_pop)
+    b = policy_bounds(
+        candidate_actions,
+        amount,
+        config.costs,
+        in_pop,
+        rejected,
+        v_pop,
+        v_pop_se=(
+            estimates["dr"]["se"]
+            if np.isfinite(estimates["dr"]["se"])
+            else estimates["ipw_ht"]["se"]
+        ),
+    )
     bounds = {
         "lower": b.lower,
         "upper": b.upper,
         "width": b.width,
+        "lower_unconditional": b.lower_unconditional,
+        "upper_unconditional": b.upper_unconditional,
+        "width_unconditional": b.width_unconditional,
         "n_rejected": b.n_rejected,
         "v_pop": v_pop,
     }
@@ -384,6 +424,9 @@ def evaluate_report(
         "e_review": propensity.e_review,
         "e_approve": propensity.e_approve,
         "audit_rate_among_approved": propensity.audit_rate,
+        "calibration_ratio": propensity.details.get("calibration_ratio", float("nan")),
+        "expected_observed": propensity.details.get("expected_observed", float("nan")),
+        "actual_observed": propensity.details.get("actual_observed", float("nan")),
         "e_min_observed": float(e[observed].min()) if observed.any() else float("nan"),
         "e_max_observed": float(e[observed].max()) if observed.any() else float("nan"),
         "frac_observed_e_lt_001": float((e[observed] < 0.01).mean())
@@ -535,8 +578,10 @@ def write_memo(
     )
     L.append(f"- **Logging actions:** {result.action_counts}")
     L.append(f"- **Candidate actions:** {result.candidate_action_counts}")
-    outside = result.diagnostics.get("candidate_outside_p0", 0)
-    outside_share = result.diagnostics.get("candidate_outside_p0_share", 0.0)
+    outside_review = result.diagnostics.get("candidate_review_outside_p0", 0)
+    outside_approve = result.diagnostics.get("candidate_approve_outside_p0", 0)
+    outside = int(outside_review) + int(outside_approve)
+    outside_share = outside / max(result.n, 1)
     L.append(
         f"- **Candidate actions on logging-rejected rows:** {outside:,} "
         f"({outside_share:.1%}) — outside the `P0` estimate"
@@ -594,6 +639,14 @@ def write_memo(
             "**Target note:** `P0` is the logging non-rejected population; `approved` is "
             "the audit-only target; `full` is the reject-margin bounds target."
         )
+        if "audit_only" in result.estimates:
+            L.append(
+                "- **Audit-only caveat:** this report's audit-only estimate is a "
+                "complete-case mean over observed audit labels. Under delayed "
+                "labels it is biased toward early-resolving rows. The pilot's "
+                "audit-only estimator is resolution-weighted; they are not the "
+                "same estimator."
+            )
         if result.identification.warnings:
             L.append("")
             L.append("**Warnings:**")
@@ -608,6 +661,20 @@ def write_memo(
         f"`e_review={d['e_review']:.3f}`, `e_approve={d['e_approve']:.3f}`, "
         f"audit rate among approved `{d['audit_rate_among_approved']:.3%}`."
     )
+    cal = d.get("calibration_ratio")
+    if cal is not None and isinstance(cal, float) and np.isfinite(cal):
+        L.append(
+            f"- **Propensity calibration:** observed/expected = **{cal:.3f}** "
+            f"({d['actual_observed']:.0f} observed vs {d['expected_observed']:.0f} "
+            "expected under the stated `e`). A value below 0.5 means the provided "
+            "`e` may be too high or the labels heavily censored; a value above 1 "
+            "is impossible under the stated `e`."
+        )
+    else:
+        L.append(
+            "- **Propensity calibration:** not computable (the provided `e` does "
+            "not cover every `P0` row)."
+        )
     if d.get("propensity_model") == "covariate":
         L.append(
             f"- **Propensity model:** per-action logistic P(observed | action, X); "
@@ -722,7 +789,12 @@ def write_memo(
     L.append("| Claim | Status | Evidence |")
     L.append("|---|---|---|")
     if result.identification.passed:
-        if result.identification.observation_assumption == "action":
+        calibration_flagged = bool(
+            result.identification.metrics.get("calibration_flagged", 0.0)
+        )
+        if calibration_flagged:
+            status = "Measured (propensity calibration flagged)"
+        elif result.identification.observation_assumption == "action":
             status = "Measured"
         else:
             status = "Measured (observation assumption unverified)"

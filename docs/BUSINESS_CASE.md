@@ -28,7 +28,7 @@ estimate can **reverse the ranking** of policies:
 | Evidence | Value | Artifact |
 |---|---|---|
 | Naive P(select the true best policy) | **0%** in 11 of 12 observation-rate cells | `reports/obs_sweep/pilot.json` |
-| Naive relative bias | **7.8% to 538.5%**; above 5% in **12/12** cells | `reports/obs_sweep/pilot.json` |
+| Naive relative bias | **7.8% to 538.5%** (max across policies); above 5% in **12/12** cells for at least one policy; incumbent **1.5–218%** | `reports/obs_sweep/pilot.json` |
 | DR P(select the true best policy) | **64%** at the lowest approve-label rate; **96–100%** at the highest | `reports/obs_sweep/pilot.json` |
 
 A bank that adopts on the naive number can reject the better model and adopt the

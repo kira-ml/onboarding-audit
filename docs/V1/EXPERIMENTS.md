@@ -39,6 +39,10 @@ headline after seeing the result.
 - `kappa_review ∈ {0.50, 0.90, 1.00}`.
 - 12 cells; 50 replications per cell; everything else fixed at the main scenario
   (1% audit, 45-day approve delay, default cost matrix, 2% review capacity).
+
+`e_approve` is the pre-resolution post-approval report probability. The realized
+post-approval label rates are **0.61%, 3.06%, 12.24%, and 30.59%**; the main
+scenario's 5% is **3.06%** realized (3.68% including the 1% audit).
 - Common random numbers across cells.
 - Same BAF frame and policies as the main pilot.
 
@@ -94,13 +98,15 @@ measurement/diagnostic tool, not a bias study. Record this explicitly.
 
 **Measured read:**
 
-- **H1a supported:** naive bias exceeds 5% in **12/12** cells. The range is
-  **7.8% to 538.5%**.
+- **H1a supported:** the maximum naive bias across policies exceeds 5% in **12/12**
+  cells. The range is **7.8% to 538.5%**; the incumbent's own bias is
+  **1.5–218%**, above 5% in 11/12 cells.
 - **H1b supported:** the naive estimate has at least one pairwise inversion in
   **12/12** cells (0.48–1.28 mean inversions); it selects the true best policy
   **0%** of the time in 11/12 cells and **52%** in `e050_k050`.
-- **H1c supported:** DR with known propensities stays within **1.89%** in all 12
-  cells. Coverage is **84.5–96.0%**.
+- **H1c supported:** DR with known propensities has a mean bias of at most
+  **1.89%** in all 12 cells; the 95% MC upper bound on |bias| is **4.3%** for
+  `e>=0.05` and **9.6%** at `e=0.01`. Coverage is **84.5–96.0%**.
 - **H1d supported:** the bias shrinks as `e_approve` rises, but it does **not**
   collapse below 5% even at `e_approve=0.50` (7.8–34.7%). The magnitude is
   strongly conditional; the direction is robust.
@@ -109,7 +115,7 @@ measurement/diagnostic tool, not a bias study. Record this explicitly.
   ranking is not guaranteed. This is a reportable limitation, not a hidden one.
 
 **Decision:** keep the conditional V1 claim. Do not claim a universal
-112–278% magnitude. Report the 7.8–538.5% range, the 12/12 direction, and the
+112–278% magnitude. Report the 7.8–538.5% range, the 12/12 direction, the per-policy spread, and the
 low-`e` ranking weakness.
 
 ---
@@ -157,26 +163,26 @@ valid. Record the pass and update the threats register.
 
 ### 3.6 Result (2026-11-21)
 
-**F5 failed.** The conditional partial-identification interval reaches
-`coverage_full >= 90%` in **15 of 88** policy–scenario cells.
+**F5 failed for the narrow interval; it passed for the widened interval.** The
+conditional interval reaches `coverage_full >= 90%` in **15 of 88**
+policy–scenario cells; the widened interval reaches it in **77 of 88**.
 
-| Main-scenario policy | `coverage_full` | F5 | Unconditional coverage | Width | Unconditional width |
-|---|---:|---|---:|---:|---:|
-| `incumbent` | 34% | fail | 99% | 0.001581 | 0.006780 |
-| `strict_cost` | 68% | fail | 99% | 0.001640 | 0.004257 |
-| `lenient_cost` | 86% | fail | 100% | 0.009942 | 0.015011 |
-| `better_model` | 87% | fail | 100% | 0.004379 | 0.008987 |
+| Main-scenario policy | Narrow coverage | F5 narrow | Widened coverage | F5 widened | Width | Widened width |
+|---|---:|---|---:|---|---:|---:|
+| `incumbent` | 34% | fail | 99% | pass | 0.001581 | 0.006780 |
+| `strict_cost` | 68% | fail | 99% | pass | 0.001640 | 0.004257 |
+| `lenient_cost` | 86% | fail | 100% | pass | 0.009942 | 0.015011 |
+| `better_model` | 87% | fail | 100% | pass | 0.004379 | 0.008987 |
 
-The unconditional interval covers 99–100% in the main scenario, so the failure is
-partly a construction problem (the conditional interval ignores the `P0` standard
-error). It is not a complete fix: under outcome-dependent labels the
-unconditional interval also covers **0%**, because the `P0` estimate itself is
-biased there.
+The widened interval is a valid (conservative) 95% interval for the full value
+under the identification assumptions. Its 11 failures are exactly the cells
+where the `P0` estimate is biased: the eight outcome-dependent cells, the two
+action-level covariate cells, and `delay_90`.
 
-**Decision:** remove the coverage claim. Report the bounds as a
-partial-identification range conditional on `P0`, with the reject share and the
-unconditional width as a sensitivity. Do not describe either interval as a
-confidence interval.
+**Decision:** remove the coverage claim for the narrow interval. Report it as a
+partial-identification range conditional on `P0`; report the widened interval as
+the confidence interval, with its width. Do not describe the narrow interval as
+a confidence interval.
 
 **Why it matters:** this is the strongest evidence that the reject-margin result
 is a limitation, not a feature. A reviewer should read §6 of `RESULTS.md` before

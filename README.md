@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-47%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-81%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-0.2.1-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-research%20pilot-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
@@ -19,16 +19,17 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **68 tests pass.** The documentation is
+> **Status:** `v0.2.1` research pilot. **82 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
 >
-> **V1 in progress:** a credibility-first release is planned for December 2026.
-> It makes the bias claim conditional on an observation-rate sweep, records the
-> bounds F5 result, adds an identification gate to the report, and ships a
-> reproducible benchmark pipeline. See
-> [`docs/V1/README.md`](docs/V1/README.md).
+> **V1 review candidate:** a credibility-first release. The bias claim is
+> conditional on an observation-rate sweep; F5 is recorded (the narrow interval
+> fails, the widened interval passes); the report has an identification gate; and
+> the benchmark pipeline reproduces the recorded hash. See
+> [`docs/V1/README.md`](docs/V1/README.md) and
+> [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md).
 
 ## Why this exists
 
@@ -41,9 +42,10 @@ selected by the old policy.
 A normal backtest on the labeled data answers a different question. In this
 project's simulation, it **overstated cost by 112–278%** in the main scenario
 and ranked the better model **below** the incumbent — the naive evaluation would
-reject the better policy. A 12-cell observation-rate sweep shows the bias is
-**7.8–538.5%** but exceeds 5% in **every** cell: the direction is robust, the
-magnitude is conditional.
+reject the better policy. A 12-cell observation-rate sweep shows the maximum
+bias across policies is **7.8–538.5%** and exceeds 5% in **every** cell; the
+incumbent's own bias is **1.5–218%**, above 5% in 11/12 cells. The direction is
+robust; the magnitude is conditional.
 
 This repository builds the missing measurement layer: a decision-log schema,
 selection- and delay-aware estimators, a capacity-constrained review model, a
@@ -86,7 +88,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 68 tests · not production |
+| **Status** | v0.2.1 research pilot · 82 tests · not production |
 
 ## Headline results
 
@@ -95,16 +97,16 @@ scenario and 50 for the sweeps and sensitivity studies.
 
 | Finding | Result | Reading |
 |---|---|---|
-| Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep | relative bias; **12/12** cells >5% |
+| Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep (max across policies) | relative bias; **12/12** cells >5% for at least one policy; incumbent **1.5–218%**, 11/12 |
 | Naive ranking | **1.00 / 0%** | mean pairwise inversions / P(select true best) |
-| Observation-rate sweep | **12/12** cells >5%; DR ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
-| Doubly robust (DR) | **0.94% / 96.0%** | max relative bias / mean coverage |
-| IPW | **1.18% / 95.0%** | max relative bias / mean coverage |
+| Observation-rate sweep | **12/12** cells >5% (max across policies); DR mean ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
+| Doubly robust (DR) | **0.94% / 96.0%** | mean relative bias / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
+| IPW | **1.18% / 94.5%** | max relative bias / mean coverage |
 | Audit-only at 1% | **2.98% / 84.5% / 1,271** | max bias / coverage / mean ESS |
 | Outcome-dependent labels | audit-only **−2.37% to −1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** | relative bias |
-| Reject-margin bounds | widest **0.009942**; incumbent coverage **34%**; F5 gate **failed** (**15/88** cells ≥90%) | width / coverage of true full value — **not** a confidence interval |
+| Reject-margin bounds | **0.009942** main; **0.203** in `frej_002`; incumbent coverage **34%**; F5 **failed** for the narrow interval (**15/88**), **passed** for the widened interval (**77/88**) | width / coverage of true full value — the narrow interval is **not** a confidence interval |
 | DR ranking at low approve-label rate | **64%** [50–76%] vs naive **0%** | P(select the true best policy), 95% Wilson interval |
-| Estimated action-level `e` | DR **2.67% / 91.0%**; IPW **11.19% / 73.0%** | max relative bias / mean coverage |
+| Estimated action-level `e` | DR **1.43% / 93.5%**; IPW **2.92% / 92.0%** | max relative bias / mean coverage |
 | Covariate-dependent observation | action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage **89–91.5%** | relative bias; coverage is reported separately |
 
 > **Caveat:** these are simulation results on public synthetic data, not a
@@ -211,7 +213,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 68 tests, including negative controls
+├── tests/                 # 82 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -263,7 +265,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 68 tests, including negative controls |
+| Test suite | **Implemented** | 82 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |

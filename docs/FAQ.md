@@ -144,7 +144,7 @@ observation model, a stable cost model, and no interference/anticipation. See
 
 DR is consistent if either the outcome model or the propensity model is correct.
 IPW relies entirely on the propensity. In the pilot, action-level IPW is fragile
-when `e` is estimated (11.19% bias, 73% coverage) and fails under
+when `e` is estimated (2.92% bias, 92% coverage) and fails under
 covariate-dependent observation (67.52% bias, 1.5% coverage). Action-level DR is
 better but still fails under covariate dependence (21.25% bias, 72.5% coverage);
 the fitted covariate model recovers the oracle (1.97–3.68%). See
@@ -155,7 +155,7 @@ the fitted covariate model recovers the oracle (1.97–3.68%). See
 DR is consistent if either the outcome model or the propensity model is correct,
 but that is a theoretical property, not a finite-sample guarantee. In the
 covariate stress test, the outcome model included log amount, yet action-level DR
-was still **21.25%** biased (17.59% with the delay). The observation gradient was
+was still **21.25%** biased (20.27% with the delay). The observation gradient was
 strong enough that the residual correction did not absorb it. The fitted
 covariate propensity model directly targets the observation mechanism and
 recovers the oracle (**1.97–3.68%**). The lesson: check the observation-rate
@@ -256,7 +256,8 @@ truth, an audit designer, and a memo generator. See [`ARCHITECTURE.md`](ARCHITEC
 
 The premise is real; the correction works on `P0`; the reject margin needs
 bounds; the audit is the only approximately unbiased option under outcome-dependent labels but not a universal
-fix; DR is robust to estimated action-level propensities, IPW is not; under
+fix; both DR and IPW survive estimated action-level propensities, and DR is
+better under noise; under
 covariate-dependent observation, action-level IPW and DR both fail, and the
 fitted covariate propensity model recovers the oracle. See
 [`RESULTS.md`](RESULTS.md).

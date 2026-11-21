@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from onboarding_audit.config import Costs, PolicySpec
+from onboarding_audit.config import Costs, OutcomeModel, PolicySpec
+from onboarding_audit.estimators import fit_outcome_model
 from onboarding_audit.policies import build_policy
 
 
@@ -30,3 +31,25 @@ def test_policy_actions_do_not_depend_on_labels():
     df2["fraud_bool"] = rng.permutation(n) % 2
     a2 = build_policy(df2, spec, costs, amount).actions
     assert np.array_equal(a1, a2)
+
+
+def test_outcome_model_does_not_predict_permuted_labels():
+    """A real leak would survive target shuffling; this test must collapse to chance."""
+    from sklearn.metrics import roc_auc_score
+
+    rng = np.random.default_rng(0)
+    n = 4_000
+    X = rng.normal(size=(n, 5))
+    y = rng.integers(0, 2, n)
+    observed = np.ones(n, dtype=bool)
+    prop = np.full(n, 0.5)
+    cfg = OutcomeModel(C=0.5, n_splits=3)
+    aucs = []
+    for seed in range(5):
+        shuffled = rng.permutation(y)
+        phat = fit_outcome_model(X, shuffled, observed, prop, cfg, seed)
+        aucs.append(roc_auc_score(shuffled, phat))
+    mean_auc = float(np.mean(aucs))
+    assert 0.45 <= mean_auc <= 0.55, (
+        f"permuted-label AUC {mean_auc:.3f} suggests leakage"
+    )

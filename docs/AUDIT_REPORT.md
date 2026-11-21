@@ -34,11 +34,12 @@ pre-registered protocol. It is **not** claimed.
 
 | Gate | Result | Severity of the test | Evidence | Residual risk |
 |---|---|---|---|---|
-| Claim precision | **Pass** | High | Population, metric, cost unit, and scope are stated; `P0` vs full-population separation is explicit | A reader can still quote the `P0` number as the policy value |
+| Claim precision | **Pass (after correction)** | High | Population, metric, cost unit, and scope are stated; `P0` vs full-population separation is explicit; Monte Carlo bounds are reported | A reader can still quote the `P0` number as the policy value |
 | Leakage / information flow | **Pass** | High | Temporal split 0–2 / 3–4 / 5–6; target, id, time, exposure, and post-decision fields excluded; label-permutation test; benchmark rebuilt byte-for-byte | A real log may contain a feature that is not available at decision time |
 | Selection / multiple testing | **Partial** | Medium | E1 config and decision rules committed before the result (`9e3bffe`, 20 minutes before `af7e03d`); 12 cells reported, not one | The headline cell (64% P(best)) is a selected extreme; its 95% CI is [50%, 76%] |
 | Baseline superiority | **Pass** | High | Naive is the baseline on identical splits and costs; DR is compared to it, not to a straw man | Naive is a weak baseline by construction; the relevant comparison is DR vs IPW vs audit-only |
 | Effect size / practical value | **Partial** | Medium | Naive bias 7.8–538.5%; ranking 0% → 64–100%; audit RMSE gain 8% | The effect is simulated; the practical value on a real log is unknown |
+| Numbers discipline | **Partial** | High | Monte Carlo bounds now reported on every headline bias; n and reps stated; `scripts/check_claims.py` recomputes 27 headline numbers from the committed JSON | Some sweep cells are underpowered for fine distinctions |
 | Tail / ruin | **Partial** | High | Heavy weights undercover (89–91.5%); outcome-dependent labels break action-only estimators (up to 1,627.90%); the gate refuses a declared outcome mechanism | An undeclared or falsely declared mechanism still passes with a warning |
 | Counter-metrics | **Pass** | Medium | Bias is paired with coverage, ESS, max weight, ranking inversions, and F5 coverage | Coverage intervals ignore within-replication correlation |
 | Reflexivity / systems | **Partial** | Low | The audit is shadow scoring only; no production action; no random approvals | A team could treat a passing memo as approval to ship |
@@ -76,7 +77,9 @@ the candidate changes most is an overclaim.
 
 **Fix applied:** the memo now says **`P0`-conditional policy value**, always
 reports the candidate actions on logging-rejected rows, and adds a
-**full-policy value: not identified** row. **Residual:** a reader can still quote
+**full-policy value: not identified** row. (The first implementation read a
+non-existent key and printed 0; the independent pass caught it and it is fixed
+with a regression test — see §7.1 I5.) **Residual:** a reader can still quote
 the `P0` number as the policy value; the label is the only defense.
 
 ### F3 — The gate cannot test the assumption that matters most (critical, partially fixed)
@@ -104,21 +107,21 @@ states that the direction is solid and the decimals are not. **Residual:** the
 coverage interval treats policy–replications as independent, so it is an
 optimistic lower bound.
 
-### F5 — The bounds fail their own gate (high, disclosed)
+### F5 — The bounds fail their own gate (high, disclosed; partially resolved)
 
-F5 (`coverage_full >= 90%`) holds in **15 of 88** cells; the main scenario is
-**34–87%**. The narrow-interval coverage claim is removed. The unconditional
-interval covers 99–100% in the main scenario but is roughly four times wider
-(incumbent **0.006780** vs **0.001581**) and covers 0% under outcome-dependent
-labels.
+F5 (`coverage_full >= 90%`) holds in **15 of 88** cells for the narrow interval
+and **77 of 88** for the widened interval; the main scenario is **34–87%** narrow
+and **99–100%** widened. The 11 widened failures are exactly the cells where the
+`P0` estimate is biased.
 
-**What survives:** the widened interval is a conservative 95% interval for the
-identified set under the identification assumptions. It is valid but wide. The
+**What survives:** the widened interval is a valid (conservative) 95% confidence
+interval under the identification assumptions, and it passes F5 except where
+those assumptions fail. The narrow interval is not a confidence interval. The
 honest conclusion is that the reject margin needs a controlled design, not a
-better interval.
+better narrow interval.
 
-**Residual:** the bounds are still printed. A reader may treat the narrow
-interval as a confidence interval despite the label.
+**Residual:** the narrow interval is still printed. A reader may treat it as a
+confidence interval despite the label.
 
 ### F6 — The cost matrix is assumed (high, disclosed)
 
@@ -171,8 +174,9 @@ The audit should also record what survives, or it is only destruction.
    default.
 3. **The reject margin is a design problem, not a statistics problem.** No
    amount of weighting identifies it from logs alone; it needs a controlled
-   approval design or an explicit assumption. The bounds fail their coverage gate,
-   which is the honest result.
+   approval design or an explicit assumption. The narrow interval fails its
+   coverage gate; the widened interval is valid but wide. That is the honest
+   result.
 4. **The failure mode is detectable before the estimate.** A gate that asks for
    the observation mechanism, the label counts, the ESS, and the cost support
    catches most unidentified logs before a number is printed.
@@ -181,10 +185,10 @@ The audit should also record what survives, or it is only destruction.
 
 | Claim | Verdict | Basis |
 |---|---|---|
-| The repository is internally consistent, reproducible, and honestly scoped | **Pass (conditional)** | 68 tests, exact benchmark hash, claim ledger, gate, disclosed limitations |
-| The simulation results hold as stated, conditional on the simulated mechanism | **Pass (conditional)** | Pre-registered sweep, Wilson intervals, F5 failure recorded |
+| The repository is internally consistent, reproducible, and honestly scoped | **Pass (conditional)** | 82 tests, exact benchmark hash, claim ledger, gate, disclosed limitations |
+| The simulation results hold as stated, conditional on the simulated mechanism | **Pass (conditional)** | Pre-registered sweep, Wilson intervals, Monte Carlo bounds, F5 split recorded |
 | The method will work on a specific bank's log | **Inconclusive** | No partner log, no independent validator, cost matrix unvalidated |
-| The reject margin can be estimated from logs alone | **Fail** | F5 failed; bounds are not identified |
+| The reject margin is point-identified from logs alone | **Fail** | The narrow interval fails F5; the widened interval is valid but 4× wider and fails where `P0` is biased |
 
 **Overall:** **PASS for the Level 2, simulation-scoped claim; INCONCLUSIVE for
 any production or generalization claim.** INCONCLUSIVE is not safe: do not
@@ -196,28 +200,67 @@ present the simulation numbers as evidence about a specific institution.
    "Measured" without it. *(done)*
 2. Keep the `P0`-conditional label and the full-policy "not identified" row.
    *(done)*
-3. Report Wilson intervals for every proportion. *(done for the sweep; add to the
-   pilot coverage table if a reviewer asks)*
-4. Add an independent validator or state that the audit is a self-review.
-   *(stated)*
-5. Do not cite the bounds as a confidence interval or the audit as a universal
-   fix. *(done)*
+3. Report Monte Carlo intervals on every headline bias. *(done)*
+4. Keep the executable claim check (`scripts/check_claims.py`) in CI. *(done)*
+5. Add an independent validator or state that the audit is a self-review.
+   *(stated; independent pass recorded in §7)*
+6. Do not cite the narrow bounds as a confidence interval or the audit as a
+   universal fix. *(done)*
 
 ## 7. Independent adversarial pass
 
-This version records the author's self-audit. An independent adversarial pass is
-in progress; its findings will be appended here before the external review, and
-any disagreement with the self-audit will be kept rather than smoothed.
+Two independent agents reviewed the tree: an adversarial audit of the claims and
+a correctness review of the estimator code. Both found defects the self-audit
+missed. The claim audit returned **FAIL on the claims as stated** — not because
+the mechanism is wrong, but because the precision ("DR within 1%", "widest
+0.009942", "12/12") and two gate/memo behaviours were not supported by the
+artifact. Those defects are fixed or disclosed below; the corrected claims are in
+`CLAIMS.md` and `RESULTS.md`.
 
-Until that section is filled, treat the verdict in §5 as a **self-review**, not an
-independent audit.
+### 7.1 Claim audit (independent)
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| I1 | DR precision was quoted without Monte Carlo error: "0.94%" and "≤1.89%" are means; the 95% MC upper bound on \|bias\| is **3.8%** (main) and **4.3–9.6%** (sweep). | Critical | **Fixed**: MC bounds added to the ledger and headline |
+| I2 | "12/12 cells >5%" is the maximum over four policies; the incumbent is **1.52%** at `e050_k050`. | High | **Fixed**: per-policy claim (incumbent 11/12) |
+| I3 | "Widest bounds 0.009942" was main-scenario only; `frej_002` is **0.203**. | High | **Fixed**: both widths reported |
+| I4 | The gate passed a constant, wrong propensity column and printed "Measured". | High | **Fixed**: calibration ratio, impossible-calibration refusal, low-ratio flag |
+| I5 | The memo's outside-`P0` line read a key that did not exist and printed 0. | High | **Fixed** + regression test |
+| I6 | "5% approved-label rate" is **3.06%** realized (3.68% with audit). | High | **Fixed**: relabelled as pre-resolution report probability; realized rates reported |
+| I7 | The report's `audit_only` is a complete-case mean, not the pilot's resolution-weighted estimator. | Medium | **Disclosed** in the memo; not fixed |
+| I8 | Some tests were decorative (label permutation only checked policy actions; hash test only checked length). | Medium | **Partially fixed**: added a target-shuffle AUC test, estimator recovery tests, and gate/memo regressions; the benchmark refit test is open |
+
+### 7.2 Estimator review (independent)
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| C1 | `fit_outcome_model` divided by zero on a labelled reject row (`e=0`). | High | **Fixed**: zero-propensity rows dropped; NaN when none remain |
+| C2 | F5 was attached to the narrow interval, which cannot pass; the widened interval is the valid one. | Medium | **Fixed**: both F5 flags; 15/88 vs 77/88 |
+| C3 | `e_approve` omitted the resolution factor on the audit channel, inflating the estimated-`e` IPW bias. | Medium | **Fixed**: marginal observed rate; IPW **2.92%**, not 11.19% |
+| C4 | `n_rej == 0` returned a zero-width interval and dropped the `P0` SE. | Low–Med | **Fixed** + test |
+| C5 | HT variance centred on the estimate, adding `Var(c)/n_pop`; census `e=1` reported non-zero SE. | Low | **Fixed**: standard design variance; census returns 0 |
+| C6 | Zero-observation `ipw_ht`/`dr` returned finite values. | Low–Med | **Fixed**: NaN |
+| C7 | Gate silent-pass paths: NaN cost, `e>1`, unknown action strings. | Low | **Fixed** + tests |
+| C8 | `policy_bounds` was called without `v_pop_se` in the report path. | Low | **Fixed** |
+| C9 | NaN SE not guarded in the bounds widening. | Low | **Fixed** |
+| C10 | `<20` outcome-model fallback used `y.mean()` over unobserved rows. | Low | **Fixed**: NaN when no usable rows |
+| C11 | NaN bounds counted as coverage failures. | Low | **Fixed**: masked |
+| C12 | Two different `audit_only` estimators (pilot vs report). | Low–Med | **Disclosed** in the memo; not fixed |
+
+**What this changes.** The qualitative mechanism survives. Two quantitative
+claims do not survive as stated and are corrected: the DR precision (MC bounds)
+and the "IPW fails with estimated `e`" result (a propensity bug). The sweep's
+"12/12" and the "widest bounds" are corrected to their per-policy and
+per-scenario forms. The independent pass moved the audit from a self-review to a
+review with external findings; it did not find a leakage, a baseline, or a
+reproduction failure.
 
 ## 8. What would change the verdict
 
 - A partner log and an independent validator reproducing the result → moves the
   production claim from INCONCLUSIVE to E3/E4.
-- A valid confidence-interval construction for the reject margin that passes F5 →
-  moves the bounds claim from FAIL to conditional.
+- A narrow confidence-interval construction for the reject margin that passes F5
+  → moves the bounds claim from FAIL to conditional.
 - Evidence that the observation mechanism in a real log is action-dependent and
   correctly declared → strengthens the main claim.
 - A demonstration that the gate passes a log with a falsely declared mechanism →

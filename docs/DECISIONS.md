@@ -323,16 +323,19 @@ audit-only.
 **Assumptions:** The estimated e is action-level; the noise is a stress test,
 not a calibrated error model.
 
-**Result (2026-11-20):** The gate is met for **DR**, not for IPW.
-- Estimated e: DR max **2.67%**, coverage **91.0%**; IPW max **11.19%**,
-  coverage **73.0%**.
-- Noise sigma 0.25: DR **1.58% / 96.5%**; IPW **7.01% / 93.5%**.
+**Result (2026-11-20; corrected 2026-11-21):** The gate is met for both **DR**
+and **IPW** after the `e_approve` correction.
+- Estimated e: DR mean **1.43%**, coverage **93.5%**; IPW **2.92%**, **92.0%**.
+  The old 2.67% / 11.19% values came from an `e_approve` formula that omitted
+  the resolution factor on the audit channel.
+- Noise sigma 0.25: DR **1.58% / 96.5%**; IPW **7.01% / 93.0%**.
 - Outcome-dependent labels with estimated e: audit-only **2.58% / 82.5%**;
-  IPW **1350.8%**; DR **1627.9%**.
+  IPW **2064.9%**; DR **1737.0%**.
 
-**Decision update:** The paper claims DR robustness, not IPW robustness. The tool
-recommends DR when e is estimated, and audit-only when the label-source mix
-suggests outcome-dependent observation.
+**Decision update:** The paper claims DR is more robust under noise and
+covariate-dependent observation, not that IPW fails under action-level
+estimation. The tool recommends DR when `e` is noisy or covariate-dependent,
+and audit-only when the label-source mix suggests outcome-dependent observation.
 
 **Review date:** 2027-01-15.
 **Kill criteria:** The correction fails under estimated e in the main scenario;
@@ -377,7 +380,7 @@ approximation; the features are available at decision time.
 **Result (2026-11-20):** The gate is met by the covariate model, not by
 action-level weighting.
 - Action-level: IPW **67.52% / 1.5%** coverage; DR **21.25% / 72.5%** (delay 0.5).
-  With delay 45: IPW **51.72% / 21.5%**; DR **17.59% / 80.0%**.
+  With delay 45: IPW **64.27% / 10.0%**; DR **20.27% / 79.0%**.
 - Covariate model: IPW **1.97% / 91.5%**; DR **2.48% / 89.5%** (delay 0.5).
   With delay 45: IPW **3.35% / 90.5%**; DR **3.68% / 89.5%**.
 - Oracle: IPW **3.01% / 90.0%**; DR **2.63% / 89.0%**.

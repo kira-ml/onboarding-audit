@@ -66,13 +66,22 @@ def ipw_ht(
 ) -> Estimate:
     n_pop = int(in_pop.sum())
     w = _weights(observed, propensity)
-    if n_pop == 0:
+    if n_pop == 0 or w.sum() <= 0:
         return Estimate(
             float("nan"), float("nan"), int(observed.sum()), 0.0, float("nan")
         )
     value = float((w * cost).sum() / n_pop)
-    psi = np.where(in_pop, w * cost - value, 0.0)
-    se = float(psi[in_pop].std(ddof=1) / np.sqrt(n_pop)) if n_pop > 1 else float("nan")
+    # Standard HT variance for the finite-population mean. The previous form
+    # centred on `value`, which adds Var_pop(c)/n_pop and is conservative; this
+    # form is zero under a census (e=1) and matches the design variance.
+    e = np.where(observed, propensity, 0.0)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        terms = np.where(
+            observed & (e > 0),
+            (1.0 - e) * cost * cost / (e * e),
+            0.0,
+        )
+    se = float(np.sqrt(terms.sum()) / n_pop) if n_pop > 1 else float("nan")
     max_w = float(w[observed].max()) if observed.any() else float("nan")
     return Estimate(value, se, int(observed.sum()), effective_sample_size(w), max_w)
 
@@ -106,11 +115,18 @@ def fit_outcome_model(
     cfg: OutcomeModel,
     seed: int,
 ) -> np.ndarray:
-    """Cross-fitted P(fraud | X) on observed rows, weighted by 1/e."""
+    """Cross-fitted P(fraud | X) on observed rows, weighted by 1/e.
+
+    A row with zero propensity cannot inform the model; it is dropped rather
+    than divided by zero. If no usable row remains, the prediction is NaN so the
+    caller withholds the estimate instead of trusting a constant.
+    """
     n = len(y)
-    idx = np.where(observed)[0]
+    idx = np.where(observed & (propensity > 0))[0]
+    if len(idx) == 0:
+        return np.full(n, np.nan)
     if len(idx) < 20 or len(np.unique(y[idx])) < 2:
-        base = float(y[idx].mean()) if len(idx) else float(y.mean())
+        base = float(y[idx].mean())
         return np.full(n, np.clip(base, 1e-6, 1 - 1e-6))
 
     n_splits = min(cfg.n_splits, max(2, len(idx) // 10))
@@ -167,6 +183,10 @@ def dr(
         )
     mu = expected_cost(phat, actions, amount, costs)
     w = _weights(observed, propensity)
+    if not np.isfinite(mu[in_pop]).all() or w.sum() <= 0:
+        return Estimate(
+            float("nan"), float("nan"), int(observed.sum()), 0.0, float("nan")
+        )
     value = float(mu[in_pop].mean() + (w * (cost - mu))[in_pop].mean())
     psi = np.where(in_pop, mu + w * (cost - mu) - value, 0.0)
     se = float(psi[in_pop].std(ddof=1) / np.sqrt(n_pop)) if n_pop > 1 else float("nan")
@@ -208,21 +228,25 @@ def policy_bounds(
     The unobserved logging-rejected rows are bounded by the min/max cost of the
     candidate action; the identified population uses the supplied estimate. The
     unconditional interval widens the bounds by the `P0` estimate's standard
-    error, scaled by the `P0` share. It is a diagnostic, not a confidence
-    interval for the full population.
+    error, scaled by the `P0` share. Because the bounds are monotone in `v_pop`,
+    that widened interval is a valid (conservative) 95% confidence interval for
+    the full-population value under the bounds assumptions; the narrow interval
+    is not.
     """
     n = len(actions)
     n_pop = int(in_pop.sum())
     n_rej = int(rejected.sum())
+    se = 0.0 if not np.isfinite(v_pop_se) else max(float(v_pop_se), 0.0)
+    se_term = 1.96 * (n_pop / max(n, 1)) * se
     if n_rej == 0 or n == 0:
         return Bounds(
             v_pop,
             v_pop,
             0.0,
             n_rej,
-            v_pop,
-            v_pop,
-            0.0,
+            v_pop - se_term,
+            v_pop + se_term,
+            2.0 * se_term,
         )
     if not np.isfinite(v_pop):
         return Bounds(float("nan"), float("nan"), float("nan"), n_rej)
@@ -242,7 +266,6 @@ def policy_bounds(
 
     lower = (n_pop / n) * v_pop + (n_rej / n) * float(min_cost[rejected].mean())
     upper = (n_pop / n) * v_pop + (n_rej / n) * float(max_cost[rejected].mean())
-    se_term = 1.96 * (n_pop / n) * max(float(v_pop_se), 0.0)
     lower_u = lower - se_term
     upper_u = upper + se_term
     return Bounds(

@@ -66,3 +66,10 @@ def test_recorded_hash_and_row_count_are_pinned():
     module = _load()
     assert len(module.EXPECTED_SHA256) == 64
     assert module.EXPECTED_ROWS == 227_491
+
+def test_provenance_doc_matches_script_constants():
+    module = _load()
+    text = (ROOT / "docs" / "BENCHMARK_PROVENANCE.md").read_text(encoding="utf-8")
+    assert module.EXPECTED_SHA256 in text
+    assert f"{module.EXPECTED_ROWS:,}" in text
+    assert "7bf10a37ce07e72e14c1b09e5efee3d27261baff4facc7da767b0474dcf9b809" in text

@@ -13,8 +13,17 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **68 passed** on the v0.2.1 tree. The suite uses only synthetic or
+Expected: **82 passed** on the v0.2.1 tree. The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
+
+The headline numbers are also checked directly against the committed JSON:
+
+```bash
+python scripts/check_claims.py
+```
+
+Expected: **27/27 checks passed**. This is the executable form of the claim
+ledger's rule: every public number traces to a committed artifact.
 
 Optional:
 

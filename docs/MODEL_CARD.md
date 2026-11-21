@@ -120,28 +120,28 @@ public synthetic data**, not a production estimate.
 | Result | Value | Artifact |
 |---|---|---|
 | Naive relative bias, main scenario | **+111.55% to +278.49%** | `reports/pilot.json` |
-| Naive relative bias across 12 observation-rate cells | **7.8% to 538.5%**; above 5% in **12/12** | `reports/obs_sweep/pilot.json` |
+| Naive relative bias across 12 observation-rate cells | **7.8% to 538.5%** (max across policies); above 5% in **12/12**; incumbent **1.5–218%**, 11/12 | `reports/obs_sweep/pilot.json` |
 | Naive P(select the true best policy) | **0%** in 11/12 cells; **52%** at `e_approve=0.50`, `kappa_review=0.50` | `reports/obs_sweep/pilot.json` |
 
 ### 7.2 The correction
 
 | Result | Value | Artifact |
 |---|---|---|
-| DR with known propensities, max relative bias | **1.89%** across 12 cells | `reports/obs_sweep/pilot.json` |
+| DR with known propensities, mean relative bias | **1.89%** across 12 cells; 95% MC upper bound **4.3%** (`e>=0.05`), **9.6%** (`e=0.01`) | `reports/obs_sweep/pilot.json` |
 | DR coverage, known propensities | **84.5% to 96.0%** | `reports/obs_sweep/pilot.json` |
 | DR P(select the true best policy) | **64%** at `e_approve=0.01`; **96–100%** at `e_approve=0.50` | `reports/obs_sweep/pilot.json` |
-| DR with estimated action-level propensities | max **2.67%**, coverage **91.0%** | `reports/propensity_sensitivity.json` |
+| DR with estimated action-level propensities | max **1.43%**, coverage **93.5%** | `reports/propensity_sensitivity.json` |
 | Covariate propensity model under covariate-dependent observation | DR **2.48% / 89.5%**; IPW **1.97% / 91.5%** | `reports/propensity_sensitivity.json` |
 
 ### 7.3 Where it fails
 
 | Failure | Value | Artifact |
 |---|---|---|
-| IPW with estimated action-level propensities | max **11.19%**, coverage **73.0%** | `reports/propensity_sensitivity.json` |
+| IPW with estimated action-level propensities | max **2.92%**, coverage **92.0%** | `reports/propensity_sensitivity.json` |
 | Outcome-dependent approved labels | IPW **1,350.76%**, DR **1,627.90%**, coverage **0%** | `reports/propensity_sensitivity.json` |
 | Action-level IPW under covariate-dependent observation | max **67.52%**, coverage **1.5%** | `reports/propensity_sensitivity.json` |
 | Heavy weights | coverage **89–91.5%**, below nominal 95% | `reports/propensity_sensitivity.json` |
-| Reject-margin bounds | incumbent covers the true full value in **34%** of replications; F5 gate **failed** (15/88 cells) | `reports/pilot.json` |
+| Reject-margin bounds | incumbent covers the true full value in **34%** of replications (narrow interval); F5 **15/88** narrow, **77/88** widened | `reports/pilot.json` |
 
 The last row is the reason the bounds are labeled **partial-identification
 intervals**, not confidence intervals.

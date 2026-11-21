@@ -259,3 +259,27 @@ def test_report_covariate_propensity_model_runs(tmp_path):
     assert Path(result.memo_path).exists()
     memo = Path(result.memo_path).read_text(encoding="utf-8")
     assert "Propensity model" in memo
+
+def test_memo_reports_candidate_actions_on_rejected_rows(tmp_path):
+    log = pd.read_csv(ROOT / "examples" / "demo_log.csv")
+    cand = pd.read_csv(ROOT / "examples" / "demo_candidate.csv")
+    rejected = log.loc[log["action"] == "reject", "application_id"]
+    assert len(rejected) >= 1
+    target = rejected.iloc[0]
+    cand.loc[cand["application_id"] == target, "score"] = 0.0
+    log_path = tmp_path / "log.csv"
+    cand_path = tmp_path / "cand.csv"
+    log.to_csv(log_path, index=False)
+    cand.to_csv(cand_path, index=False)
+    result = run_report(
+        log_path,
+        cand_path,
+        CONFIG,
+        tmp_path / "out",
+        capacity=0.10,
+        observation_assumption="action",
+    )
+    memo = Path(result.memo_path).read_text(encoding="utf-8")
+    assert "Candidate actions on logging-rejected rows:** 1" in memo
+    report = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
+    assert report["result"]["diagnostics"]["candidate_approve_outside_p0"] == 1

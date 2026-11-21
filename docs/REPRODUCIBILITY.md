@@ -44,7 +44,7 @@ python -c "import onboarding_audit; print(onboarding_audit.__version__)"
 pytest -q
 ```
 
-Expected: the version string and **68 passed**.
+Expected: the version string and **82 passed**.
 
 ## 3. Data
 
@@ -217,6 +217,7 @@ source. The claim ledger is [`CLAIMS.md`](CLAIMS.md).
 | Propensity sensitivity | `onboarding-audit sensitivity ...` | `aggregate` |
 | Covariate sensitivity | same | `aggregate` filtered to `covariate_*` |
 | Arbitrary-log memo | `onboarding-audit report ...` | `report.json` |
+| Headline claim check | `python scripts/check_claims.py` | all of the above |
 
 ## 8. Runtime
 

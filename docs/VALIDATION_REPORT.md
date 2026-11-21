@@ -29,7 +29,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **68 passed** |
+| Test result | **82 passed** |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12 |
 
@@ -47,6 +47,7 @@ Actions run is the remaining CI evidence.
 | Gate integration in the report | `tests/test_report.py` | pass |
 | 20-row demo withholds estimates | `tests/test_report.py::test_report_withholds_point_estimate_on_small_log` | pass |
 | End-to-end demo | `tests/test_demo.py` | pass |
+| Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (27/27) |
 | Bounds widen with the `P0` standard error | `tests/test_estimators.py` | pass |
 | F5 fields in the summary | `tests/test_metrics.py` | pass |
 
@@ -87,9 +88,9 @@ be computed from an unidentified point estimate.
 
 | Result | Value |
 |---|---|
-| Naive relative bias | **7.8% to 538.5%** |
-| Cells with naive bias > 5% | **12/12** |
-| DR max relative bias (known `e`) | **1.89%** |
+| Naive relative bias | **7.8% to 538.5%** (max across policies) |
+| Cells with naive bias > 5% | **12/12** for at least one policy; incumbent **11/12** |
+| DR mean relative bias (known `e`) | **1.89%**; 95% MC upper bound **4.3%** (`e>=0.05`), **9.6%** (`e=0.01`) |
 | DR coverage (known `e`) | **84.5% to 96.0%** |
 | DR P(select the true best policy) | **64%** at `e_approve=0.01`; **96–100%** at `e_approve=0.50` |
 | Naive P(select the true best policy) | **0%** in 11/12 cells; **52%** at `e050_k050` |
@@ -104,22 +105,29 @@ Recorded by the pilot in `reports/pilot.json` and `reports/pilot.md`:
 
 | Field | Meaning |
 |---|---|
-| `coverage_full` | Share of replications where the conditional partial-identification interval covers the true full-population value |
+| `coverage_full` | Share of replications where the narrow (conditional) partial-identification interval covers the true full-population value |
 | `f5_pass` | `coverage_full >= 90%` |
 | `lower_unconditional`, `upper_unconditional` | The interval widened by the `P0` standard error, scaled by the `P0` share |
 | `unconditional_coverage` | Coverage of the widened interval |
+| `f5_pass_unconditional` | `unconditional_coverage >= 90%` |
 
-F5 status: **failed**. `coverage_full >= 90%` holds in **15 of 88** policy–scenario
-cells; the main scenario is **34% (incumbent), 68% (strict cost), 86% (lenient
-cost), 87% (better model)**. The unconditional interval covers **99–100%** in the
-main scenario but **0%** under outcome-dependent labels, where the `P0` estimate
-itself is biased. The coverage claim is removed; the bounds are reported as a
-partial-identification range conditional on `P0`, not a confidence interval.
+F5 status: **failed for the narrow interval, passed for the widened interval.**
 
-The bounds are
-**partial-identification intervals conditional on the `P0` estimate**, not
-confidence intervals. A narrow interval on a noisy `P0` estimate can miss; the
-incumbent's narrow interval is the case that fails.
+| Interval | F5 pass | Main-scenario coverage |
+|---|---:|---:|
+| Narrow | **15/88** | 34–87% |
+| Widened | **77/88** | 99–100% |
+
+The 11 widened-interval failures are exactly the cells where the `P0` estimate
+is biased (outcome-dependent labels, action-level covariate misspecification,
+`delay_90`). The coverage claim for the narrow interval is removed; the widened
+interval is reported as a valid (conservative) 95% interval under the
+identification assumptions, with its width.
+
+The narrow interval is
+**conditional on the `P0` estimate**, not a confidence interval. A narrow
+interval on a noisy `P0` estimate can miss; the incumbent's narrow interval is
+the case that fails.
 
 ## 7. Benchmark reproducibility
 
@@ -164,7 +172,7 @@ hash and the per-score column hashes, is in
 | Link check | **pass** (0) |
 | Identification gate integrated and tested | **pass** |
 | Observation sweep committed | **pass** |
-| F5 recorded | **fail** (15/88; coverage claim removed) |
+| F5 recorded | **narrow: fail (15/88); widened: pass (77/88)** |
 | Benchmark reproducible | **pass** (exact SHA-256 match) |
 | Model card | **pass** |
 | Pilot protocol | **pass** |

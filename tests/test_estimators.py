@@ -136,3 +136,77 @@ def test_ipw_weights_large_for_low_propensity():
     est = ipw_ht(cost, observed, prop, in_pop)
     assert est.value == pytest.approx(100.0)
     assert est.max_weight == pytest.approx(100.0)
+
+
+def test_outcome_model_drops_zero_propensity_rows():
+    rng = np.random.default_rng(0)
+    n = 200
+    X = rng.normal(size=(n, 3))
+    y = rng.integers(0, 2, n)
+    observed = np.ones(n, dtype=bool)
+    prop = np.full(n, 0.5)
+    prop[:10] = 0.0  # labelled reject rows carry e=0
+    phat = fit_outcome_model(X, y, observed, prop, OutcomeModel(C=0.5, n_splits=3), 0)
+    assert phat.shape == (n,)
+    assert np.isfinite(phat).all()
+
+
+def test_outcome_model_with_no_usable_rows_is_nan():
+    n = 10
+    X = np.zeros((n, 2))
+    y = np.zeros(n, dtype=int)
+    observed = np.ones(n, dtype=bool)
+    prop = np.zeros(n)
+    phat = fit_outcome_model(X, y, observed, prop, OutcomeModel(C=0.5, n_splits=2), 0)
+    assert np.isnan(phat).all()
+
+
+def test_zero_observation_ipw_and_dr_are_nan():
+    n = 50
+    cost = np.ones(n)
+    observed = np.zeros(n, dtype=bool)
+    in_pop = np.ones(n, dtype=bool)
+    prop = np.full(n, 0.5)
+    assert not np.isfinite(ipw_ht(cost, observed, prop, in_pop).value)
+    phat = np.full(n, 0.1)
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    actions = np.array(["approve"] * n, dtype=object)
+    amount = np.full(n, 100.0)
+    assert not np.isfinite(
+        dr(cost, actions, amount, observed, prop, in_pop, phat, costs).value
+    )
+
+
+def test_census_has_zero_design_variance():
+    n = 100
+    rng = np.random.default_rng(0)
+    cost = rng.gamma(2.0, 0.01, n)
+    observed = np.ones(n, dtype=bool)
+    in_pop = np.ones(n, dtype=bool)
+    prop = np.ones(n)
+    est = ipw_ht(cost, observed, prop, in_pop)
+    assert est.value == pytest.approx(float(cost.mean()))
+    assert est.se == pytest.approx(0.0)
+
+
+def test_bounds_without_rejected_rows_widen_with_p0_error():
+    n = 50
+    amount = np.full(n, 100.0)
+    actions = np.array(["approve"] * n, dtype=object)
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    in_pop = np.ones(n, dtype=bool)
+    rejected = np.zeros(n, dtype=bool)
+    b = policy_bounds(actions, amount, costs, in_pop, rejected, 0.10, v_pop_se=0.01)
+    assert b.width == 0.0
+    assert b.lower_unconditional == pytest.approx(0.10 - 1.96 * 0.01)
+    assert b.upper_unconditional == pytest.approx(0.10 + 1.96 * 0.01)

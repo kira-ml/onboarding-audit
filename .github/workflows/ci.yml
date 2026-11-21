@@ -22,5 +22,7 @@ jobs:
         run: pytest -q
       - name: Demo smoke test
         run: python -m onboarding_audit.cli demo --out reports/demo_ci
+      - name: Headline claim check
+        run: python scripts/check_claims.py
       - name: Link check
         run: python scripts/check_links.py

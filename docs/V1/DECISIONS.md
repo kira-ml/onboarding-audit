@@ -121,8 +121,9 @@ warning thresholds but keep the positivity and cost-support refusal.
 3. Replace the bounds with a different construction.
 
 **Decision:** Option 2. Record F5 for every policy; compute the unconditional
-interval as a diagnostic; if F5 fails, report the bounds as a
-partial-identification interval with no coverage claim.
+interval and its own F5. If the narrow F5 fails, report the narrow interval as a
+partial-identification range and describe the widened interval as a conservative
+95% interval only where its own F5 passes.
 
 **Why:**
 - The pre-registered F5 criterion is ≥90%; the reported coverage is 35–85%.
@@ -131,7 +132,7 @@ partial-identification interval with no coverage claim.
 - A recorded failure is more credible than a renamed success.
 
 **Expected outcome:** `F5_pass` and `F5_coverage` in `pilot.json`; explicit
-language in `RESULTS.md` and `CLAIMS.md`; no "95% CI" for the bounds.
+language in `RESULTS.md` and `CLAIMS.md`; no "95% CI" for the narrow interval.
 
 **Assumptions:** The F5 computation is correct; the unconditional interval is a
 useful diagnostic; the bounds remain decision-relevant even if F5 fails.

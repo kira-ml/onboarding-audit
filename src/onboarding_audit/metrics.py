@@ -22,12 +22,18 @@ def summarize(rows: pd.DataFrame) -> pd.DataFrame:
     out = []
     for keys, part in rows.groupby(["scenario", "policy", "estimator"]):
         scenario, policy, estimator = keys
-        true = float(part["true_target"].mean())
+        true_arr = part["true_target"].to_numpy(dtype=float)
         values = part["value"].to_numpy(dtype=float)
         se = part["se"].to_numpy(dtype=float)
-        bias = float(values.mean() - true)
+        valid = np.isfinite(values) & np.isfinite(true_arr)
+        true = float(true_arr[valid].mean()) if valid.any() else float("nan")
+        bias = float(values[valid].mean() - true) if valid.any() else float("nan")
         rel = bias / true if abs(true) > 1e-12 else float("nan")
-        rmse = float(np.sqrt(np.mean((values - part["true_target"].to_numpy()) ** 2)))
+        rmse = (
+            float(np.sqrt(np.mean((values[valid] - true_arr[valid]) ** 2)))
+            if valid.any()
+            else float("nan")
+        )
         target = (
             "approved"
             if estimator == "audit_only"
@@ -38,8 +44,16 @@ def summarize(rows: pd.DataFrame) -> pd.DataFrame:
         if estimator == "bounds":
             cov = float("nan")
         else:
-            cov = float(
-                np.mean(np.abs(values - part["true_target"].to_numpy()) <= 1.96 * se)
+            cov_valid = valid & np.isfinite(se)
+            cov = (
+                float(
+                    np.mean(
+                        np.abs(values[cov_valid] - true_arr[cov_valid])
+                        <= 1.96 * se[cov_valid]
+                    )
+                )
+                if cov_valid.any()
+                else float("nan")
             )
         se_valid = se[np.isfinite(se)]
         mw = part["max_weight"].to_numpy(dtype=float)
@@ -129,8 +143,28 @@ def bounds_summary(rows: pd.DataFrame) -> pd.DataFrame:
         else:
             lower_u = np.full(len(part), np.nan)
             upper_u = np.full(len(part), np.nan)
-        coverage_full = float(np.nanmean((lower <= true_full) & (true_full <= upper)))
-        coverage_u = float(np.nanmean((lower_u <= true_full) & (true_full <= upper_u)))
+        valid_full = np.isfinite(lower) & np.isfinite(upper) & np.isfinite(true_full)
+        valid_u = np.isfinite(lower_u) & np.isfinite(upper_u) & np.isfinite(true_full)
+        coverage_full = (
+            float(
+                np.mean(
+                    (lower[valid_full] <= true_full[valid_full])
+                    & (true_full[valid_full] <= upper[valid_full])
+                )
+            )
+            if valid_full.any()
+            else float("nan")
+        )
+        coverage_u = (
+            float(
+                np.mean(
+                    (lower_u[valid_u] <= true_full[valid_u])
+                    & (true_full[valid_u] <= upper_u[valid_u])
+                )
+            )
+            if valid_u.any()
+            else float("nan")
+        )
         out.append(
             {
                 "scenario": scenario,
@@ -140,12 +174,15 @@ def bounds_summary(rows: pd.DataFrame) -> pd.DataFrame:
                 "upper": float(np.nanmean(upper)),
                 "width": float(np.nanmean(upper - lower)),
                 "coverage_full": coverage_full,
-                "f5_pass": bool(coverage_full >= 0.90),
+                "f5_pass": bool(np.isfinite(coverage_full) and coverage_full >= 0.90),
                 "f5_coverage": coverage_full,
                 "lower_unconditional": float(np.nanmean(lower_u)),
                 "upper_unconditional": float(np.nanmean(upper_u)),
                 "width_unconditional": float(np.nanmean(upper_u - lower_u)),
                 "unconditional_coverage": coverage_u,
+                "f5_pass_unconditional": bool(
+                    np.isfinite(coverage_u) and coverage_u >= 0.90
+                ),
                 "true_full": float(np.nanmean(true_full)),
                 "n_rejected": int(part["n_rejected"].mean()),
             }
@@ -253,6 +290,14 @@ def verdict(
         "H4_details": h4_details,
         "H5_reject_margin_not_identified": h5,
         "H5_max_bounds_width": float(b["width"].max()) if not b.empty else float("nan"),
+        "H5_max_bounds_width_all_scenarios": float(bounds["width"].max())
+        if not bounds.empty
+        else float("nan"),
+        "H5_max_bounds_width_scenario": (
+            str(bounds.loc[bounds["width"].idxmax(), "scenario"])
+            if not bounds.empty and bounds["width"].notna().any()
+            else ""
+        ),
         "H6_outcome_dependent": h6,
         "H6_audit_max_abs_rel_bias": ao_max,
         "H6_ipw_max_abs_rel_bias": ipw_max,

@@ -405,6 +405,13 @@ The main scenario is pre-registered before the first run.
 
 ## 14. Post-run addendum (2026-11-19)
 
+> **Correction (2026-11-21):** the estimated-propensity numbers in this addendum
+> were produced by an `e_approve` formula that omitted the resolution factor on
+> the audit channel. The corrected values are in `docs/RESULTS.md` §7: DR
+> **1.43% / 93.5%**, IPW **2.92% / 92.0%**; outcome-dependent estimated IPW
+> **2064.9%**, DR **1737.0%**. The addendum below is kept as the historical
+> record.
+
 The pilot ran as pre-registered: 13 scenarios, 700 replications, seed
 `20261120`, 1,114 s. The full claim ledger is in `docs/CLAIMS.md`. Summary:
 
@@ -414,7 +421,7 @@ The pilot ran as pre-registered: 13 scenarios, 700 replications, seed
 | H2 naive rank inversion | **Supported** | Mean **1.00** inversion; P(select true best) **0%** |
 | H3 correction <= 5% / coverage >= 80% | **Supported** | DR max **0.94%**, mean coverage **96.0%**; IPW **1.18% / 95.0%** |
 | H4 audit value | **Supported (modest effect)** | DR RMSE **0.001159 → 0.001068** (0% → 2%); ESS **6,610 → 9,126**; the only approximately unbiased option under outcome-dependent labels |
-| H5 reject margin not point-identified | **Supported** | Widest bounds **0.009942**; incumbent coverage **34%** (not a CI) |
+| H5 reject margin not point-identified | **Supported** | Main interval **0.009942**, `frej_002` **0.203**; incumbent coverage **34%** (narrow interval not a CI) |
 | H6 outcome-dependent labels break action-only IPW | **Supported** | Audit-only **-2.37% to -1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** |
 
 **Post-run methodological note:** H2 is evaluated on the naive estimator only;

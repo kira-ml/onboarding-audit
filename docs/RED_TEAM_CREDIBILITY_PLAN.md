@@ -251,12 +251,14 @@ estimator the project itself shows to be biased while printing "Measured."**
 ### Finding 1 — partially confirmed (2026-11-21)
 
 The 12-cell observation-rate sweep shows the magnitude is strongly
-parameter-dependent: naive bias ranges **7.8–538.5%**. But the bias exceeds 5% in
-**12/12** cells, so the premise survives; the universal **112–278%** headline
-does not. DR with known propensities stays within **1.89%** (coverage
-**84.5–96.0%**); at the lowest approve-label rate, DR's P(select true best) is
-**64%**. Action: the V1 claim is updated to the measured range; the remaining
-risk is estimated `e` and the low-`e` ranking.
+parameter-dependent: the maximum naive bias across policies ranges
+**7.8–538.5%**. But the bias exceeds 5% in **12/12** cells (incumbent 11/12), so
+the premise survives; the universal **112–278%** headline does not. DR with
+known propensities has a mean bias of at most **1.89%** (95% MC upper bound 4.3%
+for `e>=0.05`, 9.6% at `e=0.01`; coverage **84.5–96.0%**); at the lowest report
+probability, DR's P(select true best) is **64%**. Action: the V1 claim is updated
+to the measured range; the remaining risk is estimated `e` and the low-`e`
+ranking.
 
 **Status:** Finding 1 closed for the magnitude claim; open for the estimated-`e`
 and low-`e` ranking claim.

@@ -196,8 +196,8 @@ practitioners; ask for a 30-minute critique; record the objections.
 | Does DR recover the identified value? | Yes, 0.94% max bias, 96.0% coverage | [`RESULTS.md`](RESULTS.md) |
 | Is the audit a universal fix? | No; modest in the main scenario, the only approximately unbiased option under outcome-dependent labels | [`RESULTS.md`](RESULTS.md) |
 | Is the reject margin point-identified? | No; bounds only | [`THREATS.md`](THREATS.md) |
-| Does DR survive estimated action-level propensities? | Yes, 2.67% / 91.0% when observation is action-dependent; no under covariate dependence | [`RESULTS.md`](RESULTS.md) |
-| Does IPW survive estimated propensities? | No, 11.19% / 73.0% | [`RESULTS.md`](RESULTS.md) |
+| Does DR survive estimated action-level propensities? | Yes, 1.43% / 93.5% when observation is action-dependent; no under covariate dependence | [`RESULTS.md`](RESULTS.md) |
+| Does IPW survive estimated propensities? | No, 2.92% / 92.0% | [`RESULTS.md`](RESULTS.md) |
 | Does action-level IPW survive covariate-dependent observation? | No; the covariate model is needed | [`RESULTS.md`](RESULTS.md) |
 | Is BSP 1213 a model-risk circular? | No; it is an FMS circular; the MRM guidelines are a draft | [`BSP_MAPPING.md`](BSP_MAPPING.md) |
 

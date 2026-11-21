@@ -3,6 +3,29 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-21 — Red-team corrections
+
+**Found by the independent estimator review and adversarial pass:**
+
+- `fit_outcome_model` divided by zero on a labelled reject row; fixed by
+  dropping zero-propensity rows and returning NaN when none remain.
+- `e_approve` omitted the resolution factor on the audit channel. After the
+  fix, IPW under estimated action-level propensities is **2.92%**, not 11.19%;
+  DR is **1.43%**. The "IPW is not robust" claim was a bug, not a finding.
+- The HT variance is now the standard design form; the census case returns
+  zero.
+- `policy_bounds` now widens with the `P0` SE when there are no rejected rows.
+- The gate now rejects `e > 1`, non-finite costs, unknown actions, and
+  impossible propensity calibration; it flags a low observed/expected ratio.
+- The memo's outside-`P0` count used a key that did not exist; fixed and
+  regression-tested.
+- Claims now carry Monte Carlo bounds; the sweep's "12/12" is labelled as the
+  maximum across policies; the bounds width is reported for `frej_002`
+  (**0.203**) as well as the main scenario (**0.009942**).
+
+**Tests:** 80 pass. The pilot and sensitivity are being re-run to match the
+corrected code.
+
 ## 2026-11-19 — Direction set, repo scaffolded
 
 **Done:**

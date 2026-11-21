@@ -14,21 +14,29 @@ production estimate, not a Philippine bank, not a causal deployment effect.
 
 1. **Naive evaluation is materially biased, but the magnitude is conditional.**
    Relative bias **+111.6% to +278.5%** in the main pilot; across the 12-cell
-   observation-rate sweep, **+7.8% to +538.5%** (12/12 cells above 5%). The
-   direction is robust; the magnitude depends on the approve-label and review
-   rates. It overstates cost and reverses the better-model/incumbent ranking.
-2. **DR recovers the identified `P0` value.** Max |relative bias| **0.94%**,
-   mean 95% coverage **96.0%**; IPW **1.18% / 95.0%**. The corrected ranking is
-   better but not perfect (DR mean inversions **0.29**, P(select true best)
-   **72%**).
-3. **The audit is not a universal fix.** At a 5% approved-label base rate, the
-   marginal RMSE gain is modest; the audit is the only approximately unbiased option under outcome-dependent labels.
-4. **The reject margin is not point-identified.** The widest bounds interval is
-   **0.009942**; the incumbent's narrow interval covers the true full value in
-   **34%** of replications. Bounds are not confidence intervals. The
-   pre-registered F5 coverage gate **failed** (15/88 cells at ≥90%).
-5. **DR survives estimated action-level propensities; IPW does not.** DR
-   **2.67% / 91.0%**; IPW **11.19% / 73.0%**.
+   observation-rate sweep, the maximum across policies is **+7.8% to +538.5%**
+   (12/12 cells above 5%). The incumbent's own bias is **1.5–218%**, above 5% in
+   11/12 cells. The direction is robust; the magnitude depends on the
+   pre-resolution report probability and the review rate. It overstates cost and
+   reverses the better-model/incumbent ranking.
+2. **DR recovers the identified `P0` value.** Mean |relative bias| **0.94%**,
+   mean 95% coverage **96.0%**; IPW **1.18% / 94.5%**. The 95% Monte Carlo upper
+   bound on the mean |bias| is **3.8%** in the main scenario, not 0.94%. The
+   corrected ranking is better but not perfect (DR mean inversions **0.29**,
+   P(select true best) **72%**).
+3. **The audit is not a universal fix.** At a 5% pre-resolution report
+   probability (3.06% realized), the marginal RMSE gain is modest; the audit is
+   the only approximately unbiased option under outcome-dependent labels.
+4. **The reject margin is not point-identified.** The main-scenario interval is
+   **0.009942**; with a low false-reject cost (`frej_002`) it is **0.203**, 20×
+   wider. The incumbent's narrow interval covers the true full value in **34%**
+   of replications. The narrow interval is not a confidence interval; the
+   widened interval is, but it is ~4× wider. The pre-registered F5 gate
+   **failed** for the narrow interval (15/88 cells at ≥90%) and **passes** for
+   the widened interval (99–100% in the main scenario).
+5. **Both DR and IPW survive estimated action-level propensities; DR is
+   better under noise.** DR **1.43% / 93.5%**; IPW **2.92% / 92.0%**. The earlier
+   "IPW 11.19%" was an `e_approve` bug, corrected on 2026-11-21.
 6. **Under covariate-dependent observation, action-level weighting fails.**
    Action-level IPW is **67.52%** biased; action-level DR is **21.25%** biased.
    A fitted per-action covariate propensity model recovers the oracle
@@ -65,7 +73,7 @@ and the cost matrix. The harm is the ranking, not the sign.
 | Estimator | Target | Max \|relative bias\| | Mean coverage | Mean ESS |
 |---|---|---:|---:|---:|
 | `naive` | `P0` | 278.49% | 0.0% | 12,171 |
-| `ipw_ht` | `P0` | 1.18% | 95.0% | 7,864 |
+| `ipw_ht` | `P0` | 1.18% | 94.5% | 7,864 |
 | `ipw_hajek` | `P0` | 1.18% | 95.0% | 7,864 |
 | `dr` | `P0` | **0.94%** | **96.0%** | 7,864 |
 | `audit_only` | approved | 2.98% | 84.5% | 1,271 |
@@ -89,6 +97,13 @@ varies them: `e_approve ∈ {0.01, 0.05, 0.20, 0.50}` ×
 `kappa_review ∈ {0.50, 0.90, 1.00}`, 50 replications per cell, everything else
 fixed.
 
+**`e_approve` is the pre-resolution post-approval report probability, not the
+realized label rate.** With the 45-day median delay and 90-day cutoff, the
+realized post-approval label rates are **0.61%, 3.06%, 12.24%, and 30.59%**; the
+main scenario's 5% is **3.06%** realized (3.68% including the 1% audit). The
+sweep axis is labelled by the parameter, but every interpretation uses the
+realized rate.
+
 | Cell | Naive max bias | DR max bias | DR coverage | Naive inversions | DR P(best) |
 |---|---:|---:|---:|---:|---:|
 | `e001_k050` | 386.46% | 1.52% | 85.5% | 1.28 | 64% |
@@ -104,11 +119,14 @@ fixed.
 | `e050_k090` | 29.38% | 1.31% | 96.0% | 1.00 | 100% |
 | `e050_k100` | 34.67% | 1.27% | 96.0% | 1.00 | 100% |
 
-**Read:** naive bias exceeds 5% in **12/12** cells, but the range is **7.8% to
-538.5%**. DR with known propensities stays within **1.89%** and coverage is
-**84.5–96.0%**. At the lowest approve-label rate, DR's P(select true best) is
-**64%**, so the correction is accurate but the ranking is not guaranteed. The
-sweep supports the premise and rejects a universal magnitude. See
+**Read:** the maximum naive bias across policies exceeds 5% in **12/12** cells,
+but the range is **7.8% to 538.5%**; the incumbent's own bias is **1.5–218%**,
+above 5% in 11/12. DR with known propensities has a mean bias of at most
+**1.89%**, a 95% Monte Carlo upper bound of **4.3%** for `e>=0.05` (**9.6%** at
+`e=0.01`), and coverage of **84.5-96.0%**. At the lowest report probability,
+DR's P(select true best) is **64%**, so the correction is accurate but the
+ranking is not guaranteed. The sweep supports the premise and rejects a
+universal magnitude. See
 [`../reports/obs_sweep/obs_sweep.md`](../reports/obs_sweep/obs_sweep.md).
 
 **Monte Carlo precision.** Each cell has 50 replications. The Wilson 95%
@@ -155,32 +173,37 @@ break the correction.
 
 | Quantity | Value |
 |---|---:|
-| Widest bounds interval | **0.009942** |
+| Bounds interval, main scenario | **0.009942** |
+| Bounds interval, `frej_002` (12.3% reject share) | **0.203** |
 | Incumbent bounds width | **0.001581** |
 | Incumbent bounds coverage of true full value | **34%** |
 | Bounds type | Partial-identification interval conditional on the `P0` estimate |
 
-**F5 failed.** The pre-registered F5 criterion was `coverage_full >= 90%`. It
-holds in **15 of 88** policy–scenario cells. In the main scenario the coverage is
-**34% (incumbent), 68% (strict cost), 86% (lenient cost), and 87% (better
-model)**. The unconditional interval — the bounds widened by the `P0` standard
-error, scaled by the `P0` share — covers **99–100%** in the main scenario, but it
-is roughly four times wider (incumbent **0.006780** vs **0.001581**), and it
-collapses to **0%** under outcome-dependent labels where the `P0` estimate itself
-is biased.
+**F5 failed for the narrow interval; it passes for the widened one.** The
+pre-registered F5 criterion was `coverage_full >= 90%`.
+
+| Interval | F5 pass | Coverage | Width (incumbent) |
+|---|---:|---:|---:|
+| Narrow (conditional on `P0`) | **15/88** | main **34–87%** | **0.001581** |
+| Widened by the `P0` standard error | **77/88** | main **99–100%** | **0.006780** |
+
+The 11 widened-interval failures are exactly the cells where the `P0` estimate
+itself is biased: the eight outcome-dependent cells, the two action-level
+covariate cells, and `delay_90`. That is the correct behavior: widening cannot
+repair a biased center.
 
 The correct reading is:
 
 - The **narrow** interval is not a confidence interval and fails F5.
-- The **widened** interval is a conservative 95% interval for the identified set
-  *under the identification assumptions* (action-dependent observation, correct
-  cost range). It is valid but wide; the width is the price of the `P0`
-  uncertainty.
+- The **widened** interval is a valid (conservative) 95% confidence interval for
+  the full-population value *under the identification assumptions*
+  (action-dependent observation, correct cost range). It passes F5 except where
+  those assumptions fail. The width is the price of the `P0` uncertainty.
 - Neither interval is valid when the observation mechanism is outcome-dependent.
 
 Per the E2 decision rule, the coverage claim for the narrow interval is removed.
 The bounds are reported as a partial-identification range with the reject share,
-the unconditional width, and the assumption they require.
+the widened width, and the assumption they require.
 
 ## 7. Propensity sensitivity: estimated and noisy `e`
 
@@ -190,16 +213,19 @@ the unconditional width, and the assumption they require.
 |---|---|---:|---:|---:|
 | `main` (oracle) | `ipw_ht` | 1.30% | 94.5% | 7,863 |
 | `main` (oracle) | `dr` | 0.96% | 95.5% | 7,863 |
-| `propensity_estimated` | `ipw_ht` | **11.19%** | **73.0%** | 8,438 |
-| `propensity_estimated` | `dr` | **2.67%** | **91.0%** | 8,438 |
-| `propensity_noisy_10` | `ipw_ht` | 1.09% | 95.5% | 7,787 |
+| `propensity_estimated` | `ipw_ht` | **2.92%** | **92.0%** | 8,404 |
+| `propensity_estimated` | `dr` | **1.43%** | **93.5%** | 8,404 |
+| `propensity_noisy_10` | `ipw_ht` | 1.09% | 95.0% | 7,787 |
 | `propensity_noisy_10` | `dr` | 1.11% | 94.5% | 7,787 |
-| `propensity_noisy_25` | `ipw_ht` | 7.01% | 93.5% | 7,397 |
+| `propensity_noisy_25` | `ipw_ht` | 7.01% | 93.0% | 7,397 |
 | `propensity_noisy_25` | `dr` | 1.58% | 96.5% | 7,397 |
 
-**Read:** the oracle-IPW result was partly an artifact of knowing `e`. With an
-estimated action-level propensity, IPW fails the 5%/80% gate; DR passes. Use DR,
-not IPW, when `e` is estimated.
+**Read:** with the corrected marginal propensity, both estimators survive
+action-level estimation (DR **1.43%**, IPW **2.92%**); the earlier "IPW 11.19%"
+was an artifact of an `e_approve` formula that omitted the resolution factor on
+the audit channel. DR remains better under noisy propensities (sigma 0.25:
+**1.58%** vs **7.01%**). Use DR, not IPW, when `e` is noisy or
+covariate-dependent.
 
 ## 8. Propensity sensitivity: outcome-dependent labels
 
@@ -209,8 +235,8 @@ not IPW, when `e` is estimated.
 | `outcome_dependent` | `ipw_ht` | 368.25% | 1.0% |
 | `outcome_dependent` | `dr` | 1301.53% | 0.0% |
 | `outcome_dependent_estimated` | `audit_only` | **2.58%** | **82.5%** |
-| `outcome_dependent_estimated` | `ipw_ht` | 1350.76% | 0.0% |
-| `outcome_dependent_estimated` | `dr` | 1627.90% | 0.0% |
+| `outcome_dependent_estimated` | `ipw_ht` | 2064.90% | 0.0% |
+| `outcome_dependent_estimated` | `dr` | 1737.02% | 0.0% |
 
 **Read:** when approved fraud is more likely to be labeled than approved
 legitimate accounts, action-only weighting cannot separate the two rates.
@@ -237,8 +263,8 @@ not. The `delay` variants add the 45-day approve-label delay.
 | `covariate_action` | `dr` | **21.25%** | **72.5%** | 16,031 |
 | `covariate_model` | `ipw_ht` | **1.97%** | **91.5%** | 11,582 |
 | `covariate_model` | `dr` | **2.48%** | **89.5%** | 11,582 |
-| `covariate_action_delay` | `ipw_ht` | **51.72%** | **21.5%** | 9,938 |
-| `covariate_action_delay` | `dr` | **17.59%** | **80.0%** | 9,938 |
+| `covariate_action_delay` | `ipw_ht` | **64.27%** | **10.0%** | 9,904 |
+| `covariate_action_delay` | `dr` | **20.27%** | **79.0%** | 9,904 |
 | `covariate_model_delay` | `ipw_ht` | **3.35%** | **90.5%** | 6,798 |
 | `covariate_model_delay` | `dr` | **3.68%** | **89.5%** | 6,798 |
 
@@ -248,10 +274,10 @@ Naive bias in the same scenarios is **226.03%** (delay 0.5) and **301.68%**
 **Read:**
 
 1. **Action-level IPW fails catastrophically** when observation depends on the
-   application: 67.52% bias without delay, 51.72% with delay. The action-level
+   application: 67.52% bias without delay, 64.27% with delay. The action-level
    propensity is a weighted average that ignores the within-action gradient.
 2. **Action-level DR is better than IPW but still fails.** 21.25% without delay,
-   17.59% with delay. The outcome model includes the covariate, but it does not
+   20.27% with delay. The outcome model includes the covariate, but it does not
    fully absorb the observation gradient. DR is not a universal immunity.
 3. **The fitted covariate model recovers the oracle.** 1.97% / 2.48% without
    delay; 3.35% / 3.68% with delay. The cross-fitted per-action logistic model
@@ -271,10 +297,10 @@ Naive bias in the same scenarios is **226.03%** (delay 0.5) and **301.68%**
 |---|---|---|
 | H1: naive bias > 5% | **Supported** | **+111.55% to +278.49%** |
 | H2: naive rank inversion | **Supported** | Mean **1.00** inversion; P(select true best) **0%** |
-| H3: correction <= 5% / coverage >= 80% | **Supported** | DR **0.94% / 96.0%**; IPW **1.18% / 95.0%** |
+| H3: correction <= 5% / coverage >= 80% | **Supported** | DR **0.94% / 96.0%**; IPW **1.18% / 94.5%** |
 | H4: audit value | **Supported (modest in main; the only approximately unbiased option under outcome-dependent labels)** | DR RMSE **0.001159 → 0.001068**; ESS **6,610 → 9,126**; audit-only **-2.37% to -1.98%** under outcome dependence |
-| H5: reject margin not point-identified | **Supported** | Widest bounds **0.009942**; incumbent coverage **34%** (not a CI); F5 **failed** (15/88) |
-| H6: outcome-dependent labels break action-only IPW | **Supported** | Audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR **1627.9%** |
+| H5: reject margin not point-identified | **Supported** | Main interval **0.009942**, `frej_002` **0.203**; incumbent coverage **34%** (narrow interval not a CI); F5 **failed** for the narrow interval (15/88), **passes** for the widened one |
+| H6: outcome-dependent labels break action-only IPW | **Supported** | Audit-only **2.58% / 82.5%**; IPW **2064.9%**; DR **1737.0%** |
 | S1 (post-hoc): covariate-dependent observation breaks action-level weighting | **Supported** | Action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** |
 
 S1 is post-hoc, not pre-registered. It is a sensitivity result, not a new
@@ -282,7 +308,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 
 ## 11. Negative controls
 
-`pytest -q`: **68 passed**, including:
+`pytest -q`: **82 passed**, including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);

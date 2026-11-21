@@ -81,32 +81,33 @@ one the business is asking.
 | True P0 ranking | `better_model < incumbent < lenient_cost < strict_cost` |
 | Naive ranking | `incumbent < better_model < lenient_cost < strict_cost` |
 | DR max \|relative bias\| / mean coverage | **0.94% / 96.0%** |
-| IPW max \|relative bias\| / mean coverage | **1.18% / 95.0%** |
+| IPW max \|relative bias\| / mean coverage | **1.18% / 94.5%** |
 | Audit-only at 1%: max bias / coverage / ESS | **2.98% / 84.5% / 1,271** |
 | Audit-only at 2%: max bias / coverage / ESS | **1.82% / 86.5% / 2,546** |
 | DR RMSE, 0% → 2% audit | **0.001159 → 0.001068** |
-| Reject-margin bounds: widest interval | **0.009942** |
+| Reject-margin bounds: main interval | **0.009942** (`frej_002`: **0.203**) |
 | Incumbent bounds coverage of true full value | **34%** (not a CI) |
 | Outcome-dependent: audit-only bias | **-2.37% to -1.98%** |
 | Outcome-dependent: IPW / DR bias | **+43.9% to +368.3% / +596.4% to +1301.5%** |
-| Estimated `e`: DR max bias / coverage | **2.67% / 91.0%** |
-| Estimated `e`: IPW max bias / coverage | **11.19% / 73.0%** |
-| Noisy `e` (sigma 0.25): DR / IPW | **1.58% / 96.5%** vs **7.01% / 93.5%** |
+| Estimated `e`: DR max bias / coverage | **1.43% / 93.5%** |
+| Estimated `e`: IPW max bias / coverage | **2.92% / 92.0%** |
+| Noisy `e` (sigma 0.25): DR / IPW | **1.58% / 96.5%** vs **7.01% / 93.0%** |
 | Outcome-dependent + estimated `e`: audit-only | **2.58% / 82.5%**; IPW/DR fail |
 | Covariate observation: action IPW / DR | **67.52% / 21.25%** |
 | Covariate observation: model IPW / DR | **1.97% / 2.48%** |
-| Covariate + 45-day delay: action / model | **51.72% / 17.59%** vs **3.35% / 3.68%** |
+| Covariate + 45-day delay: action / model | **64.27% / 20.27%** vs **3.35% / 3.68%** |
 | Covariate coverage (oracle / model) | **89–90% / 89.5–91.5%** (heavy tails) |
 
 **Interpretation:** the naive evaluation is not a small approximation; it
 overstates cost and would reject the better policy. DR recovers the identified
-value and the true ranking, and it survives estimated action-level propensities;
-IPW does not. Under covariate-dependent observation, action-level IPW fails and
+value and the true ranking, and both DR and IPW survive estimated action-level
+propensities; DR is better under noise. Under covariate-dependent observation,
+action-level IPW fails and
 the fitted covariate model is the correction; DR is more robust than IPW but
 heavy weights can undercover the interval. The reject margin still requires
 bounds or a controlled approval design. The audit is a validation and
-outcome-dependent-label tool, not a universal bias fix. When `e` is estimated,
-use DR rather than IPW; when observation depends on application features, use
+outcome-dependent-label tool, not a universal bias fix. When `e` is noisy, prefer
+DR; when observation depends on application features, use
 the covariate propensity model and report the weight diagnostics.
 
 ## 6. What a team can use

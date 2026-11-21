@@ -15,15 +15,15 @@ The main pilot uses oracle propensities. This study replaces them with (a) actio
 | `main` | `dr` | 0.96% | 95.5% | 7,863 |
 | `main` | `audit_only` | 2.58% | 82.5% | 1,268 |
 | `propensity_estimated` | `naive` | 278.46% | 0.0% | 12,171 |
-| `propensity_estimated` | `ipw_ht` | 11.19% | 73.0% | 8,438 |
-| `propensity_estimated` | `dr` | 2.67% | 91.0% | 8,438 |
+| `propensity_estimated` | `ipw_ht` | 2.92% | 92.0% | 8,404 |
+| `propensity_estimated` | `dr` | 1.43% | 93.5% | 8,404 |
 | `propensity_estimated` | `audit_only` | 2.58% | 82.5% | 1,268 |
 | `propensity_noisy_10` | `naive` | 278.46% | 0.0% | 12,171 |
-| `propensity_noisy_10` | `ipw_ht` | 1.09% | 95.5% | 7,787 |
+| `propensity_noisy_10` | `ipw_ht` | 1.09% | 95.0% | 7,787 |
 | `propensity_noisy_10` | `dr` | 1.11% | 94.5% | 7,787 |
 | `propensity_noisy_10` | `audit_only` | 2.58% | 82.5% | 1,268 |
 | `propensity_noisy_25` | `naive` | 278.46% | 0.0% | 12,171 |
-| `propensity_noisy_25` | `ipw_ht` | 7.01% | 93.5% | 7,397 |
+| `propensity_noisy_25` | `ipw_ht` | 7.01% | 93.0% | 7,397 |
 | `propensity_noisy_25` | `dr` | 1.58% | 96.5% | 7,397 |
 | `propensity_noisy_25` | `audit_only` | 2.58% | 82.5% | 1,268 |
 
@@ -36,8 +36,8 @@ The main pilot uses oracle propensities. This study replaces them with (a) actio
 | `outcome_dependent` | `dr` | 1301.53% | 0.0% | 1,904 |
 | `outcome_dependent` | `audit_only` | 2.58% | 82.5% | 1,268 |
 | `outcome_dependent_estimated` | `naive` | 1147.43% | 0.0% | 5,791 |
-| `outcome_dependent_estimated` | `ipw_ht` | 1350.76% | 0.0% | 1,799 |
-| `outcome_dependent_estimated` | `dr` | 1627.90% | 0.0% | 1,799 |
+| `outcome_dependent_estimated` | `ipw_ht` | 2064.90% | 0.0% | 1,764 |
+| `outcome_dependent_estimated` | `dr` | 1737.02% | 0.0% | 1,764 |
 | `outcome_dependent_estimated` | `audit_only` | 2.58% | 82.5% | 1,268 |
 
 ## Covariate-dependent observation
@@ -47,28 +47,28 @@ The post-approval report probability depends on standardized log amount: `logit(
 | Scenario | Estimator | Max \|rel bias\| | Mean coverage | Mean ESS |
 |---|---|---:|---:|---:|
 | `covariate_oracle` | `naive` | 226.03% | 0.0% | 19,830 |
-| `covariate_oracle` | `ipw_ht` | 3.01% | 90.0% | 11,668 |
+| `covariate_oracle` | `ipw_ht` | 3.01% | 87.5% | 11,668 |
 | `covariate_oracle` | `dr` | 2.63% | 89.0% | 11,668 |
 | `covariate_action` | `naive` | 226.03% | 0.0% | 19,830 |
-| `covariate_action` | `ipw_ht` | 67.52% | 1.5% | 16,031 |
+| `covariate_action` | `ipw_ht` | 67.52% | 1.0% | 16,031 |
 | `covariate_action` | `dr` | 21.25% | 72.5% | 16,031 |
 | `covariate_model` | `naive` | 226.03% | 0.0% | 19,830 |
-| `covariate_model` | `ipw_ht` | 1.97% | 91.5% | 11,582 |
+| `covariate_model` | `ipw_ht` | 1.97% | 90.5% | 11,582 |
 | `covariate_model` | `dr` | 2.48% | 89.5% | 11,582 |
 | `covariate_action_delay` | `naive` | 301.68% | 0.0% | 13,935 |
-| `covariate_action_delay` | `ipw_ht` | 51.72% | 21.5% | 9,938 |
-| `covariate_action_delay` | `dr` | 17.59% | 80.0% | 9,938 |
+| `covariate_action_delay` | `ipw_ht` | 64.27% | 10.0% | 9,904 |
+| `covariate_action_delay` | `dr` | 20.27% | 79.0% | 9,904 |
 | `covariate_model_delay` | `naive` | 301.68% | 0.0% | 13,935 |
-| `covariate_model_delay` | `ipw_ht` | 3.35% | 90.5% | 6,798 |
+| `covariate_model_delay` | `ipw_ht` | 3.35% | 89.5% | 6,798 |
 | `covariate_model_delay` | `dr` | 3.68% | 89.5% | 6,798 |
 
 ## Measured read
 
-- Covariate action-level: IPW **67.52%** with **1.5%** coverage; DR **21.25%** with **72.5%**.
-- Covariate model: IPW **1.97%** with **91.5%**; DR **2.48%** with **89.5%**.
-- With the 45-day delay: action IPW **51.72%** / **21.5%**; action DR **17.59%** / **80.0%**; model IPW **3.35%** / **90.5%**; model DR **3.68%** / **89.5%**.
+- Covariate action-level: IPW **67.52%** with **1.0%** coverage; DR **21.25%** with **72.5%**.
+- Covariate model: IPW **1.97%** with **90.5%**; DR **2.48%** with **89.5%**.
+- With the 45-day delay: action IPW **64.27%** / **10.0%**; action DR **20.27%** / **79.0%**; model IPW **3.35%** / **89.5%**; model DR **3.68%** / **89.5%**.
 - The covariate model meets the pre-declared gate (<=5% max relative bias, >=80% mean coverage); action-level weighting does not.
-- Coverage is below nominal 95%; the oracle covers **90.0%** (IPW) and **89.0%** (DR), so the shortfall is the heavy-tail variance, not the model.
+- Coverage is below nominal 95%; the oracle covers **87.5%** (IPW) and **89.0%** (DR), so the shortfall is the heavy-tail variance, not the model.
 
 ## Interpretation
 

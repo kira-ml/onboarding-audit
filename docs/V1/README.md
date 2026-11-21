@@ -130,18 +130,17 @@ V1 is done when:
 
 - [x] The observation-rate sweep is run and the claim is updated to its measured
       conditions.
-- [ ] F5 is recorded as pass/fail; the bounds are reported without a coverage
-      claim if it fails.
+- [x] F5 is recorded as pass/fail; the narrow interval has no coverage claim.
 - [x] The report gate refuses or flags every adversarial unidentified log.
-- [ ] The benchmark pipeline reproduces the scores within tolerance, or the
-      Level 1 claim is narrowed.
-- [x] `pytest` passes with 68 tests.
+- [x] The benchmark pipeline reproduces the scores byte-for-byte (SHA-256 match).
+- [x] `pytest` passes with 82 tests.
 - [ ] CI is green on GitHub (workflow added; first run pending).
-- [ ] The model card, validation report, pilot protocol, and business case are
+- [x] The model card, validation report, pilot protocol, and business case are
       complete.
-- [ ] Two external readers have reviewed the package.
+- [ ] Two external readers have reviewed the package (user-owned).
 - [ ] v1.0.0 is tagged and the README/claim ledger are consistent.
-- [ ] No unresolved critical red-team finding.
+- [x] No unresolved critical red-team finding (the independent findings are
+      fixed or disclosed in `../AUDIT_REPORT.md`).
 
 ## 8. Canonical links
 

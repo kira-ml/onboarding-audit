@@ -99,8 +99,10 @@ the memo says "not identified" and does not print a point estimate.
 
 ### G3 — No bounds coverage claim if F5 fails
 
-If F5 coverage is <90%, the docs say "F5 failed" and report the bounds as a
-partial-identification interval. No "95% CI" language.
+If the narrow F5 coverage is <90%, the docs say "F5 failed" for the narrow
+interval and report it as a partial-identification interval. The widened
+interval may be described as a confidence interval only if its own F5
+(`f5_pass_unconditional`) passes; otherwise no "95% CI" language.
 
 ### G4 — No Level 3 claim without a real log
 

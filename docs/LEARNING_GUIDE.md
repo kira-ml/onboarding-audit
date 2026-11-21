@@ -441,8 +441,9 @@ still undercovered). The reject margin is not point-identified; the
 honest output is a bounds interval, not a confidence interval.
 
 A second study asks what happens when the propensities are estimated rather than
-known. DR survives estimated action-level propensities (**2.67%** bias, **91%**
-coverage); IPW does not (**11.19%**, **73%**). A third study asks what happens
+known. Both survive estimated action-level propensities: DR **1.43%** bias,
+**93.5%** coverage; IPW **2.92%**, **92.0%**. DR is better under noise. A third
+study asks what happens
 when the chance of a label depends on the application. Action-level IPW fails
 (**67.52%**), and even DR fails (**21.25%**); a fitted covariate propensity model
 recovers the oracle (**1.97–3.68%**). The practical rule is: match the propensity

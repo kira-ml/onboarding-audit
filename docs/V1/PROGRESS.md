@@ -14,12 +14,12 @@
 | Scenario overrides | **Done** | — | None |
 | Sweep config + analyzer | **Done** | — | None |
 | Observation sweep (E1) | **Done** | Claim updated | None |
-| Bounds F5 (E2) | **Done — failed** | F5: 15/88 cells at ≥90%; coverage claim removed | None |
+| Bounds F5 (E2) | **Done — split** | Narrow 15/88 (fail); widened 77/88 (pass) | None |
 | Report gate (E3) | **Done** | Demo log + CI next | None |
 | Reproducibility (E4) | **Done** | `prepare_baf.py --verify` reproduced the exact SHA-256 | None |
 | Adapter/demo (E5) | **Done** | Demo log + `demo` command; no-propensity path | None |
 | Review package | **Done** | Model card, validation report, pilot protocol, business case | None |
-| CI/tests | **Local done** | 68 tests pass; workflow added; first GitHub run pending | None |
+| CI/tests | **Local done** | 82 tests pass; workflow added; first GitHub run pending | None |
 | External review | **Not started** | Reviewer packet; 10-person shortlist | Calendar |
 | Release | **Not started** | v1.0.0 tag | Prior phases |
 
@@ -89,7 +89,8 @@
 | 2026-11-21 | Phase 0 | Scenario overrides, 12-cell sweep config, and analyzer added; 49 tests pass; full sweep running |
 | 2026-11-21 | Phase 0 | E1 complete: naive bias 7.8–538.5%, >5% in 12/12; DR max 1.89%; DR P(best) 64% at low `e`; V1 claim updated |
 | 2026-11-21 | Phase 1 | Identification gate implemented: positivity, sample, ESS, cost support; 20-row demo withholds estimates; 57 tests pass |
-| 2026-11-21 | Phase 1 | F5 failed: 15/88 cells at ≥90%; coverage claim removed. Benchmark rebuild verified byte-for-byte (SHA-256 match). Demo, CI, model card, validation report, pilot protocol, business case added; 68 tests pass |
+| 2026-11-21 | Phase 1 | F5 failed: 15/88 cells at ≥90%; coverage claim removed. Benchmark rebuild verified byte-for-byte (SHA-256 match). Demo, CI, model card, validation report, pilot protocol, business case added; 82 tests pass |
+| 2026-11-21 | Phase 1 | Red-team corrections: zero-propensity crash, `e_approve` resolution bug, HT variance, memo outside-`P0` key, and gate silent-pass paths fixed; propensity calibration added. IPW under estimated `e` is 2.92%, not 11.19% — the old claim was a bug. MC bounds, per-policy naive bias, and the `frej_002` bounds width added. F5: narrow 15/88, widened 77/88. 82 tests pass |
 | | | |
 
 ## 9. Related documents

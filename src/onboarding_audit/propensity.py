@@ -36,11 +36,10 @@ def estimate_from_draw(
     if review.any():
         e[review] = float(observed[review].mean())
     if approve.any():
-        audit = draw.audit
-        audit_rate = float(audit[approve].mean())
-        non_audit = approve & ~audit
-        base = float(observed[non_audit].mean()) if non_audit.any() else 0.0
-        e[approve] = audit_rate + (1.0 - audit_rate) * base
+        # The marginal observation rate is the propensity. The earlier
+        # decomposition (audit_rate + (1-audit_rate) * base) omitted the
+        # resolution factor on the audit channel and overstated e.
+        e[approve] = float(observed[approve].mean())
     return e
 
 

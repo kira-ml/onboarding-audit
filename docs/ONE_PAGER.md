@@ -43,13 +43,15 @@ new policy is estimated on the subset the incumbent policy produced.
   estimate puts the incumbent ahead of the better model, while the true ranking
   reverses it.
 - **The magnitude is conditional:** across the 12-cell observation-rate sweep,
-  naive bias ranges **7.8–538.5%** but exceeds 5% in **12/12** cells; DR with
-  known propensities stays within **1.89%**. At the lowest approve-label rate,
+  naive bias ranges **7.8–538.5%** (maximum across policies) and exceeds 5% in
+  **12/12** cells; the incumbent's own bias is **1.5–218%**. DR with known
+  propensities has a mean bias of at most **1.89%** (95% MC upper bound **4.3%**
+  for `e>=0.05`, **9.6%** at `e=0.01`). At the lowest report probability,
   DR's P(select true best) falls to **64%**.
 - **Rank inversion:** mean **1.00** pairwise inversion for the naive estimate;
   P(select true best) **0%**.
 - **Best corrected estimator: DR**, max |relative bias| **0.94%**, mean 95% CI
-  coverage **96.0%**; IPW max **1.18%**, coverage **95.0%**.
+  coverage **96.0%**; IPW max **1.18%**, coverage **94.5%**.
 - **Audit-only:** unbiased but high variance at 1% — max |relative bias|
   **2.98%**, coverage **84.5%**, mean ESS **1,271**. A 2% audit improves to
   **1.82% / 86.5% / 2,546**.
@@ -58,13 +60,15 @@ new policy is estimated on the subset the incumbent policy produced.
   option when approved labels are outcome-dependent**: audit-only bias
   **-2.37% to -1.98%**, while action-only IPW is **+43.9% to +368.3%** and DR
   **+596.4% to +1301.5%**.
-- **Reject-margin bounds:** widest interval **0.009942**; the incumbent's narrow
-  interval covers the true full value in only **34%** of replications. The
-  bounds are partial-identification intervals, not confidence intervals.
+- **Reject-margin bounds:** main-scenario interval **0.009942**; **0.203** in
+  `frej_002` (12.3% reject share); the incumbent's narrow
+  interval covers the true full value in only **34%** of replications. The narrow
+  interval is not a confidence interval; the widened interval passes F5 in
+  **77/88** cells but is ~4× wider.
 - **Propensity sensitivity:** with estimated action-level `e`, DR stays within
-  **2.67%** with **91.0%** coverage; IPW degrades to **11.19% / 73.0%**. Under
+  **1.43%** with **93.5%** coverage; IPW **2.92% / 92.0%**. Under
   outcome-dependent labels with estimated `e`, only audit-only is honest
-  (**2.58% / 82.5%**; IPW/DR fail). Use DR when `e` is estimated.
+  (**2.58% / 82.5%**; IPW/DR fail). Prefer DR when `e` is noisy.
 - **Covariate-dependent observation:** action-level IPW is **67.52%** biased and
   action-level DR **21.25%** biased; a fitted per-action covariate propensity
   model recovers the oracle (**1.97% / 2.48%**, or **3.35% / 3.68%** with the

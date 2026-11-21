@@ -36,7 +36,7 @@ committee, and an internship interviewer without overclaiming.
 > accounts. The reject margin required bounds, not a point estimate.
 >
 > A follow-up sensitivity replaced the oracle propensities with estimated ones:
-> **DR stayed within 2.67% with 91% coverage; IPW degraded to 11.19% with 73%
+> **DR stayed within 1.43% with 93.5% coverage; IPW within 2.92% with 92%
 > coverage.** Under outcome-dependent labels with estimated propensities, only
 > audit-only was honest. A covariate-dependent observation stress test showed
 > that action-level IPW is **67.52%** biased and action-level DR **21.25%**
@@ -103,7 +103,7 @@ generic 0.5.
 A: The pilot's observation mechanism is simulated. A real bank's labels are
 outcome-dependent and its propensities are estimated. The sensitivity addresses
 the second point: DR survives estimated action-level propensities, but IPW does
-not (11.19% bias, 73% coverage), so the tool recommends DR. Under
+not (2.92% bias, 92% coverage), so the tool recommends DR. Under
 covariate-dependent observation, action-level IPW is 67.52% biased and
 action-level DR 21.25% biased; the fitted covariate model recovers the oracle
 (1.97–3.68%), but coverage is 89–91.5%, so heavy weights can undercover the
