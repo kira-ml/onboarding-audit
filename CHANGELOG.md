@@ -11,13 +11,21 @@
 - Propensity calibration diagnostic: observed/expected ratio, refusal when the
   observed count exceeds what the stated `e` allows, and a flag below 0.5.
 - Monte Carlo bounds on every headline bias; Wilson intervals on the sweep.
-- `scripts/check_claims.py`: 27 headline numbers recomputed from the committed
+- `scripts/check_claims.py`: 35 headline numbers recomputed from the committed
   JSON; runs in CI.
 - `docs/AUDIT_REPORT.md`, `docs/MODEL_CARD.md`, `docs/VALIDATION_REPORT.md`,
   `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`,
-  `docs/BENCHMARK_PROVENANCE.md`.
+  `docs/BENCHMARK_PROVENANCE.md`, `docs/TECHNICAL_NOTE.md`, `docs/CASE_STUDY.md`.
 - `scripts/prepare_baf.py`: rebuilds the benchmark from `Base.csv`; reproduced
   the recorded SHA-256 exactly.
+- `scripts/double_robustness.py`: known-truth test of the double-robustness
+  property; DR +0.14% with a wrong outcome model, +0.36% with a wrong propensity.
+- Candidate-vs-incumbent decision layer: P(candidate cheaper), expected regret,
+  and a recommendation.
+- Reproducible case study: the naive ranking flips; the report prefers the
+  candidate at P=0.984.
+- Post-stratified audit-only estimate by follow-up time, with a complete-case
+  fallback.
 - End-to-end `demo` command and a no-propensity demo log.
 
 ### Fixed

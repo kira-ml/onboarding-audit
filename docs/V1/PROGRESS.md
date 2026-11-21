@@ -20,6 +20,7 @@
 | Adapter/demo (E5) | **Done** | Demo log + `demo` command; no-propensity path | None |
 | Review package | **Done** | Model card, validation report, pilot protocol, business case | None |
 | Double robustness | **Done** | Known-truth test: DR +0.14% / +0.36% with one wrong nuisance | None |
+| Audit-only resolution | **Done** | Post-stratified by follow-up; complete-case fallback | None |
 | Decision layer | **Done** | P(candidate cheaper), expected regret, recommendation | None |
 | Case study | **Done** | 20k-row reproducible case; naive flips the ranking; report prefers the candidate | None |
 | CI/tests | **Local done** | 87 tests pass; workflow added; first GitHub run pending | None |
