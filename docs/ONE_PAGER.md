@@ -65,6 +65,10 @@ new policy is estimated on the subset the incumbent policy produced.
   interval covers the true full value in only **34%** of replications. The narrow
   interval is not a confidence interval; the widened interval passes F5 in
   **77/88** cells but is ~4× wider.
+- **Case study:** a 20,000-row synthetic log where the naive backtest says the
+  candidate is **6.3% worse** and the truth is **12.4% better**. The report
+  returns **P(candidate cheaper) = 0.984** and recommends the candidate. Fully
+  reproducible; see `CASE_STUDY.md`.
 - **Propensity sensitivity:** with estimated action-level `e`, DR stays within
   **1.43%** with **93.5%** coverage; IPW **2.92% / 92.0%**. Under
   outcome-dependent labels with estimated `e`, only audit-only is honest
