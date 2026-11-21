@@ -76,7 +76,7 @@ partner. Report the ranking as a function of the false-reject cost.
 ### Q5. What is the right audit size for a decision, not a generic 1%?
 
 **Why it matters.** The pilot shows the audit's marginal value is modest in the
-main scenario and decisive under outcome-dependent labels. A team needs a
+main scenario and the only approximately unbiased option under outcome-dependent labels. A team needs a
 decision-specific sample size, not a rule of thumb.
 
 **Current evidence.** [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) gives proportion and
@@ -194,7 +194,7 @@ practitioners; ask for a 30-minute critique; record the objections.
 | Is the naive evaluation materially biased? | Yes, +111.6% to +278.5% in the main scenario | `reports/pilot.json`; [`RESULTS.md`](RESULTS.md) |
 | Does the naive estimate reverse the ranking? | Yes, better-model/incumbent | [`RESULTS.md`](RESULTS.md) |
 | Does DR recover the identified value? | Yes, 0.94% max bias, 96.0% coverage | [`RESULTS.md`](RESULTS.md) |
-| Is the audit a universal fix? | No; modest in the main scenario, decisive under outcome-dependent labels | [`RESULTS.md`](RESULTS.md) |
+| Is the audit a universal fix? | No; modest in the main scenario, the only approximately unbiased option under outcome-dependent labels | [`RESULTS.md`](RESULTS.md) |
 | Is the reject margin point-identified? | No; bounds only | [`THREATS.md`](THREATS.md) |
 | Does DR survive estimated action-level propensities? | Yes, 2.67% / 91.0% when observation is action-dependent; no under covariate dependence | [`RESULTS.md`](RESULTS.md) |
 | Does IPW survive estimated propensities? | No, 11.19% / 73.0% | [`RESULTS.md`](RESULTS.md) |

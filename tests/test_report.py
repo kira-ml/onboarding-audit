@@ -196,7 +196,8 @@ def test_report_withholds_point_estimate_on_small_log(tmp_path):
     memo = Path(result.memo_path).read_text(encoding="utf-8")
     assert "Not identified" in memo
     assert "Point estimates are withheld" in memo
-    assert "| `P0` policy value is estimated | Measured |" not in memo
+    assert "| `P0`-conditional policy value is estimated | Measured |" not in memo
+    assert "Full-policy value including logging-rejected rows" in memo
     report = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
     assert "policy_value_target_5pct" not in report["result"]["audit"]
 

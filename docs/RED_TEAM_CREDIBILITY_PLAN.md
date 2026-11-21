@@ -32,7 +32,7 @@ packaging, access, and two external readers — not more analysis.
 |---|---|---|---|
 | Naive evaluation is materially biased (+112–278%) | E2 simulation | E3 sweep or real log | Unverified as a general claim |
 | DR recovers `P0` within 0.94% / 96% coverage | E2 with oracle `e` | E2 with estimated `e` + E3 real log | Partially supported |
-| The audit is decisive under outcome-dependent labels | E2 simulation | E3 operational audit | Unverified operationally |
+| The audit is the only approximately unbiased option under outcome-dependent labels | E2 simulation | E3 operational audit | Unverified operationally |
 | Reject margin is not point-identified; bounds are honest | E2 / E0 | E2 with F5 passing | F5 reportedly failed |
 | The tool is review-ready (Level 2) | E1 code + 20-row demo | E3 real log + external review | Not yet |
 | A 90-day partner pilot is feasible | E0 assumption | E3 signed term sheet | Unverified |

@@ -106,7 +106,7 @@ material. See [`METHODS.md`](METHODS.md) §2–3.
 
 They are **partial-identification intervals conditional on the `P0` estimate**,
 not confidence intervals. The width is the cost of not observing the reject
-margin. The incumbent's narrow interval covers the true full value only 35% of
+margin. The incumbent's narrow interval covers the true full value only 34% of
 the time in the pilot; that is a diagnostic, not a guarantee. See
 [`THREATS.md`](THREATS.md) §4.
 
@@ -115,7 +115,7 @@ the time in the pilot; that is a diagnostic, not a guarantee. See
 Using the tool as a point-estimate machine. The tool is useful only if the
 observation model, the overlap, the weight diagnostics, and the reject margin are
 read together. A confident-looking memo with a failed positivity check or a
-35% bounds coverage is not a decision. See [`THREATS.md`](THREATS.md).
+34% bounds coverage is not a decision. See [`THREATS.md`](THREATS.md).
 
 ---
 
@@ -198,9 +198,10 @@ is that it reverses the better-model/incumbent ranking. See
 ### Why is the audit not a universal fix?
 
 At a 5% approved-label base rate, a 1% audit mainly validates the approved
-margin and improves ESS; the marginal RMSE gain is modest. It becomes decisive
-when approved fraud is more likely to be labeled than approved legitimate
-accounts. See [`RESULTS.md`](RESULTS.md) §4.
+margin and improves ESS; the marginal RMSE gain is modest. It becomes the only
+approximately unbiased option when approved fraud is more likely to be labeled
+than approved legitimate accounts, though its interval is still undercovered
+(80–86%). See [`RESULTS.md`](RESULTS.md) §4.
 
 ### What about fairness?
 
@@ -222,10 +223,10 @@ It is a normalized assumption, sensitivity-tested across false-reject costs
 0.02–0.50 and audit/capacity/delay sweeps. It is not a production estimate. See
 [`DECISIONS.md`](DECISIONS.md) D4 and [`RESULTS.md`](RESULTS.md) §5.
 
-### Why does the bounds coverage say 35%?
+### Why does the bounds coverage say 34%?
 
 Because the bounds are conditional on the noisy `P0` estimate and the unobserved
-cost can fall outside the assumed min/max range. The 35% is a diagnostic that
+cost can fall outside the assumed min/max range. The 34% is a diagnostic that
 the narrow interval is not a 95% confidence interval. Report the bounds as
 bounds. See [`THREATS.md`](THREATS.md) §4.
 
@@ -254,7 +255,7 @@ truth, an audit designer, and a memo generator. See [`ARCHITECTURE.md`](ARCHITEC
 ### What did you find?
 
 The premise is real; the correction works on `P0`; the reject margin needs
-bounds; the audit is decisive under outcome-dependent labels but not a universal
+bounds; the audit is the only approximately unbiased option under outcome-dependent labels but not a universal
 fix; DR is robust to estimated action-level propensities, IPW is not; under
 covariate-dependent observation, action-level IPW and DR both fail, and the
 fitted covariate propensity model recovers the oracle. See

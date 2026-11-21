@@ -54,11 +54,12 @@ new policy is estimated on the subset the incumbent policy produced.
   **2.98%**, coverage **84.5%**, mean ESS **1,271**. A 2% audit improves to
   **1.82% / 86.5% / 2,546**.
 - **Audit value:** modest in the main scenario (DR RMSE **0.001159 → 0.001068**
-  from 0% to 2%; ESS **6,610 → 9,126**), but **decisive when approved labels are
-  outcome-dependent**: audit-only bias **-2.37% to -1.98%**, while action-only
-  IPW is **+43.9% to +368.3%** and DR **+596.4% to +1301.5%**.
+  from 0% to 2%; ESS **6,610 → 9,126**), but **the only approximately unbiased
+  option when approved labels are outcome-dependent**: audit-only bias
+  **-2.37% to -1.98%**, while action-only IPW is **+43.9% to +368.3%** and DR
+  **+596.4% to +1301.5%**.
 - **Reject-margin bounds:** widest interval **0.009942**; the incumbent's narrow
-  interval covers the true full value in only **35%** of replications. The
+  interval covers the true full value in only **34%** of replications. The
   bounds are partial-identification intervals, not confidence intervals.
 - **Propensity sensitivity:** with estimated action-level `e`, DR stays within
   **2.67%** with **91.0%** coverage; IPW degrades to **11.19% / 73.0%**. Under

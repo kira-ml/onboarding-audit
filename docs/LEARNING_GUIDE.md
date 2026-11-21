@@ -251,7 +251,7 @@ answer must contain" bullets.
 **Q7. Why are the bounds not confidence intervals?**
 - Good answer: they are partial-identification intervals conditional on the `P0`
   estimate; the unobserved reject margin is bounded by the cost model, not
-  sampled. The incumbent's narrow interval covers the true full value only 35% of
+  sampled. The incumbent's narrow interval covers the true full value only 34% of
   the time, which is a diagnostic that it is not a 95% CI.
 
 **Q8. Why does DR usually beat IPW? When did DR fail in this project?**
@@ -384,7 +384,7 @@ than a wrong precise one.
 4. What are the two identification conditions for `P0`, and what breaks them?
 5. When does IPW fail? When does DR fail? Give the project's evidence.
 6. Why is audit-only unbiased but noisy? What population does it target?
-7. Why are the bounds not confidence intervals? What does the 35% mean?
+7. Why are the bounds not confidence intervals? What does the 34% mean?
 8. What does the audit buy, and what does it not buy?
 9. What is the strongest counter-case, and what is your response?
 10. If an interviewer says "just use AUPRC" or "this is reject inference," what
@@ -435,8 +435,9 @@ The headline result: doubly robust estimation recovers the identified policy
 value within **0.94%** with **96%** coverage, while the naive estimate is off by
 more than 100% and would reject the better model. The audit is not a universal
 fix: at a 5% approved-label base rate it mainly validates the approved margin,
-but it becomes decisive when approved fraud is more likely to be labeled than
-approved legitimate accounts. The reject margin is not point-identified; the
+but it becomes the only approximately unbiased option when approved fraud is more
+likely to be labeled than approved legitimate accounts (with an interval that is
+still undercovered). The reject margin is not point-identified; the
 honest output is a bounds interval, not a confidence interval.
 
 A second study asks what happens when the propensities are estimated rather than

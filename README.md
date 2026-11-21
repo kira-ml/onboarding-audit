@@ -102,7 +102,7 @@ scenario and 50 for the sweeps and sensitivity studies.
 | IPW | **1.18% / 95.0%** | max relative bias / mean coverage |
 | Audit-only at 1% | **2.98% / 84.5% / 1,271** | max bias / coverage / mean ESS |
 | Outcome-dependent labels | audit-only **−2.37% to −1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** | relative bias |
-| Reject-margin bounds | widest **0.009942**; incumbent coverage **35%** | width / coverage of true full value — **not** a confidence interval |
+| Reject-margin bounds | widest **0.009942**; incumbent coverage **34%** | width / coverage of true full value — **not** a confidence interval |
 | Estimated action-level `e` | DR **2.67% / 91.0%**; IPW **11.19% / 73.0%** | max relative bias / mean coverage |
 | Covariate-dependent observation | action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage **89–91.5%** | relative bias; coverage is reported separately |
 

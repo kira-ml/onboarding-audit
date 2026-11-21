@@ -533,6 +533,12 @@ def write_memo(
     )
     L.append(f"- **Logging actions:** {result.action_counts}")
     L.append(f"- **Candidate actions:** {result.candidate_action_counts}")
+    outside = result.diagnostics.get("candidate_outside_p0", 0)
+    outside_share = result.diagnostics.get("candidate_outside_p0_share", 0.0)
+    L.append(
+        f"- **Candidate actions on logging-rejected rows:** {outside:,} "
+        f"({outside_share:.1%}) — outside the `P0` estimate"
+    )
     L.append("")
     L.append("## 2. Estimate")
     L.append("")
@@ -709,10 +715,15 @@ def write_memo(
     L.append("|---|---|---|")
     if result.identification.passed:
         L.append(
-            f"| `P0` policy value is estimated | Measured | `{result.report_path}` |"
+            f"| `P0`-conditional policy value is estimated | Measured | `{result.report_path}` |"
         )
     else:
-        L.append("| `P0` policy value | **Not identified** | see §2 reasons |")
+        L.append(
+            "| `P0`-conditional policy value | **Not identified** | see §2 reasons |"
+        )
+    L.append(
+        "| Full-policy value including logging-rejected rows | **Not identified** | bounds only; see §5 |"
+    )
     L.append(
         f"| Propensities are `{d['propensity_source']}` | Assumed | log's audit/observation design |"
     )

@@ -78,7 +78,7 @@ primary scenario.
 **Pilot update (2026-11-19):** The `P0` estimate is identified and the corrected
 estimators recover it (DR max |relative bias| 0.94%, mean coverage 96.0%). The
 reject-margin bounds are not confidence intervals: the incumbent's narrow
-interval covers the true full value in only 35% of replications. The `P0`
+interval covers the true full value in only 34% of replications. The `P0`
 decision stands, with the bounds caveat recorded in D8.
 **Kill criteria:** The bounds are so wide that no decision is possible; or the
 `P0` estimand is not the decision the buyer cares about.
@@ -129,6 +129,13 @@ sample cannot be made random/representative.
 `fraud_loss_rate=0.0019187869` (amount-scaled), `review_cost=0.02`,
 `false_reject_cost=0.10`, `residual_fraud_loss=0.30`. Sweep the false-reject
 cost (0.02, 0.10, 0.50).
+
+**Derivation of `fraud_loss_rate`:** it is the normalizer
+`1 / mean(amount_proxy on the training window)` =
+`1 / 521.1626` = `0.0019187869`. It makes the mean fraud loss equal to one
+normalized cost unit on the training window. It is computed on months 0–2 only;
+the test window is not used. It is not a peso loss-given-fraud estimate and it is
+not tuned to the evaluation result.
 
 **Why:** The project needs a common cost unit to compare policies; the V2 values
 are already documented and sensitivity-tested. They are not production
@@ -240,7 +247,7 @@ the pre-registration; then report both versions and explain the change.
 - The bounds combine the `P0` estimate with the min/max cost of the unobserved
   rejected rows. They are not sampling intervals for the full-population value.
 - The pilot shows the incumbent's narrow interval covers the true full value in
-  only 35% of replications. Calling it a 95% CI would be false.
+  only 34% of replications. Calling it a 95% CI would be false.
 - Option 3 would hide the reject-margin problem.
 
 **Expected outcome:** The memo reports the interval, its width, and the

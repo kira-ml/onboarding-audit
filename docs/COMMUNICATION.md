@@ -111,7 +111,7 @@ interval even when the point estimate is close. The remaining weaknesses are the
 simulated observation model, the close better-model/incumbent ranking (DR selects
 the true best 72% of the time), and the reject margin, which is bounded rather
 than point-identified (the incumbent's narrow interval covers the true full
-value only 35% of the time). The project is explicit about all of these.
+value only 34% of the time). The project is explicit about all of these.
 
 ## 5. What not to claim
 

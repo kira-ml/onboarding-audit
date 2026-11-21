@@ -86,7 +86,7 @@ one the business is asking.
 | Audit-only at 2%: max bias / coverage / ESS | **1.82% / 86.5% / 2,546** |
 | DR RMSE, 0% → 2% audit | **0.001159 → 0.001068** |
 | Reject-margin bounds: widest interval | **0.009942** |
-| Incumbent bounds coverage of true full value | **35%** (not a CI) |
+| Incumbent bounds coverage of true full value | **34%** (not a CI) |
 | Outcome-dependent: audit-only bias | **-2.37% to -1.98%** |
 | Outcome-dependent: IPW / DR bias | **+43.9% to +368.3% / +596.4% to +1301.5%** |
 | Estimated `e`: DR max bias / coverage | **2.67% / 91.0%** |

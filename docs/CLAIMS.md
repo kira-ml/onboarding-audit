@@ -44,7 +44,7 @@ pilot output or a cited primary source does not appear in the paper.
 | Covariate-dependent observation also breaks action-level DR | **Measured** (post-hoc S1) | Action-level DR max **21.25%**, coverage **72.5%** (delay 0.5); **17.59% / 80.0%** (delay 45) | A covariate propensity model; DR alone is not enough |
 | A fitted covariate propensity model recovers the oracle under covariate-dependent observation | **Measured** (post-hoc S1) | Covariate model: IPW **1.97%/91.5%**, DR **2.48%/89.5%** (delay 0.5); **3.35%/90.5%** and **3.68%/89.5%** (delay 45); oracle **3.01%/90.0%** and **2.63%/89.0%** | A misspecified covariate model, or a real log with unmeasured observation drivers |
 | Heavy weights undercover even with oracle propensities | **Measured** (caveat) | Covariate-oracle coverage **89–90%**, covariate-model **89.5–91.5%**, below nominal 95% | A bootstrap/randomization-inference interval, or a different weight estimator |
-| The audit is decisive when approved labels are outcome-dependent | **Measured** (H6 supported) | Audit-only bias **-2.37% to -1.98%**, coverage **80–86%**; IPW **+43.90% to +368.25%**; DR **+596.41% to +1301.53%** | An observation mechanism that is action-dependent after all |
+| The audit stays approximately unbiased when approved labels are outcome-dependent | **Measured** (H6 supported) | Audit-only bias **-2.37% to -1.98%**, coverage **80-86%** (below nominal); IPW **+43.90% to +368.25%**; DR **+596.41% to +1301.53%** | An observation mechanism that is action-dependent after all |
 | The reject margin is not point-identified from logs alone | **Measured** (H5 supported) | Widest bounds **0.009942**; incumbent width **0.001581** with **34%** coverage of the true full value | A controlled approval design or a defensible assumption |
 | The bounds are not confidence intervals | **Measured** (caveat) | Incumbent bounds cover the true full value in **34%** of replications; bounds are conditional on the P0 estimate | A different P0 estimator or a wider interval construction |
 | The pre-registered bounds coverage gate fails | **Measured** (V1 E2, F5 failed) | `coverage_full >= 90%` in **15/88** policy–scenario cells; main scenario **34–87%** (`reports/pilot.json`) | A valid confidence-interval construction, not a wider ad hoc interval |
@@ -53,7 +53,7 @@ pilot output or a cited primary source does not appear in the paper.
 | A 90-day delay reduces precision but not correctness | **Measured** | Mean ESS **3,308**; max \|relative bias\| **1.28%**; coverage **84–96%** | A longer delay or informative censoring |
 | The pilot generalizes to a Philippine production system | **Not claimed** | Public synthetic data; simulation | A bank partner and real logs |
 | A random approval/rejection arm is acceptable | **Not claimed** | `AUDIT_DESIGN.md` | Legal/risk review |
-| The audit is a universal bias fix | **Limitation / non-finding** | In the main scenario with a 5% approved-label base rate, the audit's marginal RMSE gain is modest; it is decisive under outcome-dependent labels | A lower base label rate or a different audit design |
+| The audit is a universal bias fix | **Limitation / non-finding** | In the main scenario with a 5% approved-label base rate, the audit's marginal RMSE gain is modest; it is the only approximately unbiased estimator under outcome-dependent labels, but its coverage is 80-86%, below nominal | A lower base label rate or a different audit design |
 
 ## Interpretation
 
@@ -73,10 +73,11 @@ pilot output or a cited primary source does not appear in the paper.
    instability is concentrated in the close better-model/incumbent gap.
 4. **The audit is not a universal bias fix.** At a 5% approved-label base rate,
    a 1% audit mainly validates the approved margin and improves ESS; it does not
-   change the log-based estimate much. It becomes decisive when approved fraud is
-   more likely to be labeled than approved legitimate accounts.
+   change the log-based estimate much. It becomes the only approximately unbiased
+   estimator when approved fraud is more likely to be labeled than approved
+   legitimate accounts — but its interval is still undercovered (80–86%).
 5. **The reject margin needs bounds.** The widest interval is 0.009942, and the
-   narrower incumbent interval covers the true full value only 35% of the time.
+   narrower incumbent interval covers the true full value only 34% of the time.
    Do not report the bounds as a confidence interval or a point estimate.
 6. **The correction depends on the observation model.** Action-level IPW fails
    under covariate-dependent observation (**67.52%** bias); action-level DR is

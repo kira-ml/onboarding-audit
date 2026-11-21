@@ -107,7 +107,7 @@ pilot.
 | **Synthetic data** | "BAF is synthetic; this is not a bank." | Task-matched benchmark, known ground truth | No real log | Partner pilot; real-action public dataset; case study |
 | **Oracle propensities** | "You know `e`; a bank does not." | Action-level, noisy, and covariate sensitivity | Real observation model unknown | Estimate `e` from a real audit/log; pre-register; report a sensitivity band |
 | **Cost matrix** | "The costs are arbitrary." | False-reject sweep 0.02–0.50 | No bank cost accounting | Elicit costs; report a cost curve and break-even |
-| **Reject margin** | "You cannot identify the full population." | Bounds, not confidence intervals | Bounds wide; 35% coverage | Report bounds; controlled design or explicit assumption |
+| **Reject margin** | "You cannot identify the full population." | Bounds, not confidence intervals | Bounds wide; 34% coverage | Report bounds; controlled design or explicit assumption |
 | **Ranking instability** | "DR selects the best only 72%." | Inversions, P(best), cost of misranking | Close better-model/incumbent gap | More audit/features; decision threshold; report cost of misranking |
 | **Audit feasibility** | "Ops/legal will not allow it." | Post-hoc verification + shadow scoring | No legal/ops review | Legal review; ops pilot; time-and-motion study |
 | **No external validation** | "No one has reviewed it." | Docs and tests | No external readers | Two readers; red team; independent replication |

@@ -22,8 +22,7 @@ production estimate, not a Philippine bank, not a causal deployment effect.
    better but not perfect (DR mean inversions **0.29**, P(select true best)
    **72%**).
 3. **The audit is not a universal fix.** At a 5% approved-label base rate, the
-   marginal RMSE gain is modest; the audit is decisive under outcome-dependent
-   labels.
+   marginal RMSE gain is modest; the audit is the only approximately unbiased option under outcome-dependent labels.
 4. **The reject margin is not point-identified.** The widest bounds interval is
    **0.009942**; the incumbent's narrow interval covers the true full value in
    **34%** of replications. Bounds are not confidence intervals. The
@@ -112,6 +111,16 @@ fixed.
 sweep supports the premise and rejects a universal magnitude. See
 [`../reports/obs_sweep/obs_sweep.md`](../reports/obs_sweep/obs_sweep.md).
 
+**Monte Carlo precision.** Each cell has 50 replications. The Wilson 95%
+intervals are wide: DR P(best) at `e_approve=0.01` is **64% [50%, 76%]**, and at
+`e_approve=0.50` it is **96–100% [86.5%, 100%]**. DR coverage at low `e` is
+**84.5–85.5% [78.8%, 89.7%]**. The direction of the contrast is solid; the
+decimal places are not. Do not quote a one-point difference between cells as a
+finding. The intervals are in
+[`../reports/obs_sweep/obs_sweep.md`](../reports/obs_sweep/obs_sweep.md); the
+coverage interval treats policy–replications as independent, so it is an
+optimistic lower bound on the uncertainty.
+
 ## 4. Pilot: audit value
 
 At a 5% approved-label base rate, the audit's marginal value is modest in the
@@ -124,10 +133,11 @@ main scenario:
 | 1% | — | — | 2.98% | 84.5% |
 | 2% | 0.001068 | 9,126 | 1.82% | 86.5% |
 
-The audit is decisive when approved fraud is more likely to be labeled than
-approved legitimate accounts. In the outcome-dependent scenario, audit-only bias
-is **-2.37% to -1.98%** (coverage 80–86%), while action-only IPW is **+43.9% to
-+368.3%** and DR **+596.4% to +1301.5%**. This is the strongest practical
+The audit is the only approximately unbiased option when approved fraud is more
+likely to be labeled than approved legitimate accounts. In the outcome-dependent
+scenario, audit-only bias is **-2.37% to -1.98%** (coverage 80–86%, below
+nominal), while action-only IPW is **+43.9% to +368.3%** and DR **+596.4% to
++1301.5%**. This is the strongest practical
 argument for the audit.
 
 ## 5. Pilot: capacity, delay, and cost
@@ -255,7 +265,7 @@ Naive bias in the same scenarios is **226.03%** (delay 0.5) and **301.68%**
 | H1: naive bias > 5% | **Supported** | **+111.55% to +278.49%** |
 | H2: naive rank inversion | **Supported** | Mean **1.00** inversion; P(select true best) **0%** |
 | H3: correction <= 5% / coverage >= 80% | **Supported** | DR **0.94% / 96.0%**; IPW **1.18% / 95.0%** |
-| H4: audit value | **Supported (modest in main; decisive under outcome-dependent labels)** | DR RMSE **0.001159 → 0.001068**; ESS **6,610 → 9,126**; audit-only **-2.37% to -1.98%** under outcome dependence |
+| H4: audit value | **Supported (modest in main; the only approximately unbiased option under outcome-dependent labels)** | DR RMSE **0.001159 → 0.001068**; ESS **6,610 → 9,126**; audit-only **-2.37% to -1.98%** under outcome dependence |
 | H5: reject margin not point-identified | **Supported** | Widest bounds **0.009942**; incumbent coverage **34%** (not a CI); F5 **failed** (15/88) |
 | H6: outcome-dependent labels break action-only IPW | **Supported** | Audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR **1627.9%** |
 | S1 (post-hoc): covariate-dependent observation breaks action-level weighting | **Supported** | Action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** |

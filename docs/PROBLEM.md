@@ -224,8 +224,8 @@ The targeted review of 25 primary sources found:
 | The pilot's logging policy and observation mechanism | **Simulated**; calibrated to public/regulatory parameters |
 | The cost matrix | **Assumed**; sensitivity-tested, not a production estimate |
 | The naive bias and rank flips | **Measured**: +111.6% to +278.5%; mean 1.00 inversion; see `RESULTS.md` |
-| The audit value | **Measured**: modest in the main scenario, decisive under outcome-dependent labels; see `RESULTS.md` |
-| The reject-margin bounds | **Derived and measured**: widest 0.009942; incumbent coverage 35%; not a CI |
+| The audit value | **Measured**: modest in the main scenario, the only approximately unbiased option under outcome-dependent labels; see `RESULTS.md` |
+| The reject-margin bounds | **Derived and measured**: widest 0.009942; incumbent coverage 34%; not a CI |
 | Propensity estimation | **Measured**: DR 2.67% / 91.0%; IPW 11.19% / 73.0%; see `RESULTS.md` |
 | Covariate-dependent observation | **Measured**: action IPW 67.52%, DR 21.25%; covariate model 1.97% / 2.48%; see `RESULTS.md` |
 | Generalization to a Philippine production system | **Not claimed** |

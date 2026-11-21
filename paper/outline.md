@@ -201,7 +201,7 @@ action-only IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%**; naive
 ### 6.6 Reject-margin bounds
 
 Widest bounds interval **0.009942**; the incumbent's width is **0.001581** with
-**35%** coverage of the true full-population value. The bounds are
+**34%** coverage of the true full-population value. The bounds are
 partial-identification intervals conditional on the P0 estimate, not confidence
 intervals. The reject margin is not point-identified from logs alone.
 

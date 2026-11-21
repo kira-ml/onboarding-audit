@@ -17,7 +17,7 @@ read before the results.
 | **BAF is synthetic** | External validity is limited | State it; use it as a task-matched benchmark, not a production estimate | Real account-opening data may have different fraud modes |
 | **BAF is not Philippine data** | The local hook is motivational | Use BSP/industry evidence for the problem, not for calibration; state the gap | A reviewer may ask for PH data; the answer is a partner, not a scrape |
 | **The review-capacity parameter is assumed** | The capacity conclusion depends on it | Sweep 1–10%; use FiFAR in a follow-on; elicit from practitioners | No public PH capacity data |
-| **The audit is not a universal bias fix** | A team may expect a 1% audit to solve selection | The pilot measures the audit's marginal value; it is modest at a 5% approved-label base rate and decisive under outcome-dependent labels | A team with a lower base rate may see a larger gain; a team with a high base rate may see little |
+| **The audit is not a universal bias fix** | A team may expect a 1% audit to solve selection | The pilot measures the audit's marginal value; it is modest at a 5% approved-label base rate and the only approximately unbiased option under outcome-dependent labels | A team with a lower base rate may see a larger gain; a team with a high base rate may see little |
 
 ## 2. Internal validity
 
@@ -48,7 +48,7 @@ read before the results.
 |---|---|---|---|
 | **Rank flips are noisy** | A single rep can flip by chance | 100 reps; Spearman/inversions/P(best)/cost of misranking; MC SE | The pilot's DR mean inversions is 0.29, concentrated in the close better-model/incumbent gap; P(select true best) is 72%, not 100% |
 | **Coverage is not nominal** | Influence-function SEs may understate uncertainty | Report coverage; treat the outcome model as fixed (stated); use MC SE | Coverage may be <95% in some scenarios; report it |
-| **Bounds are not CIs** | A reader may interpret the interval as a confidence interval | Label it a partial-identification interval; coverage of the true full value is a diagnostic, not a guarantee | The pilot's incumbent interval covers the true full value in only 35% of replications; the bounds can miss if the `P0` estimate is biased |
+| **Bounds are not CIs** | A reader may interpret the interval as a confidence interval | Label it a partial-identification interval; coverage of the true full value is a diagnostic, not a guarantee | The pilot's incumbent interval covers the true full value in only 34% of replications; the bounds can miss if the `P0` estimate is biased |
 | **H3 is strong** | Requiring <=5% max bias across all policies may fail | Report the failure honestly; narrow to bounds/diagnostic if needed | A weaker per-policy criterion would overclaim |
 
 ## 5. The strongest counter-case

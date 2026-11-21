@@ -116,7 +116,7 @@ warning thresholds but keep the positivity and cost-support refusal.
 **Status:** Accepted.
 
 **Options:**
-1. Keep the current bounds and call the 35% coverage "a diagnostic."
+1. Keep the current bounds and call the 34% coverage "a diagnostic."
 2. Record F5 pass/fail explicitly and drop the coverage claim if it fails.
 3. Replace the bounds with a different construction.
 

@@ -111,7 +111,7 @@ and reroutes the overflow by the approve-vs-reject argmin.
 
 | Parameter | Base value | Meaning |
 |---|---:|---|
-| `fraud_loss_rate` | 0.0019187869 | `fraud_loss = amount * rate`; normalized cost unit, not pesos |
+| `fraud_loss_rate` | 0.0019187869 | `fraud_loss = amount * rate`; `1 / mean(train amount)`; normalized cost unit, not pesos |
 | `review_cost` | 0.02 | Manual KYC review |
 | `false_reject_cost` | 0.10 | Lost legitimate applicant (inclusion harm) |
 | `residual_fraud_loss` | 0.30 | Fraud that survives a review |
@@ -413,8 +413,8 @@ The pilot ran as pre-registered: 13 scenarios, 700 replications, seed
 | H1 naive bias > 5% | **Supported** | Relative bias **+111.55% to +278.49%** |
 | H2 naive rank inversion | **Supported** | Mean **1.00** inversion; P(select true best) **0%** |
 | H3 correction <= 5% / coverage >= 80% | **Supported** | DR max **0.94%**, mean coverage **96.0%**; IPW **1.18% / 95.0%** |
-| H4 audit value | **Supported (modest effect)** | DR RMSE **0.001159 → 0.001068** (0% → 2%); ESS **6,610 → 9,126**; decisive under outcome-dependent labels |
-| H5 reject margin not point-identified | **Supported** | Widest bounds **0.009942**; incumbent coverage **35%** (not a CI) |
+| H4 audit value | **Supported (modest effect)** | DR RMSE **0.001159 → 0.001068** (0% → 2%); ESS **6,610 → 9,126**; the only approximately unbiased option under outcome-dependent labels |
+| H5 reject margin not point-identified | **Supported** | Widest bounds **0.009942**; incumbent coverage **34%** (not a CI) |
 | H6 outcome-dependent labels break action-only IPW | **Supported** | Audit-only **-2.37% to -1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** |
 
 **Post-run methodological note:** H2 is evaluated on the naive estimator only;

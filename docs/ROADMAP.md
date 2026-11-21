@@ -25,8 +25,8 @@ then add depth only where the pilot earns it.
 **Pilot outcome:** premise supported and correction supported. Naive bias
 **+111.6% to +278.5%**; naive rank inversion 1.00; DR max |relative bias|
 **0.94%** with **96.0%** coverage; audit-only high variance at 1%; reject margin
-requires bounds. H4 (audit value) is supported but modest in the main scenario and decisive
-under outcome-dependent labels.
+requires bounds. H4 (audit value) is supported but modest in the main scenario and
+the only approximately unbiased option under outcome-dependent labels.
 
 **Exit criterion:** the pilot shows a material naive bias and/or rank flips, and
 at least one honest correction or bound; or a well-supported null. **Met.**
