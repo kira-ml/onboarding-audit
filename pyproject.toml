@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "onboarding-audit"
-version = "0.2.1"
+version = "1.0.0"
 description = "Audit-ready evaluation of account-opening fraud policies under selective and delayed labels"
 readme = "README.md"
 requires-python = ">=3.10"

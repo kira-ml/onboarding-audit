@@ -8,8 +8,8 @@
 [![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-92%20passed-2ea44f?style=flat-square)](tests/)
-[![Version](https://img.shields.io/badge/version-0.2.1-6f42c1?style=flat-square)](CHANGELOG.md)
-[![Status](https://img.shields.io/badge/status-research%20pilot-f59e0b?style=flat-square)](docs/ROADMAP.md)
+[![Version](https://img.shields.io/badge/version-1.0.0-6f42c1?style=flat-square)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/status-review%20release-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
 *A measurement layer for the question every onboarding team asks:*
 **if we change the policy, will it catch more fraud without rejecting more good customers?**
@@ -20,16 +20,17 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **92 tests pass.** The documentation is
+> **Status:** `v1.0.0` review release. **92 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
 >
-> **V1 review candidate:** a credibility-first release. The bias claim is
+> **v1.0.0 review release:** a credibility-first release. The bias claim is
 > conditional on an observation-rate sweep; F5 is recorded (the narrow interval
 > fails, the widened interval passes); the report has an identification gate; and
 > the benchmark pipeline reproduces the recorded hash. See
-> [`docs/V1/README.md`](docs/V1/README.md) and
+> [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md),
+> [`docs/V1/README.md`](docs/V1/README.md), and
 > [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md).
 
 ## Why this exists
@@ -89,7 +90,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 92 tests · not production |
+| **Status** | v1.0.0 review release · 92 tests · not production |
 
 ## Headline results
 
@@ -324,6 +325,7 @@ Expected: **92 passed**, the demo memo, and **43/43** claim checks.
 | [`docs/RESULTS.md`](docs/RESULTS.md) | Consolidated measured findings and H1–H6 verdicts |
 | [`docs/CLAIMS.md`](docs/CLAIMS.md) | The claim ledger: what may be said, with evidence |
 | [`docs/THREATS.md`](docs/THREATS.md) | The strongest counter-case and mitigations |
+| [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md) | The v1.0.0 release notes |
 | [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) | The adversarial red-team audit and verdict |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
@@ -346,7 +348,7 @@ Research notes: [`paper/README.md`](paper/README.md).
 |---|---|---|
 | **v0.1 — Pilot** | Complete | Problem, schema, estimators, 700-replication benchmark |
 | **v0.2 — Usable tool** | Complete | Arbitrary-log report, propensity and covariate sensitivity |
-| **v0.2.1 — Documentation freeze** | Complete | Canonical research and technical documentation |
+| **v1.0.0 — Documentation freeze** | Complete | Canonical research and technical documentation |
 | **v0.3 — Research** | Next | Paper draft, second dataset, bootstrap intervals, independent red team |
 | **v1.0 — Release** | Later | Public release, arXiv, external readers, application package |
 
@@ -378,7 +380,7 @@ If you use this project, cite the software via [`CITATION.cff`](CITATION.cff):
 @software{Talingting_Onboarding_Audit_2026,
   author  = {Talingting, Ken Ira Lacson},
   title   = {Onboarding Audit: Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels},
-  version = {0.2.1},
+  version = {1.0.0},
   year    = {2026},
   license = {MIT},
   url     = {https://github.com/kira-ml/onboarding-audit}

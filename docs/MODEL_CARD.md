@@ -1,7 +1,7 @@
 # Model Card — Onboarding Policy Audit (V1)
 
 **Status:** V1 model card, 2026-11-21.
-**System version:** `0.2.1` (V1 review candidate).
+**System version:** `1.0.0` (V1 review candidate).
 **Document type:** Model card for the measurement layer, not for a fraud
 classifier. The layer evaluates someone else's policy; it does not score
 applicants.

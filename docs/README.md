@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Status:** Canonical documentation map for v0.2.1 (2026-11-20).
+**Status:** Canonical documentation map for v1.0.0 (2026-11-22).
 **Rule:** Every public number traces to a committed JSON or a cited primary
 source. Every public claim appears in [`CLAIMS.md`](CLAIMS.md). If two documents
 disagree, the precedence in §5 applies.
@@ -91,6 +91,7 @@ disagree, the precedence in §5 applies.
 | [`DECISION_MEMO_2026-11.md`](DECISION_MEMO_2026-11.md) | The Nov–Dec 2026 strategic decision: options, expected value, tail risk, recommendation |
 | [`ONE_PAGER.md`](ONE_PAGER.md) | The one-page reviewer brief |
 | [`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) | The pre-release claim, data, code, and docs checklist |
+| [`RELEASE_NOTES_v1.0.0.md`](RELEASE_NOTES_v1.0.0.md) | The release: what is in, what changed, how to verify |
 | [`ROADMAP.md`](ROADMAP.md) | The milestones and review dates |
 | [`../paper/README.md`](../paper/README.md) | The paper workspace: research notes, not the paper |
 | [`../paper/brief.md`](../paper/brief.md) | The 2-page research brief |

@@ -1,6 +1,6 @@
 # Publication Checklist
 
-**Status:** Canonical pre-release checklist for v0.2.1 (2026-11-20).
+**Status:** Canonical pre-release checklist for v1.0.0 (2026-11-22).
 **Purpose:** Prevent a public release from shipping an unsupported number, a
 privacy mistake, a broken reproduction path, or an overclaim. This is the last
 document to read before a tag, a blog post, or a paper submission.
@@ -49,7 +49,7 @@ document to read before a tag, a blog post, or a paper submission.
 
 ## 3. Code and tests
 
-- [ ] `pytest -q` passes (92 tests on v0.2.1).
+- [ ] `pytest -q` passes (92 tests on v1.0.0).
 - [ ] The version in `pyproject.toml`, `src/onboarding_audit/__init__.py`, and
       `CITATION.cff` agree.
 - [ ] `CHANGELOG.md` has an entry for the release.
@@ -131,7 +131,7 @@ document to read before a tag, a blog post, or a paper submission.
 ## 8. Release mechanics
 
 - [ ] `git status` is clean.
-- [ ] The release commit is tagged (`v0.2.1` or later).
+- [ ] The release commit is tagged (`v1.0.0` or later).
 - [ ] The GitHub release notes summarize the change and the limitations.
 - [ ] `CITATION.cff` has the correct version and date.
 - [ ] The README badge/status matches the release.

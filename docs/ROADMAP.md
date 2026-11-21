@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status:** Canonical roadmap for v0.2.1 (2026-11-20).
+**Status:** Canonical roadmap for v1.0.0 (2026-11-20).
 
 **Goal:** A public, research-grade measurement layer for account-opening fraud
 policies, ready for the Summer 2027 fintech internship cycle.
@@ -52,7 +52,7 @@ at least one honest correction or bound; or a well-supported null. **Met.**
 **Exit criterion:** a data scientist can run the tool on a sample log and get a
 memo in under 30 minutes.
 
-## v0.2.1 — Documentation freeze (November 2026)
+## v1.0.0 — Documentation freeze (November 2026)
 
 - [x] Consolidated methods reference (`docs/METHODS.md`).
 - [x] Consolidated results and H1–H6 verdicts (`docs/RESULTS.md`).

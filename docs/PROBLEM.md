@@ -1,6 +1,6 @@
 # Problem Brief — Account-Opening Fraud Policy Evaluation
 
-**Status:** v0.2.1, 2026-11-20.
+**Status:** v1.0.0, 2026-11-20.
 **Purpose:** Define the problem this project solves, the user, the decision, the
 evidence, and the limits. This is the document a fintech reviewer should read
 first. The measured findings are in [`RESULTS.md`](RESULTS.md); the claim ledger

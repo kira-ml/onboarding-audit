@@ -53,7 +53,7 @@ these facts.
 
 ## 4. Where the project is now
 
-The current v0.2.1 is a strong **Level 1 reproducible research artifact**:
+The current v1.0.0 is a strong **Level 1 reproducible research artifact**:
 
 - 92 tests, a schema, an audit design, a report/memo, 22 configured scenarios,
   and 11 sensitivity scenarios.

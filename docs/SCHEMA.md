@@ -1,6 +1,6 @@
 # Decision-Log Schema
 
-**Version:** 0.2.1.
+**Version:** 1.0.0.
 **Purpose:** Define the minimum fields a team must log to evaluate an
 account-opening fraud policy. The schema extends BSP Circular 1213's mandated
 11-field transaction log with the fields the regulation does not require but an

@@ -1,6 +1,6 @@
 # Related Work Map
 
-**Status:** Canonical related-work map for v0.2.1 (2026-11-20).
+**Status:** Canonical related-work map for v1.0.0 (2026-11-22).
 
 **Purpose:** Show what is established, what is adjacent, and what this project
 adds. The curated public bibliography is [`REFERENCES.md`](REFERENCES.md). The

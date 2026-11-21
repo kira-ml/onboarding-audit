@@ -1,6 +1,6 @@
 # Data Card — BAF Account-Opening Test Window
 
-**Status:** Canonical data card for v0.2.1 (2026-11-20).
+**Status:** Canonical data card for v1.0.0 (2026-11-22).
 
 ## 1. Dataset
 

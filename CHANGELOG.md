@@ -2,7 +2,11 @@
 
 **Status:** Canonical version history.
 
-## [Unreleased] — V1 review candidate (2026-11-21)
+## [1.0.0] — 2026-11-22
+
+The V1 review release. A credibility-first release: the claim is conditional and
+machine-checked, the benchmark is reproducible, and the adversarial audit is
+published with the findings that changed the claims.
 
 ### Added
 

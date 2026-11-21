@@ -1,6 +1,6 @@
 # References
 
-**Status:** Working bibliography for v0.2.1 (2026-11-20).
+**Status:** Working bibliography for v1.0.0 (2026-11-22).
 **Purpose:** Give the paper a single, checked citation list. The annotated review
 is in the archived origin repository; this file is the public, curated subset.
 

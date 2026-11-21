@@ -1,6 +1,6 @@
 # Results
 
-**Status:** Canonical results summary for v0.2.1 (2026-11-20).
+**Status:** Canonical results summary for v1.0.0 (2026-11-22).
 **Source of truth:** `reports/pilot.json` and
 `reports/propensity_sensitivity.json`. The prose here interprets those files; it
 does not replace them.

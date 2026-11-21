@@ -2,7 +2,7 @@
 
 **Working title:** *Who Gets Onboarded? Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels.*
 
-**Status:** Outline; results from the v0.2.1 pilot, propensity sensitivity, and
+**Status:** Outline; results from the v1.0.0 pilot, propensity sensitivity, and
 covariate sensitivity.
 **Author:** Ken Ira Lacson Talingting.
 **Target:** Public technical report / arXiv first. ICAIF 2027 or a fintech research workshop if the results hold. Do not overpromise a venue.

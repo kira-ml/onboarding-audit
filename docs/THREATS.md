@@ -1,6 +1,6 @@
 # Threats to Validity
 
-**Status:** Canonical validity register for v0.2.1 (2026-11-20).
+**Status:** Canonical validity register for v1.0.0 (2026-11-22).
 
 **Purpose:** The strongest reasons this project could be wrong, and the tests or
 statements that bound the damage. This is the inversion artifact; it should be

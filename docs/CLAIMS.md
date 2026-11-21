@@ -1,6 +1,6 @@
 # Claim Ledger
 
-**Status:** Canonical claim ledger for v0.2.1 (2026-11-20).
+**Status:** Canonical claim ledger for v1.0.0 (2026-11-22).
 
 **V1 re-evaluation (2026-11-21):** the 12-cell observation-rate sweep is
 complete. The maximum naive bias across the four policies is **7.8–538.5%** and

@@ -2,7 +2,7 @@
 
 **For:** a fintech data science / ML research reviewer.
 **Length:** 2 pages.
-**Status:** v0.2.1 pilot; results from the pre-registered pilot, the propensity
+**Status:** v1.0.0 pilot; results from the pre-registered pilot, the propensity
 sensitivity, and the covariate sensitivity.
 
 ---

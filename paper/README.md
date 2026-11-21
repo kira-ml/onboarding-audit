@@ -1,7 +1,7 @@
 # Paper Workspace
 
 **Status:** Research notes only. No paper draft and no PDF are produced in
-v0.2.1. This folder exists so the paper is easier to write when the project
+v1.0.0. This folder exists so the paper is easier to write when the project
 decides to start it.
 
 **Purpose:** Keep the paper-specific planning separate from the canonical

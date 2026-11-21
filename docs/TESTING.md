@@ -1,6 +1,6 @@
 # Testing
 
-**Status:** Canonical test guide for v0.2.1 (2026-11-20).
+**Status:** Canonical test guide for v1.0.0 (2026-11-22).
 **Purpose:** Explain what the test suite protects, how to run it, and which
 failure modes are not covered. Tests are part of the research claim: a
 correction that cannot pass a known-truth identity is not evidence.
@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **92 passed** on the v0.2.1 tree. The suite uses only synthetic or
+Expected: **92 passed** on the v1.0.0 tree. The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 The headline numbers are also checked directly against the committed JSON:

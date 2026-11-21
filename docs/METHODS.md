@@ -1,6 +1,6 @@
 # Methods
 
-**Status:** Canonical methods reference for v0.2.1 (2026-11-20).
+**Status:** Canonical methods reference for v1.0.0 (2026-11-22).
 **Purpose:** State the estimand, identification assumptions, estimators,
 simulation design, and metrics in one place. The pre-registered protocol is
 [`PILOT_SPEC.md`](PILOT_SPEC.md); the measured findings are in

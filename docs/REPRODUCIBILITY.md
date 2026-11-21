@@ -1,6 +1,6 @@
 # Reproducibility
 
-**Status:** Canonical reproduction guide for v0.2.1 (2026-11-20).
+**Status:** Canonical reproduction guide for v1.0.0 (2026-11-22).
 **Purpose:** Let a reader rebuild the environment, the data frame, the pilot, the
 sensitivity studies, and the report from a clean checkout. If a number cannot be
 reproduced from this document, it should not be in the paper.

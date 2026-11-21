@@ -1,7 +1,7 @@
 # Validation Report — V1
 
 **Status:** V1 validation record, 2026-11-21.
-**Subject:** `onboarding-audit` v0.2.1, the V1 review candidate.
+**Subject:** `onboarding-audit` v1.0.0, the V1 review candidate.
 **Verdict:** Level 2 (review-ready). Level 3 (partner pilot) is not claimed.
 
 This report is the reviewer's index to the evidence. It does not replace the
@@ -15,7 +15,7 @@ run, what passed, what failed, and what remains unverified.
 | Item | Statement |
 |---|---|
 | System | Offline policy-evaluation layer for account-opening fraud decisions |
-| Version | `0.2.1` |
+| Version | `1.0.0` |
 | Data | BAF `Base.csv` (public, synthetic), test months 5–6 |
 | Primary estimand | Mean realized cost per application on `P0` |
 | Review level targeted | Level 2: a fintech model-risk reviewer can audit the code, the evidence, and the claims |
