@@ -2,6 +2,11 @@
 
 **Status:** Canonical claim ledger for v0.2.1 (2026-11-20).
 
+**V1 re-evaluation (2026-11-21):** the observation-rate sweep is running. Until
+it completes, treat the **+111.6% to +278.5%** bias as specific to the main
+scenario, not a universal magnitude. See
+[`V1/EXPERIMENTS.md`](V1/EXPERIMENTS.md).
+
 **Rule:** Every public claim carries one status: **Measured**, **Pre-registered**,
 **Post-hoc**, **Non-finding**, or **Limitation**. A number that is not in the
 pilot output or a cited primary source does not appear in the paper.

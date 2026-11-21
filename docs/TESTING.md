@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **47 passed** on the v0.2.1 tree. The suite uses only synthetic or
+Expected: **49 passed** on the v0.2.1 tree. The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 Optional:
@@ -127,6 +127,12 @@ They protect the implementation, not the external validity of the simulation.
 
 - The pilot YAML parses the covariate scenarios with the expected
   `propensity_mode`, `observation_mode`, and `covariate_beta`.
+
+### `tests/test_sweep.py`
+
+- The observation sweep YAML parses 12 cells with the expected `e_approve` and
+  `kappa_review` values.
+- `Observation.with_overrides` accepts the two parameters.
 
 ### `tests/test_sensitivity.py`
 

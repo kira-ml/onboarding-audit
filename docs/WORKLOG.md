@@ -259,3 +259,29 @@ partner.
 
 **Health:** The project is at Level 1; the decision is to build the Level 2
 package, not to add methods.
+
+---
+
+## 2026-11-21 — V1 credibility-first plan
+
+**Done:**
+
+- Created `docs/V1/`: README, VISION, REQUIREMENTS, ARCHITECTURE, DECISIONS,
+  ROADMAP, EXPERIMENTS, EVALUATION, PROGRESS.
+- Added scenario-level `e_approve`/`kappa_review` overrides to `Scenario` and
+  `run_scenario`.
+- Created `configs/obs_sweep.yaml` (12 cells) and `scripts/analyze_sweep.py`.
+- 49 tests pass. The 1-rep smoke shows the expected pattern: naive bias
+  ~388–527% at `e_approve=0.01`, ~4.7–30% at `e_approve=0.50`.
+- Launched the full 50-rep observation sweep.
+- Updated README, `docs/ROADMAP.md`, and `docs/CLAIMS.md` to the V1 plan.
+
+**Next:**
+
+1. Analyze the sweep; update the V1 claim to its measured conditions.
+2. Record F5; add the report identification gate.
+3. Build the review package (model card, validation report, pilot protocol,
+   business case).
+
+**Health:** V1 is a credibility release; the observation sweep is the first
+evidence gate.

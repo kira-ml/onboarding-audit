@@ -70,7 +70,22 @@ canonical document is current, and a new collaborator can start from
 `docs/README.md` without reading the conversation history. **Met for the
 author; external readers remain.**
 
-## v0.3 — Research (February 2027)
+## v1.0 — Credibility-first release (December 2026)
+
+- [ ] Observation-rate sweep; bias claim conditional.
+- [ ] F5 pass/fail recorded; bounds language corrected.
+- [ ] Identification gate in the report; no "Measured" on unidentified logs.
+- [ ] Reproducible benchmark pipeline, or the Level 1 claim narrowed.
+- [ ] Model card, validation report, pilot protocol, business case.
+- [ ] Real-log adapter, one-command demo, CI.
+- [ ] Two external readers.
+- [ ] v1.0.0 tag.
+
+**Exit criterion:** a risk team can review the package without the author, and a
+hostile reviewer cannot find an undocumented overclaim. The detailed plan is
+[`V1/ROADMAP.md`](V1/ROADMAP.md).
+
+## v1.1 — Research and external review (2027)
 
 - [ ] Paper draft (IMRaD) built from `docs/METHODS.md`, `docs/RESULTS.md`, and
   `docs/CLAIMS.md`; no new headline during drafting.
@@ -84,7 +99,7 @@ author; external readers remain.**
 **Exit criterion:** a researcher can reproduce the headline and explain the
 limitations.
 
-## v1.0 — Release (March–April 2027)
+## v2.0 — Publication and adoption (2027)
 
 - [ ] Public GitHub release, MIT license, CITATION.cff.
 - [ ] Technical report / arXiv.
@@ -105,7 +120,8 @@ limitations.
 
 - **2026-11-20:** documentation freeze (canonical docs complete; paper not
   started). **Met for the author.**
-- **2026-12-15:** external readers and pilot go/no-go.
-- **2027-01-15:** v0.2 usable-tool gate.
-- **2027-02-15:** paper draft gate.
-- **2027-03-15:** release and application package.
+- **2026-12-05:** V1 package freeze.
+- **2026-12-15:** V1 reviewer status and claim freeze.
+- **2026-12-31:** v1.0.0 credibility-first release.
+- **2027-02-15:** v1.1 paper draft gate.
+- **2027-03-15:** v2.0 publication and application package.

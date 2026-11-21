@@ -84,7 +84,21 @@ disagree, the precedence in §5 applies.
 | [`../paper/brief.md`](../paper/brief.md) | The 2-page research brief |
 | [`../paper/outline.md`](../paper/outline.md) | The IMRaD outline |
 
-### 2.6 Regulatory
+### 2.6 V1 planning
+
+| Document | Purpose |
+|---|---|
+| [`V1/README.md`](V1/README.md) | V1 credibility-first release: index, scope, definition of done |
+| [`V1/VISION.md`](V1/VISION.md) | Strategy, positioning, and the V1 claim |
+| [`V1/REQUIREMENTS.md`](V1/REQUIREMENTS.md) | Functional/non-functional requirements and acceptance criteria |
+| [`V1/ARCHITECTURE.md`](V1/ARCHITECTURE.md) | Target architecture, interfaces, invariants, trade-offs |
+| [`V1/DECISIONS.md`](V1/DECISIONS.md) | The six V1 technical decisions |
+| [`V1/ROADMAP.md`](V1/ROADMAP.md) | Phases, dates, milestones, kill criteria |
+| [`V1/EXPERIMENTS.md`](V1/EXPERIMENTS.md) | Observation sweep, bounds F5, report gate, reproducibility |
+| [`V1/EVALUATION.md`](V1/EVALUATION.md) | Evidence tiers, claim matrix, release gates |
+| [`V1/PROGRESS.md`](V1/PROGRESS.md) | Live status and next actions |
+
+### 2.7 Regulatory
 
 | Document | Purpose |
 |---|---|

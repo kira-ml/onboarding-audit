@@ -107,6 +107,16 @@ def run_scenario(
         audit_rate=scenario.audit_rate,
         approve_delay_median=scenario.approve_delay_median,
         outcome_dependent=scenario.outcome_dependent,
+        e_approve=(
+            scenario.e_approve
+            if scenario.e_approve is not None
+            else config.observation.e_approve
+        ),
+        kappa_review=(
+            scenario.kappa_review
+            if scenario.kappa_review is not None
+            else config.observation.kappa_review
+        ),
     )
     model = build_observation_model(
         logging.actions,
@@ -659,7 +669,9 @@ def write_report(payload: dict, path: Path) -> None:
         "not interpret the bounds as 95% coverage."
     )
     L.append("")
-    L.append("## Verdict")
+    L.append(
+        f"## Verdict (reference scenario: `{v.get('reference_scenario', 'main')}`)"
+    )
     L.append("")
     L.append(
         f"- **H1 naive bias > 5%:** {'supported' if v['H1_naive_bias_gt_5pct'] else 'not supported'} (max |relative bias| = {v['H1_max_abs_rel_bias']:.2%})"
@@ -685,7 +697,8 @@ def write_report(payload: dict, path: Path) -> None:
     L.append(
         f"- **H5 reject margin not identified:** {'supported' if v['H5_reject_margin_not_identified'] else 'not supported'} (max bounds width = {v['H5_max_bounds_width']:.6f})"
     )
-    if np.isfinite(v.get("H6_audit_max_abs_rel_bias", float("nan"))):
+    h6 = v.get("H6_audit_max_abs_rel_bias")
+    if h6 is not None and np.isfinite(h6):
         L.append(
             f"- **H6 outcome-dependent labels:** {'supported' if v.get('H6_outcome_dependent') else 'not supported'} "
             f"(audit-only max |relative bias| = {v['H6_audit_max_abs_rel_bias']:.2%}; "
@@ -755,7 +768,13 @@ def run_pilot(
     summary = summarize(rows)
     ranking = ranking_metrics(rows)
     bounds = bounds_summary(rows)
-    v = verdict(summary, ranking, bounds)
+    reference = (
+        "main"
+        if any(r["meta"]["scenario"] == "main" for r in results)
+        else results[0]["meta"]["scenario"]
+    )
+    v = verdict(summary, ranking, bounds, scenario=reference)
+    v["reference_scenario"] = reference
 
     payload = {
         "software": {

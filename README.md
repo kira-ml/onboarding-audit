@@ -19,10 +19,16 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **47 tests pass.** The documentation is
+> **Status:** `v0.2.1` research pilot. **49 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
+>
+> **V1 in progress:** a credibility-first release is planned for December 2026.
+> It makes the bias claim conditional on an observation-rate sweep, records the
+> bounds F5 result, adds an identification gate to the report, and ships a
+> reproducible benchmark pipeline. See
+> [`docs/V1/README.md`](docs/V1/README.md).
 
 ## Why this exists
 
@@ -78,7 +84,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 47 tests · not production |
+| **Status** | v0.2.1 research pilot · 49 tests · not production |
 
 ## Headline results
 
@@ -245,7 +251,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 47 tests, including negative controls |
+| Test suite | **Implemented** | 49 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |
@@ -285,6 +291,7 @@ discipline, not a new estimator. The closest work is mapped in
 | [`docs/TESTING.md`](docs/TESTING.md) | Test strategy, coverage, gaps |
 | [`docs/FAQ.md`](docs/FAQ.md) | Practitioner, researcher, and interviewer questions |
 | [`docs/LEARNING_GUIDE.md`](docs/LEARNING_GUIDE.md) | Plain-English concept map, practice set, and self-test |
+| [`docs/V1/README.md`](docs/V1/README.md) | The credibility-first V1 release plan for December 2026 |
 | [`docs/README.md`](docs/README.md) | The full documentation index and reading paths |
 
 Generated outputs: [`reports/pilot.md`](reports/pilot.md) and

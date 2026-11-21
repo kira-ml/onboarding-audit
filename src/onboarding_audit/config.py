@@ -85,6 +85,8 @@ class Scenario:
     propensity_noise: float = 0.0
     observation_mode: str = "action"
     covariate_beta: float = 0.0
+    e_approve: float | None = None
+    kappa_review: float | None = None
 
 
 @dataclass(frozen=True)
@@ -172,6 +174,12 @@ def load_config(path: Path | str) -> PilotConfig:
             propensity_noise=float(s.get("propensity_noise", 0.0)),
             observation_mode=str(s.get("observation_mode", "action")),
             covariate_beta=float(s.get("covariate_beta", 0.0)),
+            e_approve=(
+                float(s["e_approve"]) if s.get("e_approve") is not None else None
+            ),
+            kappa_review=(
+                float(s["kappa_review"]) if s.get("kappa_review") is not None else None
+            ),
         )
         for s in raw["scenarios"]
     )
@@ -214,6 +222,16 @@ def load_config(path: Path | str) -> PilotConfig:
             scenario.covariate_beta >= 0.0,
             f"covariate_beta for {scenario.id!r} must be >= 0",
         )
+        if scenario.e_approve is not None:
+            _require(
+                0.0 < scenario.e_approve < 1.0,
+                f"e_approve for {scenario.id!r} must be in (0, 1)",
+            )
+        if scenario.kappa_review is not None:
+            _require(
+                0.0 < scenario.kappa_review <= 1.0,
+                f"kappa_review for {scenario.id!r} must be in (0, 1]",
+            )
         _require(
             not (scenario.outcome_dependent and scenario.observation_mode != "action"),
             f"scenario {scenario.id!r}: outcome_dependent and covariate observation "

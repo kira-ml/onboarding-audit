@@ -30,3 +30,4 @@ reports/sample_report/
 reports/sample_covariate/
 reports/*.parquet
 .serena/
+reports/obs_sweep_smoke/

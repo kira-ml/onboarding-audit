@@ -44,7 +44,7 @@ python -c "import onboarding_audit; print(onboarding_audit.__version__)"
 pytest -q
 ```
 
-Expected: the version string and **47 passed**.
+Expected: the version string and **49 passed**.
 
 ## 3. Data
 
