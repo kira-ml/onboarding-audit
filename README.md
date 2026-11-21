@@ -107,6 +107,7 @@ scenario and 50 for the sweeps and sensitivity studies.
 | Outcome-dependent labels | audit-only **−2.37% to −1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** | relative bias |
 | Reject-margin bounds | **0.009942** main; **0.203** in `frej_002`; incumbent coverage **34%**; F5 **failed** for the narrow interval (**15/88**), **passed** for the widened interval (**77/88**) | width / coverage of true full value — the narrow interval is **not** a confidence interval |
 | DR ranking at low approve-label rate | **64%** [50–76%] vs naive **0%** | P(select the true best policy), 95% Wilson interval |
+| Case study | naive **+6.3% worse**; true **−12.4% better**; report **P=0.984** | the naive backtest would keep the worse policy |
 | Estimated action-level `e` | DR **1.43% / 93.5%**; IPW **2.92% / 92.0%** | max relative bias / mean coverage |
 | Covariate-dependent observation | action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage **89–91.5%** | relative bias; coverage is reported separately |
 
