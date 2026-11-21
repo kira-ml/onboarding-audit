@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import numpy as np
@@ -196,6 +197,8 @@ def test_report_withholds_point_estimate_on_small_log(tmp_path):
     assert "Not identified" in memo
     assert "Point estimates are withheld" in memo
     assert "| `P0` policy value is estimated | Measured |" not in memo
+    report = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
+    assert "policy_value_target_5pct" not in report["result"]["audit"]
 
 
 def test_covariate_propensity_model_varies_within_action():

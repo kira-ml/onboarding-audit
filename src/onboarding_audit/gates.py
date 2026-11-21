@@ -69,7 +69,9 @@ def check_identification(
 
     # Positivity: every P0 row must have a positive chance of observation.
     # A provided propensity column is only required on observed rows; an
-    # estimated propensity is populated for every P0 row.
+    # estimated propensity is populated for every P0 row. With a provided
+    # column, a structural zero on an unobserved row cannot be detected; the
+    # memo states that the check covers observed P0 rows only.
     if not positivity_ok:
         reasons.append("positivity failure: a P0 row has zero observation probability")
     elif propensity_source == "provided":

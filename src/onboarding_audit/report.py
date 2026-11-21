@@ -428,7 +428,13 @@ def evaluate_report(
             }
 
     audit_rec = _audit_recommendation(
-        df, cost, observed, audit, config.costs, estimates
+        df,
+        cost,
+        observed,
+        audit,
+        config.costs,
+        estimates,
+        identified=identification.passed,
     )
     return estimates, diagnostics, bounds, audit_rec, identification
 
@@ -440,6 +446,8 @@ def _audit_recommendation(
     audit: np.ndarray,
     costs: Costs,
     estimates: dict,
+    *,
+    identified: bool = True,
 ) -> dict:
     """Size a random post-hoc verification audit to the decision's effect size."""
     y = df["label"].fillna(0).astype(int).to_numpy()
@@ -476,7 +484,7 @@ def _audit_recommendation(
     point = estimates.get("dr", {}).get("value", float("nan"))
     if not np.isfinite(point):
         point = estimates.get("ipw_ht", {}).get("value", float("nan"))
-    if np.isfinite(point) and observed.any():
+    if identified and np.isfinite(point) and observed.any():
         sd = float(cost[observed].std(ddof=1))
         target_abs = 0.05 * abs(point)
         if target_abs > 0:
@@ -597,9 +605,17 @@ def write_memo(
             "heavy-tailed weight distribution undercovers the interval even when "
             "the point estimate is close."
         )
-    L.append(
-        f"- **Positivity:** {'OK' if d['positivity_ok'] else 'FAILED — no point estimate'}."
-    )
+    if d["propensity_source"] == "provided":
+        L.append(
+            "- **Positivity:** "
+            f"{'OK on observed P0 rows' if d['positivity_ok'] else 'FAILED - no point estimate'}; "
+            "a structural zero on an unobserved row cannot be detected from a "
+            "provided column."
+        )
+    else:
+        L.append(
+            f"- **Positivity:** {'OK on P0 rows' if d['positivity_ok'] else 'FAILED - no point estimate'}."
+        )
     L.append(
         f"- **Observed propensity range:** [{_fmt(d['e_min_observed'])}, {_fmt(d['e_max_observed'])}]; "
         f"fraction with `e < 0.01`: {_fmt(d['frac_observed_e_lt_001'])}."

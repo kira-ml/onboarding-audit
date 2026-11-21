@@ -26,7 +26,7 @@ package is installed in editable mode for development.
 ```bash
 python -m venv .venv
 .venv\Scripts\activate          # Windows
-pip install -e ".[dev]"
+pip install -e ".[dev,baf]"
 ```
 
 On macOS/Linux:
@@ -34,7 +34,7 @@ On macOS/Linux:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e ".[dev,baf]"
 ```
 
 Verify:
@@ -44,7 +44,7 @@ python -c "import onboarding_audit; print(onboarding_audit.__version__)"
 pytest -q
 ```
 
-Expected: the version string and **60 passed**.
+Expected: the version string and **65 passed**.
 
 ## 3. Data
 
@@ -59,15 +59,31 @@ The file is **not committed** (see `.gitignore`). Its provenance, column roles,
 and limitations are in [`DATA.md`](DATA.md) and
 [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md).
 
-The raw BAF data is public (Jesus et al., NeurIPS 2022). The processed file was
-produced by the archived V2 pipeline, which is not part of this repository. A
-standalone `scripts/prepare_baf.py` is not included in v0.2.1; the honest
-reproduction path is:
+The raw BAF data is public (Jesus et al., NeurIPS 2022). Rebuild the processed
+file from `Base.csv`:
 
-1. obtain `Base.csv` from the BAF repository;
-2. use the archived V2 pipeline for the month 0–2 / 3–4 / 5–6 split and the
-   `p_fraud` / `p_fraud_lgbm` scores;
-3. write the 39-column test frame described in `DATA_DICTIONARY.md`.
+```bash
+pip install -e ".[baf]"
+python scripts/prepare_baf.py --raw /path/to/Base.csv --verify
+```
+
+The script:
+
+1. loads `Base.csv`, adds `transaction_id` and `amount_proxy`, and sorts by
+   `month`;
+2. simulates the one-month label delay;
+3. splits months 0–2 (train), 3–4 (validation), 5–6 (test);
+4. fits the incumbent logistic regression (`C=10`) and the candidate LightGBM
+   (300 trees, learning rate 0.05), and refits the random forest as a
+   diagnostic;
+5. writes the 39-column test frame and `data/scored_test.provenance.json` with
+   the input hash, the output hash, the model parameters, the library versions,
+   and per-score column hashes.
+
+`--verify` exits non-zero if the output SHA-256 differs from
+`f5efd6781431f229685df6c154f1a6e124849a323e3c45d258a09cf10f331593`. A library
+upgrade that changes the scores is therefore visible, not silent. The verified
+rebuild record is in [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md).
 
 Do not fabricate the processed file from a different split; the scores and the
 test window are part of the benchmark.
@@ -80,19 +96,39 @@ test window are part of the benchmark.
 pytest -q
 ```
 
-### 4.2 Pilot
+### 4.2 Demo
+
+```bash
+onboarding-audit demo --out reports/demo
+```
+
+Uses `examples/demo_log.csv` (2,500 rows, no propensity column) and
+`examples/demo_candidate.csv`; exercises the estimated-propensity path and the
+identification gate. Not a research result.
+
+### 4.3 Pilot
 
 ```bash
 onboarding-audit pilot --config configs/pilot.yaml --out reports
 ```
 
-This runs the 13 pre-registered scenarios (700 replications). It writes:
+This runs the 22 configured scenarios (1,150 replications). It writes:
 
 - `reports/pilot.json` — the source of truth;
 - `reports/pilot.md` — the human-readable report;
 - `reports/pilot_rows.parquet` — row-level results (gitignored, local).
 
-### 4.3 Propensity and covariate sensitivity
+### 4.4 Observation-rate sweep
+
+```bash
+onboarding-audit pilot --config configs/obs_sweep.yaml --out reports/obs_sweep
+python scripts/analyze_sweep.py
+```
+
+This runs the 12-cell sweep (50 replications per cell) and writes the committed
+summary in `reports/obs_sweep/`.
+
+### 4.5 Propensity and covariate sensitivity
 
 ```bash
 onboarding-audit sensitivity --config configs/pilot.yaml --out reports --reps 50
@@ -105,7 +141,7 @@ estimated `e`, and the five covariate scenarios. It writes:
 - `reports/propensity_sensitivity.json`;
 - `reports/propensity_sensitivity.md`.
 
-### 4.4 Arbitrary-log report
+### 4.6 Arbitrary-log report
 
 ```bash
 onboarding-audit report \
@@ -131,7 +167,7 @@ onboarding-audit report \
 
 The sample log is a 20-row schema/CLI smoke example, not a research result.
 
-### 4.5 Schema validation
+### 4.7 Schema validation
 
 ```bash
 onboarding-audit validate --log examples/sample_log.csv
@@ -161,8 +197,11 @@ must change it, report both runs and explain why.
 | `reports/pilot_rows.parquet` | no | Row-level results; large and reproducible |
 | `reports/propensity_sensitivity.json` | yes | Sensitivity summary; source of truth |
 | `reports/propensity_sensitivity.md` | yes | Human-readable sensitivity report |
-| `reports/sample_report/` | no | Generated sample memo; smoke example |
-| `reports/sample_covariate/` | no | Generated covariate sample memo; smoke example |
+| `reports/obs_sweep/pilot.json` | yes | Observation sweep; source of truth |
+| `reports/obs_sweep/obs_sweep.md` | yes | Sweep summary |
+| `reports/obs_sweep/obs_sweep_summary.csv` | yes | Sweep summary table |
+| `reports/demo/` | no | Generated demo memo; usability fixture |
+| `data/scored_test.provenance.json` | no | Benchmark input/output hashes and library versions |
 
 A public number must trace to one of the committed JSON files or a cited primary
 source. The claim ledger is [`CLAIMS.md`](CLAIMS.md).
@@ -185,8 +224,9 @@ Reference machine: Windows 11, CPU-only, 16 GB RAM.
 
 | Run | Replications | Approx. runtime |
 |---|---:|---:|
-| `pytest -q` | — | < 10 s |
-| Pilot (13 scenarios) | 700 | ~19 min CPU; ~31 min wall-clock on the reference run |
+| `pytest -q` | — | < 15 s |
+| Demo (2,500 rows) | — | < 10 s |
+| Pilot (22 scenarios) | 1,150 | ~19 min CPU; ~31 min wall-clock on the reference run |
 | Sensitivity (11 scenarios) | 550 | ~16 min (reference run; covariate model fits dominate) |
 | Report on the 20-row sample | — | < 5 s |
 | Report on a 227k-row log | — | seconds to a few minutes, depending on features |
@@ -224,11 +264,14 @@ count and seed are.
 ## 11. What cannot be reproduced from this repository alone
 
 - The raw BAF download (public, but not redistributed).
-- The V2 model training pipeline that produced `p_fraud` and `p_fraud_lgbm`
-  (archived in the origin repository).
 - A Philippine bank log (none is public; the project does not use one).
 - A production cost matrix (the configured values are normalized assumptions).
 - A legal/risk sign-off on the audit design.
+
+The V2 model scores **can** be rebuilt from the public raw file with
+`scripts/prepare_baf.py`; the script records the hashes and the library versions
+so a mismatch is visible. Exact bit-for-bit agreement across a library upgrade is
+not guaranteed.
 
 These are stated as limitations, not hidden.
 

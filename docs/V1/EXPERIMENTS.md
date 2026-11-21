@@ -155,6 +155,33 @@ valid. Record the pass and update the threats register.
 - A section in `docs/RESULTS.md` that says "F5 passed" or "F5 failed."
 - Updated `docs/CLAIMS.md` and `docs/THREATS.md`.
 
+### 3.6 Result (2026-11-21)
+
+**F5 failed.** The conditional partial-identification interval reaches
+`coverage_full >= 90%` in **15 of 88** policy–scenario cells.
+
+| Main-scenario policy | `coverage_full` | F5 | Unconditional coverage | Width | Unconditional width |
+|---|---:|---|---:|---:|---:|
+| `incumbent` | 34% | fail | 99% | 0.001581 | 0.006780 |
+| `strict_cost` | 68% | fail | 99% | 0.001640 | 0.004257 |
+| `lenient_cost` | 86% | fail | 100% | 0.009942 | 0.015011 |
+| `better_model` | 87% | fail | 100% | 0.004379 | 0.008987 |
+
+The unconditional interval covers 99–100% in the main scenario, so the failure is
+partly a construction problem (the conditional interval ignores the `P0` standard
+error). It is not a complete fix: under outcome-dependent labels the
+unconditional interval also covers **0%**, because the `P0` estimate itself is
+biased there.
+
+**Decision:** remove the coverage claim. Report the bounds as a
+partial-identification range conditional on `P0`, with the reject share and the
+unconditional width as a sensitivity. Do not describe either interval as a
+confidence interval.
+
+**Why it matters:** this is the strongest evidence that the reject-margin result
+is a limitation, not a feature. A reviewer should read §6 of `RESULTS.md` before
+citing the bounds.
+
 ---
 
 ## 4. E3 — Report gate

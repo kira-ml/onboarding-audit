@@ -26,7 +26,8 @@ production estimate, not a Philippine bank, not a causal deployment effect.
    labels.
 4. **The reject margin is not point-identified.** The widest bounds interval is
    **0.009942**; the incumbent's narrow interval covers the true full value in
-   **35%** of replications. Bounds are not confidence intervals.
+   **34%** of replications. Bounds are not confidence intervals. The
+   pre-registered F5 coverage gate **failed** (15/88 cells at ≥90%).
 5. **DR survives estimated action-level propensities; IPW does not.** DR
    **2.67% / 91.0%**; IPW **11.19% / 73.0%**.
 6. **Under covariate-dependent observation, action-level weighting fails.**
@@ -146,13 +147,23 @@ break the correction.
 |---|---:|
 | Widest bounds interval | **0.009942** |
 | Incumbent bounds width | **0.001581** |
-| Incumbent bounds coverage of true full value | **35%** |
+| Incumbent bounds coverage of true full value | **34%** |
 | Bounds type | Partial-identification interval conditional on the `P0` estimate |
 
-The bounds are **not** confidence intervals. The 35% coverage is a diagnostic
+**F5 failed.** The pre-registered F5 criterion was `coverage_full >= 90%`. It
+holds in **15 of 88** policy–scenario cells. In the main scenario the coverage is
+**34% (incumbent), 68% (strict cost), 86% (lenient cost), and 87% (better
+model)**. The unconditional interval — the bounds widened by the `P0` standard
+error, scaled by the `P0` share — covers **99–100%** in the main scenario, but it
+is a conservative diagnostic, not a sharp identification result, and it collapses
+to **0%** under outcome-dependent labels where the `P0` estimate itself is biased.
+
+The bounds are **not** confidence intervals. The low coverage is a diagnostic
 that the narrow interval is not a 95% interval; it does not mean the bounds are
 "wrong." It means the full-population value is not point-identified from logs
-alone.
+alone. Per the E2 decision rule, the coverage claim is removed; the bounds are
+reported as a partial-identification range with the reject share and the
+unconditional width.
 
 ## 7. Propensity sensitivity: estimated and noisy `e`
 
@@ -245,7 +256,7 @@ Naive bias in the same scenarios is **226.03%** (delay 0.5) and **301.68%**
 | H2: naive rank inversion | **Supported** | Mean **1.00** inversion; P(select true best) **0%** |
 | H3: correction <= 5% / coverage >= 80% | **Supported** | DR **0.94% / 96.0%**; IPW **1.18% / 95.0%** |
 | H4: audit value | **Supported (modest in main; decisive under outcome-dependent labels)** | DR RMSE **0.001159 → 0.001068**; ESS **6,610 → 9,126**; audit-only **-2.37% to -1.98%** under outcome dependence |
-| H5: reject margin not point-identified | **Supported** | Widest bounds **0.009942**; incumbent coverage **35%** (not a CI) |
+| H5: reject margin not point-identified | **Supported** | Widest bounds **0.009942**; incumbent coverage **34%** (not a CI); F5 **failed** (15/88) |
 | H6: outcome-dependent labels break action-only IPW | **Supported** | Audit-only **2.58% / 82.5%**; IPW **1350.8%**; DR **1627.9%** |
 | S1 (post-hoc): covariate-dependent observation breaks action-level weighting | **Supported** | Action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** |
 
@@ -254,7 +265,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 
 ## 11. Negative controls
 
-`pytest -q`: **60 passed**, including:
+`pytest -q`: **65 passed**, including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);

@@ -39,6 +39,9 @@ dev = [
   "pytest>=8.1,<9.0",
   "matplotlib>=3.8,<4.0",
 ]
+baf = [
+  "lightgbm>=4.0,<5.0",
+]
 
 [project.scripts]
 onboarding-audit = "onboarding_audit.cli:main"

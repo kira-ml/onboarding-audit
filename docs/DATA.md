@@ -45,26 +45,37 @@ observation mechanism.
 
 ## 3. How to rebuild
 
-The processed file was produced by the archived V2 pipeline. The pipeline is not
-part of this repository, and a standalone `scripts/prepare_baf.py` is **not
-included** in v0.2.1. The honest reproduction path is:
+The processed file is rebuilt by `scripts/prepare_baf.py` from the public raw
+file:
 
-1. Download `Base.csv` from the BAF repository/Kaggle.
-2. Use the archived V2 pipeline to sort by month and split months 0–2 (train),
-   3–4 (validation), 5–6 (test).
-3. Fit the incumbent logistic regression and the candidate LightGBM on the
-   training window, validate on 3–4, and score the test window.
-4. Write the 39-column test frame described in
-   [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md), including `amount_proxy`,
-   `p_fraud`, `p_fraud_lgbm`, and the BAF application features.
-5. Verify the SHA-256 hash above before running the pilot.
+```bash
+pip install -e ".[baf]"
+python scripts/prepare_baf.py --raw /path/to/Base.csv --verify
+```
+
+The script:
+
+1. Downloads nothing; it takes `Base.csv` from the BAF repository/Kaggle.
+2. Adds `transaction_id` and `amount_proxy`, sorts by `month`, and simulates the
+   one-month label delay.
+3. Splits months 0–2 (train), 3–4 (validation), 5–6 (test).
+4. Fits the incumbent logistic regression (`C=10`) and the candidate LightGBM
+   (300 trees, learning rate 0.05) on the training window; refits the random
+   forest as a diagnostic.
+5. Writes the 39-column test frame and a provenance sidecar with the input hash,
+   the output hash, the model parameters, the library versions, and per-score
+   column hashes.
+6. Verifies the SHA-256 hash above; `--verify` exits non-zero on a mismatch.
 
 Do not fabricate the processed file from a different split. The scores and the
 test window are part of the benchmark; a different split changes the result.
 
 The processed file is not committed to the public repo (see `.gitignore`). The
 pilot and the report are reproducible from the committed code and the public raw
-data, but not from this repository alone.
+data; exact bit-for-bit agreement across a library upgrade is not guaranteed, and
+the provenance sidecar records the versions so a mismatch is visible. The
+verified rebuild record is in
+[`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md).
 
 ## 4. Known limitations
 

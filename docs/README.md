@@ -11,8 +11,9 @@ disagree, the precedence in §5 applies.
 
 | If you are… | Read, in order |
 |---|---|
-| **A reviewer with 20 minutes** | [`../README.md`](../README.md) → [`PROBLEM.md`](PROBLEM.md) → [`RESULTS.md`](RESULTS.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) |
-| **A fintech practitioner** | [`PROBLEM.md`](PROBLEM.md) → [`SCHEMA.md`](SCHEMA.md) → [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) → [`REPORT_USAGE.md`](REPORT_USAGE.md) → [`BSP_MAPPING.md`](BSP_MAPPING.md) |
+| **A reviewer with 20 minutes** | [`../README.md`](../README.md) → [`PROBLEM.md`](PROBLEM.md) → [`RESULTS.md`](RESULTS.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) → [`MODEL_CARD.md`](MODEL_CARD.md) |
+| **A fintech practitioner** | [`PROBLEM.md`](PROBLEM.md) → [`SCHEMA.md`](SCHEMA.md) → [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) → [`REPORT_USAGE.md`](REPORT_USAGE.md) → [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) → [`BSP_MAPPING.md`](BSP_MAPPING.md) |
+| **A model-risk reviewer** | [`MODEL_CARD.md`](MODEL_CARD.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) → [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) → [`REPORT_USAGE.md`](REPORT_USAGE.md) |
 | **A researcher / paper writer** | [`PROBLEM.md`](PROBLEM.md) → [`METHODS.md`](METHODS.md) → [`PILOT_SPEC.md`](PILOT_SPEC.md) → [`RESULTS.md`](RESULTS.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) → [`RELATED_WORK.md`](RELATED_WORK.md) → [`REFERENCES.md`](REFERENCES.md) → [`../paper/README.md`](../paper/README.md) |
 | **An engineer / contributor** | [`ARCHITECTURE.md`](ARCHITECTURE.md) → [`TESTING.md`](TESTING.md) → [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) → [`../CONTRIBUTING.md`](../CONTRIBUTING.md) |
 | **Preparing an interview** | [`ONE_PAGER.md`](ONE_PAGER.md) → [`COMMUNICATION.md`](COMMUNICATION.md) → [`FAQ.md`](FAQ.md) → [`GLOSSARY.md`](GLOSSARY.md) |
@@ -38,6 +39,10 @@ disagree, the precedence in §5 applies.
 | [`METHODS.md`](METHODS.md) | Estimand, identification, estimators, simulation, metrics |
 | [`PILOT_SPEC.md`](PILOT_SPEC.md) | The pre-registered protocol, scenarios, negative controls, and addenda |
 | [`RESULTS.md`](RESULTS.md) | The consolidated measured findings and verdicts |
+| [`MODEL_CARD.md`](MODEL_CARD.md) | Intended use, estimand, assumptions, performance, limitations |
+| [`VALIDATION_REPORT.md`](VALIDATION_REPORT.md) | The V1 validation record: commands, results, gates, open items |
+| [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) | The partner-institution shadow-evaluation protocol |
+| [`BUSINESS_CASE.md`](BUSINESS_CASE.md) | The decision framework and break-even condition |
 | [`CLAIMS.md`](CLAIMS.md) | The claim ledger: what may be said, with evidence and status |
 | [`THREATS.md`](THREATS.md) | The strongest counter-case and mitigations |
 | [`RED_TEAM_CREDIBILITY_PLAN.md`](RED_TEAM_CREDIBILITY_PLAN.md) | Adversarial review of the credibility plan; six findings to triage |
@@ -52,6 +57,7 @@ disagree, the precedence in §5 applies.
 | Document | Purpose |
 |---|---|
 | [`DATA.md`](DATA.md) | The data card: provenance, split, limitations |
+| [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) | The verified benchmark rebuild: hashes, split, parameters, leakage controls |
 | [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) | Every column in the processed test frame |
 | [`SCHEMA.md`](SCHEMA.md) | The decision-log schema and validation rules |
 | [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
@@ -124,8 +130,9 @@ These are outputs, not editable sources:
 | [`../reports/propensity_sensitivity.md`](../reports/propensity_sensitivity.md) | yes | `onboarding-audit sensitivity` |
 | `reports/pilot_rows.parquet` | no | `onboarding-audit pilot` |
 | `reports/sample_report/` | no | `onboarding-audit report` |
-| `reports/sample_covariate/` | no | `onboarding-audit report --propensity-model covariate` |
-| `data/scored_test.parquet` | no | Archived V2 pipeline; see [`DATA.md`](DATA.md) |
+| `reports/demo/` | no | `onboarding-audit demo` |
+| `data/scored_test.parquet` | no | `scripts/prepare_baf.py`; see [`DATA.md`](DATA.md) |
+| `data/scored_test.provenance.json` | no | `scripts/prepare_baf.py`; input/output hashes and library versions |
 
 Do not hand-edit a generated report. Change the code, rerun the command, and
 update the claim ledger if the number changes.
