@@ -2,6 +2,44 @@
 
 **Status:** Canonical version history.
 
+## [Unreleased] — V1 review candidate (2026-11-21)
+
+### Added
+
+- Observation-mechanism declaration on `report` (`--observation-assumption`):
+  `outcome` refuses, `unknown` marks the memo "assumption unverified".
+- Propensity calibration diagnostic: observed/expected ratio, refusal when the
+  observed count exceeds what the stated `e` allows, and a flag below 0.5.
+- Monte Carlo bounds on every headline bias; Wilson intervals on the sweep.
+- `scripts/check_claims.py`: 27 headline numbers recomputed from the committed
+  JSON; runs in CI.
+- `docs/AUDIT_REPORT.md`, `docs/MODEL_CARD.md`, `docs/VALIDATION_REPORT.md`,
+  `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`,
+  `docs/BENCHMARK_PROVENANCE.md`.
+- `scripts/prepare_baf.py`: rebuilds the benchmark from `Base.csv`; reproduced
+  the recorded SHA-256 exactly.
+- End-to-end `demo` command and a no-propensity demo log.
+
+### Fixed
+
+- `fit_outcome_model` divided by zero on a labelled reject row.
+- `e_approve` omitted the resolution factor on the audit channel.
+- HT variance centred on the estimate; the census case now returns zero.
+- `policy_bounds` dropped the `P0` SE when there were no rejected rows.
+- The memo's outside-`P0` line read a non-existent key and printed 0.
+- Gate silent-pass paths: NaN cost, `e > 1`, unknown action strings.
+- NaN bounds were counted as coverage failures.
+
+### Changed claims
+
+- IPW under estimated action-level `e` is **2.92%**, not 11.19%; the old result
+  was a propensity bug. DR is **1.43%**.
+- DR's **0.94%** and **≤1.89%** are means; the 95% MC upper bound on |bias| is
+  **3.8%** (main) and **4.3–9.6%** (sweep).
+- "12/12 cells >5%" is the maximum across policies; the incumbent is **11/12**.
+- The bounds are **0.009942** in the main scenario and **0.203** in `frej_002`.
+- F5: the narrow interval passes **15/88**, the widened interval **77/88**.
+
 ## [0.2.1] — 2026-11-20
 
 ### Added

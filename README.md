@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-81%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-82%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-0.2.1-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-research%20pilot-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
