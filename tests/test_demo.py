@@ -16,11 +16,13 @@ def test_demo_report_passes_gate_and_dr_beats_naive(tmp_path):
         ROOT / "configs" / "pilot.yaml",
         tmp_path / "demo",
         capacity=0.10,
+        observation_assumption="action",
     )
     assert result.identification.passed
     assert result.propensity.source == "estimated"
     memo = Path(result.memo_path).read_text(encoding="utf-8")
-    assert "Measured" in memo
+    assert "`P0`-conditional policy value is estimated | Measured |" in memo
+    assert "action-dependent (declared)" in memo
     naive_err = abs(result.estimates["naive"]["value"] - truth["true_p0"])
     dr_err = abs(result.estimates["dr"]["value"] - truth["true_p0"])
     assert dr_err < naive_err

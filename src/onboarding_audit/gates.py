@@ -18,6 +18,7 @@ class IdentificationReport:
     reasons: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     metrics: dict[str, float] = field(default_factory=dict)
+    observation_assumption: str = "unknown"
 
     def to_dict(self) -> dict:
         return {
@@ -25,6 +26,7 @@ class IdentificationReport:
             "reasons": list(self.reasons),
             "warnings": list(self.warnings),
             "metrics": {k: float(v) for k, v in self.metrics.items()},
+            "observation_assumption": self.observation_assumption,
         }
 
 
@@ -44,6 +46,7 @@ def check_identification(
     positivity_ok: bool,
     propensity_source: str,
     has_audit: bool,
+    observation_assumption: str = "unknown",
     min_observed_total: int = 100,
     min_observed_per_action: int = 30,
     min_ess: float = 100.0,
@@ -66,6 +69,21 @@ def check_identification(
 
     reasons: list[str] = []
     warnings: list[str] = []
+
+    # The observation mechanism is the assumption the gate cannot test. A
+    # declared outcome-dependent mechanism is a refusal: the action-only
+    # estimators are known to fail there. An undeclared mechanism is a warning,
+    # and the memo marks the estimate as assumption-unverified.
+    if observation_assumption == "outcome":
+        reasons.append(
+            "declared outcome-dependent observation: action-only estimators are "
+            "not identified; use an audit-labeled sample"
+        )
+    elif observation_assumption == "unknown":
+        warnings.append(
+            "observation mechanism not declared; the estimate assumes labels are "
+            "ignorable given the logged action and covariates"
+        )
 
     # Positivity: every P0 row must have a positive chance of observation.
     # A provided propensity column is only required on observed rows; an
@@ -164,4 +182,5 @@ def check_identification(
         reasons=reasons,
         warnings=warnings,
         metrics=metrics,
+        observation_assumption=observation_assumption,
     )

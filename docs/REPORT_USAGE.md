@@ -125,15 +125,35 @@ Before printing a point estimate, the report checks:
 - positivity on `P0`;
 - at least 100 observed labels and at least 30 per non-rejected action;
 - ESS at least 100 and max weight at most 100;
-- non-negative candidate costs.
+- non-negative candidate costs;
+- the declared observation mechanism.
 
 If a check fails, the memo says **"Not identified"**, withholds the point
 estimates, and lists the reasons. The JSON keeps the diagnostic estimates, but
 they are not a policy value. The CLI also prints the gate status and withholds
 the estimates.
 
+### Declare the observation mechanism
+
+The gate cannot test the observation mechanism, which is the assumption that
+matters most. Declare it:
+
+```bash
+onboarding-audit report ... --observation-assumption action
+```
+
+| Value | Behavior |
+|---|---|
+| `action` | Labels are assumed ignorable given the logged action and covariates. The memo says **Measured**. |
+| `outcome` | The analyst declares that approved labels depend on the outcome. The report **refuses**: action-only estimators are known to fail there (up to 1,627.90% bias in the pilot). Use an audit-labeled sample. |
+| `unknown` (default) | The memo says **Measured (observation assumption unverified)** and adds a warning. |
+
+The default is deliberately not `action`: a memo should not claim an assumption
+the analyst never declared.
+
 Warnings (not refusals) cover candidate actions outside `P0`, ESS below 500,
-max weight above 50, and action-level propensities estimated without an audit.
+max weight above 50, action-level propensities estimated without an audit, and an
+undeclared observation mechanism.
 
 ### Propensity source
 

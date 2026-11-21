@@ -51,6 +51,8 @@ pilot output or a cited primary source does not appear in the paper.
 | Widening the bounds by the `P0` standard error raises coverage in the main scenario | **Measured** (diagnostic) | Unconditional coverage **99–100%** in the main scenario; **0%** under outcome-dependent labels | A valid interval under outcome-dependent observation |
 | Review capacity 1–10% does not break the correction | **Measured** | Max \|relative bias\| **1.71%**; coverage **94–98%** | A much smaller capacity or a policy with no overlap |
 | A 90-day delay reduces precision but not correctness | **Measured** | Mean ESS **3,308**; max \|relative bias\| **1.28%**; coverage **84–96%** | A longer delay or informative censoring |
+| The report refuses a declared outcome-dependent observation mechanism | **Measured** (mechanism) | `tests/test_gates.py`; the demo with `--observation-assumption outcome` refuses and withholds estimates | An analyst who declares the wrong mechanism |
+| An undeclared observation mechanism is marked unverified, not measured | **Measured** (mechanism) | The memo says "Measured (observation assumption unverified)" by default | — |
 | The pilot generalizes to a Philippine production system | **Not claimed** | Public synthetic data; simulation | A bank partner and real logs |
 | A random approval/rejection arm is acceptable | **Not claimed** | `AUDIT_DESIGN.md` | Legal/risk review |
 | The audit is a universal bias fix | **Limitation / non-finding** | In the main scenario with a 5% approved-label base rate, the audit's marginal RMSE gain is modest; it is the only approximately unbiased estimator under outcome-dependent labels, but its coverage is 80-86%, below nominal | A lower base label rate or a different audit design |

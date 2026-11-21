@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **65 passed** on the v0.2.1 tree. The suite uses only synthetic or
+Expected: **68 passed** on the v0.2.1 tree. The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 Optional:
@@ -117,6 +117,7 @@ They protect the implementation, not the external validity of the simulation.
 
 - A valid log passes the identification gate.
 - Positivity, negative cost, small sample, and low ESS fail with reasons.
+- A declared outcome-dependent mechanism refuses; an undeclared mechanism warns.
 - Candidate actions outside `P0` and estimated propensities without an audit
   warn without blocking a valid `P0` estimate.
 

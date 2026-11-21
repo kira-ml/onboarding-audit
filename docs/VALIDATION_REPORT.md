@@ -29,7 +29,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **65 passed** |
+| Test result | **68 passed** |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12 |
 
@@ -62,6 +62,8 @@ The report refuses a point estimate unless all of the following hold:
 | Effective sample size | ≥ 100 | `test_low_ess_refuses` |
 | Max weight | ≤ 100 | `test_low_ess_refuses` |
 | Cost support | no negative cost | `test_negative_cost_refuses` |
+| Declared outcome-dependent observation | refuse | `test_declared_outcome_dependent_refuses` |
+| Undeclared observation mechanism | warn; memo marks the estimate unverified | `test_undeclared_observation_mechanism_warns` |
 
 Warnings (not refusals): candidate actions outside `P0` above 10%, observed
 sample below 500, ESS below 500, max weight above 50, `e_min < 0.01`, and

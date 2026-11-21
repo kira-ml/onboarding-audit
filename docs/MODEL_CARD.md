@@ -72,8 +72,11 @@ The estimate is valid only when all of the following hold:
    action-level IPW relative bias up to **67.52%**, coverage **1.5%**).
 
 The report's identification gate checks positivity, sample size, effective
-sample size, max weight, and cost support. It does **not** test assumptions 1,
-4, or 5; those are the reviewer's responsibility and are stated in the memo.
+sample size, max weight, cost support, and the declared observation mechanism. It
+does **not** test assumptions 1, 4, or 5; those are the reviewer's responsibility
+and are stated in the memo. Declaring `--observation-assumption outcome` makes
+the report refuse; leaving it `unknown` marks the estimate as
+assumption-unverified. The gate cannot verify the declaration is true.
 
 ## 5. Inputs
 

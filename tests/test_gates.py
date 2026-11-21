@@ -125,3 +125,22 @@ def test_estimated_without_audit_warns():
     report = _check(propensity_source="estimated", has_audit=False)
     assert report.passed
     assert any("without an audit" in warning for warning in report.warnings)
+
+
+def test_declared_outcome_dependent_refuses():
+    report = _check(observation_assumption="outcome")
+    assert not report.passed
+    assert any("outcome-dependent" in reason for reason in report.reasons)
+
+
+def test_undeclared_observation_mechanism_warns():
+    report = _check()
+    assert report.passed
+    assert report.observation_assumption == "unknown"
+    assert any("not declared" in warning for warning in report.warnings)
+
+
+def test_declared_action_dependent_passes_without_the_warning():
+    report = _check(observation_assumption="action")
+    assert report.passed
+    assert not any("not declared" in warning for warning in report.warnings)

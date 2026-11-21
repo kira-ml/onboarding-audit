@@ -82,6 +82,7 @@ def cmd_report(args: argparse.Namespace) -> int:
         audit_col=args.audit_col,
         propensity_model=args.propensity_model,
         propensity_features=propensity_features,
+        observation_assumption=args.observation_assumption,
     )
     print(
         f"Applications: {result.n:,}; P0: {result.p0_n:,}; observed: {result.observed_n:,}"
@@ -121,6 +122,7 @@ def cmd_demo(args: argparse.Namespace) -> int:
         args.config,
         args.out,
         capacity=0.10,
+        observation_assumption="action",
     )
     print(
         f"Applications: {result.n:,}; P0: {result.p0_n:,}; "
@@ -185,6 +187,16 @@ def main(argv: list[str] | None = None) -> int:
         "--propensity-features",
         default=None,
         help="comma-separated numeric features for the covariate propensity model",
+    )
+    p_report.add_argument(
+        "--observation-assumption",
+        choices=["action", "outcome", "unknown"],
+        default="unknown",
+        help=(
+            "declare the label mechanism; 'outcome' refuses (action-only "
+            "estimators are not identified), 'unknown' marks the estimate as "
+            "assumption-unverified"
+        ),
     )
     p_report.set_defaults(func=cmd_report)
 

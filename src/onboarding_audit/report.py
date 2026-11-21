@@ -268,6 +268,7 @@ def evaluate_report(
     *,
     feature_cols: list[str] | tuple[str, ...],
     seed: int | None = None,
+    observation_assumption: str = "unknown",
 ) -> tuple[dict, dict, dict, dict, IdentificationReport]:
     """Return estimates, diagnostics, bounds, audit recommendation."""
     y = df["label"].fillna(0).astype(int).to_numpy()
@@ -293,6 +294,7 @@ def evaluate_report(
         positivity_ok=propensity.positivity_ok,
         propensity_source=propensity.source,
         has_audit=bool(audit.any()),
+        observation_assumption=observation_assumption,
     )
     estimates: dict[str, dict] = {}
 
@@ -539,6 +541,12 @@ def write_memo(
         f"- **Candidate actions on logging-rejected rows:** {outside:,} "
         f"({outside_share:.1%}) — outside the `P0` estimate"
     )
+    assumption_label = {
+        "action": "action-dependent (declared)",
+        "outcome": "outcome-dependent (declared)",
+        "unknown": "not declared",
+    }[result.identification.observation_assumption]
+    L.append(f"- **Observation assumption:** {assumption_label}")
     L.append("")
     L.append("## 2. Estimate")
     L.append("")
@@ -714,8 +722,12 @@ def write_memo(
     L.append("| Claim | Status | Evidence |")
     L.append("|---|---|---|")
     if result.identification.passed:
+        if result.identification.observation_assumption == "action":
+            status = "Measured"
+        else:
+            status = "Measured (observation assumption unverified)"
         L.append(
-            f"| `P0`-conditional policy value is estimated | Measured | `{result.report_path}` |"
+            f"| `P0`-conditional policy value is estimated | {status} | `{result.report_path}` |"
         )
     else:
         L.append(
@@ -774,6 +786,7 @@ def run_report(
     audit_col: str = "audit_flag",
     propensity_model: str = "action",
     propensity_features: list[str] | tuple[str, ...] | None = None,
+    observation_assumption: str = "unknown",
     seed: int | None = None,
 ) -> ReportResult:
     log_path = Path(log_path)
@@ -784,6 +797,10 @@ def run_report(
         raise ValueError("capacity must be in (0, 1]")
     if propensity_model not in {"action", "covariate"}:
         raise ValueError("propensity_model must be 'action' or 'covariate'")
+    if observation_assumption not in {"action", "outcome", "unknown"}:
+        raise ValueError(
+            "observation_assumption must be 'action', 'outcome', or 'unknown'"
+        )
 
     df = _read(log_path)
     report = validate_log(df)
@@ -815,6 +832,7 @@ def run_report(
         config,
         feature_cols=features,
         seed=seed,
+        observation_assumption=observation_assumption,
     )
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -853,6 +871,7 @@ def run_report(
             "candidate": str(candidate_path),
             "config": str(config_path),
             "capacity": capacity,
+            "observation_assumption": observation_assumption,
             "features": features,
         },
     }
