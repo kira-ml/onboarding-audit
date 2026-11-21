@@ -1,0 +1,12 @@
+{
+  "n": 20000,
+  "capacity": 0.05,
+  "fraud_rate": 0.0493,
+  "true_incumbent": 0.6865439750440889,
+  "true_candidate": 0.6015557760738592,
+  "naive_incumbent": 0.5136755019719149,
+  "naive_candidate": 0.5459539275594708,
+  "incumbent_review_fraud_rate": 0.295,
+  "candidate_review_fraud_rate": 0.369,
+  "note": "Synthetic case study; not a bank result."
+}

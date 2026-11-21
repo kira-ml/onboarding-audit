@@ -49,7 +49,7 @@ document to read before a tag, a blog post, or a paper submission.
 
 ## 3. Code and tests
 
-- [ ] `pytest -q` passes (85 tests on v0.2.1).
+- [ ] `pytest -q` passes (86 tests on v0.2.1).
 - [ ] The version in `pyproject.toml`, `src/onboarding_audit/__init__.py`, and
       `CITATION.cff` agree.
 - [ ] `CHANGELOG.md` has an entry for the release.

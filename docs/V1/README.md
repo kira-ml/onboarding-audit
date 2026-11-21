@@ -133,7 +133,7 @@ V1 is done when:
 - [x] F5 is recorded as pass/fail; the narrow interval has no coverage claim.
 - [x] The report gate refuses or flags every adversarial unidentified log.
 - [x] The benchmark pipeline reproduces the scores byte-for-byte (SHA-256 match).
-- [x] `pytest` passes with 85 tests.
+- [x] `pytest` passes with 86 tests.
 - [ ] CI is green on GitHub (workflow added; first run pending).
 - [x] The model card, validation report, pilot protocol, and business case are
       complete.

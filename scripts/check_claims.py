@@ -258,6 +258,30 @@ def main() -> int:
         )
     )
 
+    # Case study.
+    case = _load(ROOT / "examples" / "case_truth.json")
+    checks.append(
+        (
+            "case naive ranking flips (candidate worse)",
+            1.0 if case["naive_candidate"] > case["naive_incumbent"] else 0.0,
+            1.0,
+        )
+    )
+    checks.append(
+        (
+            "case true ranking favors candidate",
+            1.0 if case["true_candidate"] < case["true_incumbent"] else 0.0,
+            1.0,
+        )
+    )
+    checks.append(
+        (
+            "case true candidate cost",
+            case["true_candidate"],
+            0.601556,
+        )
+    )
+
     failures = 0
     for name, computed, expected in checks:
         ok = abs(computed - expected) <= TOL

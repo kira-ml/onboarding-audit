@@ -27,6 +27,7 @@ disagree, the precedence in §5 applies.
 |---|---|
 | [`../README.md`](../README.md) | The public entry point: problem, status, headline, quickstart, scope |
 | [`PROBLEM.md`](PROBLEM.md) | The evidence-backed problem brief and the Philippine context |
+| [`CASE_STUDY.md`](CASE_STUDY.md) | A reproducible case where the naive ranking flips |
 | [`ONE_PAGER.md`](ONE_PAGER.md) | A one-page reviewer brief |
 | [`FAQ.md`](FAQ.md) | Practitioner, researcher, and interviewer questions |
 | [`LEARNING_GUIDE.md`](LEARNING_GUIDE.md) | Plain-English concept map, practice set, feedback loop, and self-test |
