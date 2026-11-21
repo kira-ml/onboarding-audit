@@ -12,7 +12,7 @@ read before the results.
 
 | Threat | Why it matters | Mitigation | Residual risk |
 |---|---|---|---|
-| **The observation mechanism is simulated** | The bias result could be an artifact of the chosen propensities/delays | Pre-register the mechanism; sweep audit/capacity/delay; negative controls; state that the mechanism is assumed | The real mechanism may differ; the tool must take the team's actual propensities/labels |
+| **The observation mechanism is simulated** | The bias result could be an artifact of the chosen propensities/delays | Pre-register the mechanism; sweep audit/capacity/delay; negative controls; state that the mechanism is assumed | Measured: the 12-cell observation-rate sweep shows naive bias **7.8–538.5%**, >5% in **12/12** cells; DR with known propensities stays within **1.89%**, coverage **84.5–96%**. The magnitude is conditional; estimated `e` and the low-`e` ranking (DR P(best) **64%**) remain the residual risk. |
 | **The cost matrix is assumed** | The policy ranking and the value depend on costs | Normalized, transparent, sensitivity-tested; report the false-reject sweep | A bank's true costs may reverse a close ranking |
 | **BAF is synthetic** | External validity is limited | State it; use it as a task-matched benchmark, not a production estimate | Real account-opening data may have different fraud modes |
 | **BAF is not Philippine data** | The local hook is motivational | Use BSP/industry evidence for the problem, not for calibration; state the gap | A reviewer may ask for PH data; the answer is a partner, not a scrape |

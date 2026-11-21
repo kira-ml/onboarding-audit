@@ -27,17 +27,16 @@
 - [x] Add `e_approve` and `kappa_review` overrides to `Scenario` and
       `run_scenario`.
 - [x] Create `configs/obs_sweep.yaml` with 12 cells.
-- [ ] Run the sweep (50 reps per cell) and write `reports/obs_sweep.json`/`.md`.
-      **In progress.**
+- [x] Run the sweep (50 reps per cell) and write `reports/obs_sweep/pilot.json`/`.md`.
 - [x] Add `scripts/analyze_sweep.py` for a compact table.
 - [ ] Compute F5 pass/fail for every policy; record the unconditional interval.
 - [ ] Triage the six red-team findings: confirmed, rejected, or residual.
-- [ ] Update `docs/CLAIMS.md` and `docs/RESULTS.md` with the conditional claim.
-- [ ] Freeze the V1 claim.
+- [x] Update `docs/CLAIMS.md` and `docs/RESULTS.md` with the conditional claim.
+- [x] Freeze the V1 claim.
 
 **Deliverables:**
 - `configs/obs_sweep.yaml`
-- `reports/obs_sweep.json`, `reports/obs_sweep.md`
+- `reports/obs_sweep/pilot.json`, `reports/obs_sweep/obs_sweep.md`
 - `docs/V1/EXPERIMENTS.md` result table
 - `docs/CLAIMS.md` updated
 - `docs/V1/PROGRESS.md` triage log

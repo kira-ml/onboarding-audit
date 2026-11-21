@@ -42,6 +42,10 @@ new policy is estimated on the subset the incumbent policy produced.
   overstates cost and reverses the better-model/incumbent ranking: the naive
   estimate puts the incumbent ahead of the better model, while the true ranking
   reverses it.
+- **The magnitude is conditional:** across the 12-cell observation-rate sweep,
+  naive bias ranges **7.8–538.5%** but exceeds 5% in **12/12** cells; DR with
+  known propensities stays within **1.89%**. At the lowest approve-label rate,
+  DR's P(select true best) falls to **64%**.
 - **Rank inversion:** mean **1.00** pairwise inversion for the naive estimate;
   P(select true best) **0%**.
 - **Best corrected estimator: DR**, max |relative bias| **0.94%**, mean 95% CI

@@ -164,6 +164,11 @@ The naive estimate has a mean **1.00** pairwise inversion and selects the true
 best policy **0%** of the time. Practical consequence: the naive evaluation
 would reject the better model.
 
+A 12-cell observation-rate sweep shows the magnitude is conditional: naive bias
+ranges **7.8–538.5%**, but exceeds 5% in **12/12** cells. DR with known
+propensities stays within **1.89%**, but its P(select true best) falls to **64%**
+at the lowest approve-label rate.
+
 ### 6.2 Estimator comparison
 
 DR: max |relative bias| **0.94%**, mean coverage **96.0%**, mean ESS **7,864**.

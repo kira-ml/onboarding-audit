@@ -32,12 +32,14 @@ reproducible, and the package review-ready.
 **V1 claim:**
 
 > On the BAF account-opening benchmark, the naive policy-value estimate is
-> biased and can reverse the policy ranking under a range of plausible
-> observation rates. DR and audit-only recover the identified `P0` value when
-> positivity and the observation model hold. The reject margin is reported as a
-> partial-identification interval, not a point estimate or a confidence
-> interval. The tool refuses to report a point estimate when identification
-> fails.
+> biased in **12/12** plausible observation-rate cells, ranging from **7.8% to
+> 538.5%**, and can reverse the policy ranking. DR with known propensities stays
+> within **1.89%** (coverage **84.5–96.0%**); at low approve-label rates its
+> P(select true best) is **64%**, so the correction is accurate but the ranking
+> is not guaranteed. Audit-only recovers the approved population under
+> outcome-dependent labels. The reject margin is a partial-identification
+> interval, not a point estimate or confidence interval. The tool refuses to
+> report a point estimate when identification fails.
 
 **V1 does not claim:** a universal bias magnitude, a production estimate, a
 causal deployment effect, a point-identified full-population value, or a
@@ -126,7 +128,7 @@ the package.
 
 V1 is done when:
 
-- [ ] The observation-rate sweep is run and the claim is updated to its measured
+- [x] The observation-rate sweep is run and the claim is updated to its measured
       conditions.
 - [ ] F5 is recorded as pass/fail; the bounds are reported without a coverage
       claim if it fails.

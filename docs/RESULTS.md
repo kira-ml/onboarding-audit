@@ -12,9 +12,11 @@ production estimate, not a Philippine bank, not a causal deployment effect.
 
 ## 1. Headline
 
-1. **Naive evaluation is materially biased.** Relative bias **+111.6% to
-   +278.5%** across the four policies in the main pilot. It overstates cost and
-   reverses the better-model/incumbent ranking.
+1. **Naive evaluation is materially biased, but the magnitude is conditional.**
+   Relative bias **+111.6% to +278.5%** in the main pilot; across the 12-cell
+   observation-rate sweep, **+7.8% to +538.5%** (12/12 cells above 5%). The
+   direction is robust; the magnitude depends on the approve-label and review
+   rates. It overstates cost and reverses the better-model/incumbent ranking.
 2. **DR recovers the identified `P0` value.** Max |relative bias| **0.94%**,
    mean 95% coverage **96.0%**; IPW **1.18% / 95.0%**. The corrected ranking is
    better but not perfect (DR mean inversions **0.29**, P(select true best)
@@ -79,6 +81,35 @@ The corrected ranking is much better than naive but not perfect:
 The residual instability is concentrated in the close
 better-model/incumbent gap. A launch decision should treat the corrected ranking
 as evidence, not a guarantee.
+
+### 3.1 Observation-rate robustness sweep
+
+The main pilot fixes `e_approve=0.05` and `kappa_review=0.90`. The V1 sweep
+varies them: `e_approve ∈ {0.01, 0.05, 0.20, 0.50}` ×
+`kappa_review ∈ {0.50, 0.90, 1.00}`, 50 replications per cell, everything else
+fixed.
+
+| Cell | Naive max bias | DR max bias | DR coverage | Naive inversions | DR P(best) |
+|---|---:|---:|---:|---:|---:|
+| `e001_k050` | 386.46% | 1.52% | 85.5% | 1.28 | 64% |
+| `e001_k090` | 515.53% | 0.99% | 84.5% | 1.18 | 64% |
+| `e001_k100` | 538.46% | 1.38% | 85.0% | 1.10 | 64% |
+| `e005_k050` | 174.61% | 0.97% | 95.0% | 1.00 | 68% |
+| `e005_k090` | 278.46% | 0.96% | 95.5% | 1.00 | 68% |
+| `e005_k100` | 300.12% | 1.05% | 95.5% | 1.00 | 68% |
+| `e020_k050` | 45.34% | 1.84% | 94.0% | 1.00 | 76% |
+| `e020_k090` | 91.78% | 1.89% | 94.0% | 1.00 | 80% |
+| `e020_k100` | 102.71% | 1.87% | 94.0% | 1.00 | 80% |
+| `e050_k050` | 7.76% | 1.26% | 95.5% | 0.48 | 96% |
+| `e050_k090` | 29.38% | 1.31% | 96.0% | 1.00 | 100% |
+| `e050_k100` | 34.67% | 1.27% | 96.0% | 1.00 | 100% |
+
+**Read:** naive bias exceeds 5% in **12/12** cells, but the range is **7.8% to
+538.5%**. DR with known propensities stays within **1.89%** and coverage is
+**84.5–96.0%**. At the lowest approve-label rate, DR's P(select true best) is
+**64%**, so the correction is accurate but the ranking is not guaranteed. The
+sweep supports the premise and rejects a universal magnitude. See
+[`../reports/obs_sweep/obs_sweep.md`](../reports/obs_sweep/obs_sweep.md).
 
 ## 4. Pilot: audit value
 

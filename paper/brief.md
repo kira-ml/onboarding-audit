@@ -76,6 +76,7 @@ one the business is asking.
 | Result | Number |
 |---|---|
 | Naive relative bias (four policies) | **+111.6% to +278.5%** |
+| Observation-rate sweep: naive bias / DR max bias (known `e`) | **7.8–538.5% / 1.89%** |
 | Naive rank inversions / P(select true best) | **1.00 / 0%** |
 | True P0 ranking | `better_model < incumbent < lenient_cost < strict_cost` |
 | Naive ranking | `incumbent < better_model < lenient_cost < strict_cost` |

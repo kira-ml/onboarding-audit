@@ -22,7 +22,7 @@ whether the bias and the ranking flip are robust or parameter-dependent.
 
 **Acceptance:**
 - `configs/obs_sweep.yaml` exists with 12 cells.
-- `reports/obs_sweep.json` and `.md` are generated.
+- `reports/obs_sweep/pilot.json` and `.md` are generated.
 - The V1 claim in `docs/CLAIMS.md` is updated to the measured conditions.
 - The sweep result is summarized in `docs/RESULTS.md`.
 

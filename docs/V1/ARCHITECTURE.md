@@ -177,9 +177,9 @@ configs/obs_sweep.yaml
   -> config.load_config
   -> data.load_eval_data
   -> for each cell: pilot.run_scenario
-  -> reports/obs_sweep.json
+  -> reports/obs_sweep/pilot.json
   -> scripts/analyze_sweep.py
-  -> reports/obs_sweep.md
+  -> reports/obs_sweep/obs_sweep.md
   -> docs/V1/EXPERIMENTS.md result table
   -> docs/CLAIMS.md conditional claim
 ```

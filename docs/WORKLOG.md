@@ -276,6 +276,13 @@ package, not to add methods.
 - Launched the full 50-rep observation sweep.
 - Updated README, `docs/ROADMAP.md`, and `docs/CLAIMS.md` to the V1 plan.
 
+**E1 sweep result (50 reps, 12 cells):**
+
+- Naive bias **7.8–538.5%**, >5% in **12/12** cells.
+- DR with known propensities max **1.89%**; coverage **84.5–96.0%**.
+- DR P(select true best) **64%** at `e_approve=0.01`, **96–100%** at `0.50`.
+- The premise survives; the universal magnitude does not. V1 claim updated.
+
 **Next:**
 
 1. Analyze the sweep; update the V1 claim to its measured conditions.

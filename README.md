@@ -39,9 +39,11 @@ applicants are never observed. The data used to test a new policy is therefore
 selected by the old policy.
 
 A normal backtest on the labeled data answers a different question. In this
-project's simulation, it **overstated cost by 112–278%** and ranked the better
-model **below** the incumbent — the naive evaluation would reject the better
-policy.
+project's simulation, it **overstated cost by 112–278%** in the main scenario
+and ranked the better model **below** the incumbent — the naive evaluation would
+reject the better policy. A 12-cell observation-rate sweep shows the bias is
+**7.8–538.5%** but exceeds 5% in **every** cell: the direction is robust, the
+magnitude is conditional.
 
 This repository builds the missing measurement layer: a decision-log schema,
 selection- and delay-aware estimators, a capacity-constrained review model, a
@@ -93,8 +95,9 @@ scenario and 50 for the sweeps and sensitivity studies.
 
 | Finding | Result | Reading |
 |---|---|---|
-| Naive evaluation bias | **+111.6% to +278.5%** | relative bias across four policies |
+| Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep | relative bias; **12/12** cells >5% |
 | Naive ranking | **1.00 / 0%** | mean pairwise inversions / P(select true best) |
+| Observation-rate sweep | **12/12** cells >5%; DR ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
 | Doubly robust (DR) | **0.94% / 96.0%** | max relative bias / mean coverage |
 | IPW | **1.18% / 95.0%** | max relative bias / mean coverage |
 | Audit-only at 1% | **2.98% / 84.5% / 1,271** | max bias / coverage / mean ESS |
@@ -107,9 +110,10 @@ scenario and 50 for the sweeps and sensitivity studies.
 > production estimate. The cost matrix is a normalized assumption. The covariate
 > model is a logistic approximation, and heavy weights can undercover the
 > interval. Every public number traces to
-> [`reports/pilot.json`](reports/pilot.json) or
-> [`reports/propensity_sensitivity.json`](reports/propensity_sensitivity.json)
-> and appears in [`docs/CLAIMS.md`](docs/CLAIMS.md).
+> [`reports/pilot.json`](reports/pilot.json),
+> [`reports/propensity_sensitivity.json`](reports/propensity_sensitivity.json),
+> or [`reports/obs_sweep/pilot.json`](reports/obs_sweep/pilot.json) and appears
+> in [`docs/CLAIMS.md`](docs/CLAIMS.md).
 
 ## What you can do today
 
@@ -220,7 +224,7 @@ onboarding-audit/
 | **Propensity modes** | Oracle (benchmark isolation), action-level estimated, lognormal noise, cross-fitted per-action covariate model |
 | **Audit** | Random post-hoc verification of approved applications; shadow scoring; **no random approvals/rejections** |
 | **Metrics** | Relative bias, RMSE, coverage, ESS, max weight, rank inversions, P(select true best), cost of misranking, bounds width |
-| **Stress tests** | Audit size 0–2%, review capacity 1–10%, delay 0.5–90 days, false-reject cost 0.02–0.50, outcome-dependent labels, covariate-dependent observation |
+| **Stress tests** | Audit size 0–2%, review capacity 1–10%, delay 0.5–90 days, false-reject cost 0.02–0.50, outcome-dependent labels, covariate-dependent observation, observation-rate sweep (12 cells) |
 
 ### Why this is not just another fraud model
 
@@ -248,6 +252,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Estimators | **Implemented** | Naive, IPW-HT, IPW-Hájek, DR, audit-only, bounds |
 | Propensity estimation | **Implemented** | Action-level, noisy, and covariate models |
 | Pilot benchmark | **Implemented** | 22 configured scenarios (13 core + 9 sensitivity), 1,150 replications |
+| Observation-rate sweep | **Implemented** | 12 cells, 600 replications; see `reports/obs_sweep/` |
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |

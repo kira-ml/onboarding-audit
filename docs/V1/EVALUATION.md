@@ -25,9 +25,11 @@ V1 does not claim E3 or E4 for the pilot.
 
 | Claim | Current tier | V1 target tier | Test | Status |
 |---|---|---|---|---|
-| Naive evaluation is biased under plausible observation rates | E2 (one scenario) | E2 (12-cell sweep) | E1 | Open |
-| The naive estimate can reverse the policy ranking | E2 (one scenario) | E2 (12-cell sweep) | E1 | Open |
-| DR recovers `P0` when positivity and the observation model hold | E2 (oracle/estimated) | E2 (sweep + sensitivity) | E1 | Open |
+| Naive evaluation is biased under plausible observation rates | E2 (one scenario) | E2 (12-cell sweep) | E1 | **Supported** |
+| The naive estimate can reverse the policy ranking | E2 (one scenario) | E2 (12-cell sweep) | E1 | **Supported** |
+| The bias magnitude is conditional on observation rates | E0 | E2 (12-cell sweep) | E1 | **Supported** |
+| DR recovers `P0` when positivity and the observation model hold | E2 (oracle/estimated) | E2 (sweep + sensitivity) | E1 | **Supported with oracle `e`; estimated `e` separate** |
+| The corrected ranking weakens at low approve-label rates | E0 | E2 (12-cell sweep) | E1 | **Supported** |
 | Audit-only is honest under outcome-dependent labels | E2 | E2 | Existing sensitivity | Supported |
 | The reject margin is not point-identified | E2 | E2 | E2 | Open |
 | The bounds are a partial-identification interval, not a CI | E0/E2 | E2 with F5 record | E2 | Open |
@@ -136,7 +138,7 @@ cited primary source.
 
 - Every public claim appears in `docs/CLAIMS.md`.
 - Every measured number traces to `reports/pilot.json`,
-  `reports/propensity_sensitivity.json`, or `reports/obs_sweep.json`.
+  `reports/propensity_sensitivity.json`, or `reports/obs_sweep/pilot.json`.
 - No derived document introduces a new claim.
 
 ### 5.4 Link and stale-number check

@@ -11,7 +11,7 @@ headline after seeing the result.
 
 | ID | Experiment | Question | Output |
 |---|---|---|---|
-| **E1** | Observation-rate sweep | Is the naive bias and ranking flip robust to plausible observation rates? | `reports/obs_sweep.json`/`.md` |
+| **E1** | Observation-rate sweep | Is the naive bias and ranking flip robust to plausible observation rates? | `reports/obs_sweep/pilot.json`/`.md` |
 | **E2** | Bounds F5 | Does the pre-registered bounds interval cover `V_full` in ≥90% of reps? | `pilot.json` F5 block |
 | **E3** | Report gate | Does the tool refuse/flag unidentified logs? | `reports/report_gate_tests.md` |
 | **E4** | Reproducibility | Can the scores be reproduced from the public data? | `data/provenance.json` |
@@ -27,8 +27,9 @@ headline after seeing the result.
   cells.
 - **H1b:** The naive estimate reverses at least one pairwise ranking in at least
   **3 of 12** cells.
-- **H1c:** DR is within 5% relative bias in at least **8 of 12** cells where
-  positivity holds and the observation model is action-level.
+- **H1c:** DR is within 5% relative bias in at least **8 of 12** cells with
+  oracle propensities. The sweep isolates the observation-rate effect; the
+  estimated-`e` sensitivity is a separate study.
 - **H1d:** The bias is **conditional**: it is largest at low `e_approve` and low
   `kappa_review`, and shrinks as `e_approve` rises.
 
@@ -67,10 +68,49 @@ measurement/diagnostic tool, not a bias study. Record this explicitly.
 ### 2.6 Output
 
 - `configs/obs_sweep.yaml`
-- `reports/obs_sweep.json`
-- `reports/obs_sweep.md`
+- `reports/obs_sweep/pilot.json`
+- `reports/obs_sweep/obs_sweep.md`
 - `scripts/analyze_sweep.py`
 - A compact table in this document and `docs/RESULTS.md`.
+
+### 2.7 Result (2026-11-21)
+
+12 cells, 50 replications each, common random numbers.
+
+| Cell | Naive max bias | DR max bias | DR coverage | Naive inversions | DR P(best) |
+|---|---:|---:|---:|---:|---:|
+| `e001_k050` | 386.46% | 1.52% | 85.5% | 1.28 | 64% |
+| `e001_k090` | 515.53% | 0.99% | 84.5% | 1.18 | 64% |
+| `e001_k100` | 538.46% | 1.38% | 85.0% | 1.10 | 64% |
+| `e005_k050` | 174.61% | 0.97% | 95.0% | 1.00 | 68% |
+| `e005_k090` | 278.46% | 0.96% | 95.5% | 1.00 | 68% |
+| `e005_k100` | 300.12% | 1.05% | 95.5% | 1.00 | 68% |
+| `e020_k050` | 45.34% | 1.84% | 94.0% | 1.00 | 76% |
+| `e020_k090` | 91.78% | 1.89% | 94.0% | 1.00 | 80% |
+| `e020_k100` | 102.71% | 1.87% | 94.0% | 1.00 | 80% |
+| `e050_k050` | 7.76% | 1.26% | 95.5% | 0.48 | 96% |
+| `e050_k090` | 29.38% | 1.31% | 96.0% | 1.00 | 100% |
+| `e050_k100` | 34.67% | 1.27% | 96.0% | 1.00 | 100% |
+
+**Measured read:**
+
+- **H1a supported:** naive bias exceeds 5% in **12/12** cells. The range is
+  **7.8% to 538.5%**.
+- **H1b supported:** the naive estimate has at least one pairwise inversion in
+  **12/12** cells (0.48–1.28 mean inversions); it selects the true best policy
+  **0%** of the time in 11/12 cells and **52%** in `e050_k050`.
+- **H1c supported:** DR with known propensities stays within **1.89%** in all 12
+  cells. Coverage is **84.5–96.0%**.
+- **H1d supported:** the bias shrinks as `e_approve` rises, but it does **not**
+  collapse below 5% even at `e_approve=0.50` (7.8–34.7%). The magnitude is
+  strongly conditional; the direction is robust.
+- **Residual risk:** at low approve-label rates, DR's P(select true best) is
+  **64%** and coverage is **84.5–85.5%**. The correction is accurate, but the
+  ranking is not guaranteed. This is a reportable limitation, not a hidden one.
+
+**Decision:** keep the conditional V1 claim. Do not claim a universal
+112–278% magnitude. Report the 7.8–538.5% range, the 12/12 direction, and the
+low-`e` ranking weakness.
 
 ---
 

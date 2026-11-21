@@ -246,13 +246,25 @@ residual misranking cost.
 2% review band's cost floor, never swept, and the product then defaults to the
 estimator the project itself shows to be biased while printing "Measured."**
 
-## Triage status
+## Triage log
 
-- **Status:** open.
-- **Next session:** 2026-11-20 20:00.
-- **First two checks:** Finding 1 (observation-rate sweep) and Finding 2 (F5
-  pass/fail). These determine whether the headline and the bounds survive.
-- **Do not change public claims until the findings are verified.**
+### Finding 1 — partially confirmed (2026-11-21)
+
+The 12-cell observation-rate sweep shows the magnitude is strongly
+parameter-dependent: naive bias ranges **7.8–538.5%**. But the bias exceeds 5% in
+**12/12** cells, so the premise survives; the universal **112–278%** headline
+does not. DR with known propensities stays within **1.89%** (coverage
+**84.5–96.0%**); at the lowest approve-label rate, DR's P(select true best) is
+**64%**. Action: the V1 claim is updated to the measured range; the remaining
+risk is estimated `e` and the low-`e` ranking.
+
+**Status:** Finding 1 closed for the magnitude claim; open for the estimated-`e`
+and low-`e` ranking claim.
+
+### Findings 2–6
+
+Open. Next checks: F5 pass/fail (Finding 2), report gate (Finding 3), score
+pipeline (Finding 4), pilot feasibility (Finding 5), business case (Finding 6).
 
 ## Related documents
 

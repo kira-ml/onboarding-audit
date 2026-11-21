@@ -2,9 +2,10 @@
 
 **Status:** Canonical claim ledger for v0.2.1 (2026-11-20).
 
-**V1 re-evaluation (2026-11-21):** the observation-rate sweep is running. Until
-it completes, treat the **+111.6% to +278.5%** bias as specific to the main
-scenario, not a universal magnitude. See
+**V1 re-evaluation (2026-11-21):** the 12-cell observation-rate sweep is
+complete. Naive bias is **7.8–538.5%** and exceeds 5% in **12/12** cells. The
+main-scenario **112–278%** is one point in that range, not a universal magnitude.
+DR with known propensities stays within **1.89%**. See
 [`V1/EXPERIMENTS.md`](V1/EXPERIMENTS.md).
 
 **Rule:** Every public claim carries one status: **Measured**, **Pre-registered**,
@@ -25,6 +26,10 @@ pilot output or a cited primary source does not appear in the paper.
 | No fraud-specific OPE library exists | **Limitation** (search-based absence) | Open-source review, 2026 | A new release |
 | No peer-reviewed fraud-specific policy evaluation with a counterfactual design | **Limitation** (search-based absence) | Literature review, 25 sources | A paper not surfaced by the search |
 | Naive onboarding evaluation is materially biased under the main scenario | **Measured** (H1 supported) | `reports/pilot.json`; relative bias **+111.55% to +278.49%** across the four policies | A different logging action mix, cost matrix, or observation mechanism |
+| Naive bias exceeds 5% across plausible observation rates | **Measured** (V1 E1 sweep) | **12/12** cells; range **7.8% to 538.5%** (`reports/obs_sweep/pilot.json`) | A different observation mechanism or policy mix |
+| The bias magnitude is conditional on observation rates | **Measured** (V1 E1 sweep) | **386–538%** at `e_approve=0.01`; **7.8–34.7%** at `e_approve=0.50` | A different frame or cost matrix |
+| DR with known propensities is robust to observation-rate changes | **Measured** (V1 E1 sweep) | Max **1.89%**; coverage **84.5–96.0%** across 12 cells | Estimated propensities, not oracle `e` |
+| The corrected ranking is weaker at low approve-label rates | **Measured** (V1 E1 sweep) | DR P(select true best) **64%** at `e_approve=0.01`; **96–100%** at `0.50` | A larger audit or a wider policy gap |
 | The naive estimate reverses at least one policy ranking | **Measured** (H2 supported) | True ranking `better_model < incumbent < lenient_cost < strict_cost`; naive ranking `incumbent < better_model < lenient_cost < strict_cost`; mean inversions **1.00**, P(select true best) **0%** | A larger gap between the top policies, or a different review capacity |
 | At least one corrected estimator recovers the identified policy value | **Measured** (H3 supported) | DR max \|relative bias\| **0.94%**, mean coverage **96.0%**; IPW max **1.18%**, mean coverage **95.0%** | Estimated propensities, a different observation mechanism, or a much smaller audit |
 | The corrected ranking is better but not perfect | **Measured** | DR mean inversions **0.29**, P(select true best) **72%**, cost of misranking **0.000093**; IPW **0.26 / 75% / 0.000083** | A larger audit, a wider policy gap, or a better outcome model |
@@ -50,15 +55,19 @@ pilot output or a cited primary source does not appear in the paper.
 
 ## Interpretation
 
-1. **The premise is real.** Naive evaluation is not a small approximation: it
-   overstates cost by 112–278% in the main scenario.
+1. **The premise is real but the magnitude is conditional.** In the main
+   scenario, naive evaluation overstates cost by 112–278%. Across the 12-cell
+   observation-rate sweep, it exceeds 5% in **every** cell, but the range is
+   **7.8–538.5%**. The direction is robust; the magnitude is not.
 2. **The direction is not "flattering the incumbent."** The labeled subset is
    dominated by reviewed/rejected applications with non-zero costs, so the naive
    estimate overstates cost. The practical harm is that it would **reject the
    better model**: the naive ranking puts the incumbent ahead of the better
    model, while the true ranking reverses it.
 3. **The correction works on the identified population.** DR is within 0.94%
-   with 96% coverage; IPW is within 1.18% with 95% coverage. The residual rank
+   with 96% coverage; IPW is within 1.18% with 95% coverage. In the
+   observation-rate sweep, DR stays within **1.89%**, but its P(select true
+   best) falls to **64%** at the lowest approve-label rate. The residual rank
    instability is concentrated in the close better-model/incumbent gap.
 4. **The audit is not a universal bias fix.** At a 5% approved-label base rate,
    a 1% audit mainly validates the approved margin and improves ESS; it does not
