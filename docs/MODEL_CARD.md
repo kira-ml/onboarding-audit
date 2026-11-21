@@ -102,8 +102,8 @@ A candidate score file with `application_id` and `score`.
 
 | Output | Contents |
 |---|---|
-| `report.md` | Memo: gate status, estimates or refusal, diagnostics, bounds, decision guidance |
-| `report.json` | The same result, machine-readable, including diagnostic estimates when the gate fails |
+| `report.md` | Memo: gate status, estimates or refusal, candidate-vs-incumbent comparison, diagnostics, bounds, decision guidance |
+| `report.json` | The same result, machine-readable, including the comparison and the diagnostic estimates when the gate fails |
 | Gate | Pass/fail with reasons and warnings |
 
 When the gate fails, the memo says **“Not identified”**, withholds the point

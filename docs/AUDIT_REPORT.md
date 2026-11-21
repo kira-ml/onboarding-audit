@@ -185,7 +185,7 @@ The audit should also record what survives, or it is only destruction.
 
 | Claim | Verdict | Basis |
 |---|---|---|
-| The repository is internally consistent, reproducible, and honestly scoped | **Pass (conditional)** | 84 tests, exact benchmark hash, claim ledger, gate, disclosed limitations |
+| The repository is internally consistent, reproducible, and honestly scoped | **Pass (conditional)** | 85 tests, exact benchmark hash, claim ledger, gate, disclosed limitations |
 | The simulation results hold as stated, conditional on the simulated mechanism | **Pass (conditional)** | Pre-registered sweep, Wilson intervals, Monte Carlo bounds, F5 split recorded |
 | The method will work on a specific bank's log | **Inconclusive** | No partner log, no independent validator, cost matrix unvalidated |
 | The reject margin is point-identified from logs alone | **Fail** | The narrow interval fails F5; the widened interval is valid but 4× wider and fails where `P0` is biased |

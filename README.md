@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-84%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-85%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-0.2.1-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-research%20pilot-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
@@ -19,7 +19,7 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **84 tests pass.** The documentation is
+> **Status:** `v0.2.1` research pilot. **85 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
@@ -88,7 +88,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 84 tests · not production |
+| **Status** | v0.2.1 research pilot · 85 tests · not production |
 
 ## Headline results
 
@@ -125,7 +125,7 @@ scenario and 50 for the sweeps and sensitivity studies.
 |---|---|---|
 | `onboarding-audit validate` | Check a decision log against the schema and report estimator readiness | Console / JSON diagnostics |
 | `onboarding-audit demo` | Run the end-to-end report on the synthetic demo log | `report.md` + `report.json` |
-| `onboarding-audit report` | Evaluate a candidate policy from a log + candidate scores | `report.md` + `report.json` |
+| `onboarding-audit report` | Evaluate a candidate policy and compare it with the incumbent | `report.md` + `report.json` |
 | `onboarding-audit pilot` | Run the full configured BAF benchmark (22 scenarios) | `pilot.md` + `pilot.json` |
 | `onboarding-audit sensitivity` | Run the 11 propensity and covariate sensitivity scenarios | `propensity_sensitivity.md` + `.json` |
 
@@ -214,7 +214,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 84 tests, including negative controls
+├── tests/                 # 85 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -266,7 +266,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 84 tests, including negative controls |
+| Test suite | **Implemented** | 85 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |

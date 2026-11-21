@@ -19,6 +19,7 @@ from sklearn.preprocessing import StandardScaler
 from .config import Costs, OutcomeModel, PilotConfig, load_config
 from .estimators import (
     Estimate,
+    compare_policies,
     dr,
     fit_outcome_model,
     ipw_hajek,
@@ -62,6 +63,7 @@ class ReportResult:
     diagnostics: dict
     bounds: dict
     audit: dict
+    comparison: dict
     memo_path: str
     report_path: str
 
@@ -291,7 +293,7 @@ def evaluate_report(
     feature_cols: list[str] | tuple[str, ...],
     seed: int | None = None,
     observation_assumption: str = "unknown",
-) -> tuple[dict, dict, dict, dict, IdentificationReport]:
+) -> tuple[dict, dict, dict, dict, dict, IdentificationReport]:
     """Return estimates, diagnostics, bounds, audit recommendation."""
     y = df["label"].fillna(0).astype(int).to_numpy()
     observed = df["label"].notna().to_numpy()
@@ -370,6 +372,37 @@ def evaluate_report(
         else np.zeros(len(df), dtype=bool)
     )
     add("audit_only", _audit_estimate(cost, audit, observed), TARGET_APPROVED)
+
+    cost_incumbent = realized_cost(actions, y, amount, config.costs)
+    if X is not None:
+        comparison = compare_policies(
+            cost,
+            candidate_actions,
+            cost_incumbent,
+            actions,
+            amount,
+            observed,
+            e,
+            in_pop,
+            phat,
+            config.costs,
+        )
+    else:
+        comparison = {
+            "candidate_value": float("nan"),
+            "incumbent_value": float("nan"),
+            "difference": float("nan"),
+            "difference_se": float("nan"),
+            "difference_ci_low": float("nan"),
+            "difference_ci_high": float("nan"),
+            "p_candidate_better": float("nan"),
+            "regret_candidate": float("nan"),
+            "regret_incumbent": float("nan"),
+            "decision": "not identified",
+            "n_pop": int(in_pop.sum()),
+            "n_observed": int(observed.sum()),
+            "max_weight": float("nan"),
+        }
 
     v_pop = estimates["dr"]["value"]
     if not np.isfinite(v_pop):
@@ -481,7 +514,7 @@ def evaluate_report(
         estimates,
         identified=identification.passed,
     )
-    return estimates, diagnostics, bounds, audit_rec, identification
+    return estimates, diagnostics, bounds, audit_rec, comparison, identification
 
 
 def _audit_recommendation(
@@ -652,6 +685,36 @@ def write_memo(
             L.append("**Warnings:**")
             for warning in result.identification.warnings:
                 L.append(f"- {warning}")
+    L.append("")
+    L.append("### 2.1 Candidate vs incumbent (`P0`)")
+    L.append("")
+    comp = result.comparison
+    if result.identification.passed and np.isfinite(comp["difference"]):
+        L.append("| Quantity | Value |")
+        L.append("|---|---:|")
+        L.append(f"| Candidate `P0` value | {_fmt(comp['candidate_value'])} |")
+        L.append(f"| Incumbent `P0` value | {_fmt(comp['incumbent_value'])} |")
+        L.append(f"| Difference (candidate − incumbent) | {_fmt(comp['difference'])} |")
+        L.append(
+            f"| 95% interval | [{_fmt(comp['difference_ci_low'])}, "
+            f"{_fmt(comp['difference_ci_high'])}] |"
+        )
+        L.append(f"| P(candidate cheaper) | {_fmt(comp['p_candidate_better'])} |")
+        L.append(f"| Expected regret if candidate | {_fmt(comp['regret_candidate'])} |")
+        L.append(f"| Expected regret if incumbent | {_fmt(comp['regret_incumbent'])} |")
+        L.append(f"| **Recommendation** | **{comp['decision']}** |")
+        L.append("")
+        L.append(
+            "Negative difference favors the candidate. The comparison is "
+            "`P0`-conditional, uses the same observation model, and ignores "
+            "nuisance-estimation uncertainty; it is not a production decision on "
+            "its own."
+        )
+    else:
+        L.append(
+            "Not reported: `P0` is not identified, so a candidate-vs-incumbent "
+            "comparison would be spurious."
+        )
     L.append("")
     L.append("## 3. Diagnostics")
     L.append("")
@@ -897,7 +960,7 @@ def run_report(
         seed=seed,
     )
     candidate_actions = _candidate_actions(df, candidate, config.costs, capacity)
-    estimates, diagnostics, bounds, audit, identification = evaluate_report(
+    estimates, diagnostics, bounds, audit, comparison, identification = evaluate_report(
         df,
         candidate_actions,
         propensity,
@@ -921,6 +984,7 @@ def run_report(
         diagnostics=diagnostics,
         bounds=bounds,
         audit=audit,
+        comparison=comparison,
         memo_path=str(out_dir / "report.md"),
         report_path=str(out_dir / "report.json"),
     )
@@ -937,6 +1001,7 @@ def run_report(
             "diagnostics": diagnostics,
             "bounds": bounds,
             "audit": audit,
+            "comparison": comparison,
         },
         "inputs": {
             "log": str(log_path),

@@ -12,6 +12,7 @@ from onboarding_audit.estimators import (
     ipw_ht,
     naive,
     policy_bounds,
+    compare_policies,
 )
 
 
@@ -210,3 +211,32 @@ def test_bounds_without_rejected_rows_widen_with_p0_error():
     assert b.width == 0.0
     assert b.lower_unconditional == pytest.approx(0.10 - 1.96 * 0.01)
     assert b.upper_unconditional == pytest.approx(0.10 + 1.96 * 0.01)
+
+
+def test_compare_policies_prefers_the_cheaper_policy():
+    n = 500
+    amount = np.full(n, 1000.0)
+    actions_c = np.array(["approve"] * n, dtype=object)
+    actions_i = np.array(["review"] * n, dtype=object)
+    y = np.zeros(n)
+    observed = np.ones(n, dtype=bool)
+    e = np.ones(n)
+    in_pop = np.ones(n, dtype=bool)
+    phat = np.zeros(n)
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    from onboarding_audit.policies import realized_cost
+
+    cost_c = realized_cost(actions_c, y, amount, costs)
+    cost_i = realized_cost(actions_i, y, amount, costs)
+    comp = compare_policies(
+        cost_c, actions_c, cost_i, actions_i, amount, observed, e, in_pop, phat, costs
+    )
+    assert comp["difference"] < 0
+    assert comp["p_candidate_better"] > 0.5
+    assert comp["decision"] == "prefer candidate"
+    assert comp["regret_candidate"] < comp["regret_incumbent"]

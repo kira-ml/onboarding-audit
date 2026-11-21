@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from scipy.stats import norm
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold
 
@@ -192,6 +193,116 @@ def dr(
     se = float(psi[in_pop].std(ddof=1) / np.sqrt(n_pop)) if n_pop > 1 else float("nan")
     max_w = float(w[observed].max()) if observed.any() else float("nan")
     return Estimate(value, se, int(observed.sum()), effective_sample_size(w), max_w)
+
+
+def _dr_parts(
+    cost: np.ndarray,
+    actions: np.ndarray,
+    amount: np.ndarray,
+    observed: np.ndarray,
+    propensity: np.ndarray,
+    in_pop: np.ndarray,
+    phat: np.ndarray,
+    costs: Costs,
+) -> tuple[float, np.ndarray, np.ndarray]:
+    """Return the DR value, its per-row influence term, and the weights."""
+    mu = expected_cost(phat, actions, amount, costs)
+    w = _weights(observed, propensity)
+    if not np.isfinite(mu[in_pop]).all() or w.sum() <= 0:
+        return float("nan"), np.zeros(len(cost)), w
+    value = float(mu[in_pop].mean() + (w * (cost - mu))[in_pop].mean())
+    psi = np.where(in_pop, mu + w * (cost - mu) - value, 0.0)
+    return value, psi, w
+
+
+def compare_policies(
+    cost_candidate: np.ndarray,
+    actions_candidate: np.ndarray,
+    cost_incumbent: np.ndarray,
+    actions_incumbent: np.ndarray,
+    amount: np.ndarray,
+    observed: np.ndarray,
+    propensity: np.ndarray,
+    in_pop: np.ndarray,
+    phat: np.ndarray,
+    costs: Costs,
+) -> dict:
+    """Paired DR comparison of the candidate and the logged policy on P0.
+
+    The difference uses the paired influence terms, so the shared outcome model
+    and propensity cancel in the variance. Nuisance-estimation uncertainty is
+    not included; the interval is a first-order approximation.
+
+    ``p_better`` is the normal-approximation probability that the candidate has
+    the lower P0 cost. ``regret_*`` are E[max(0, wrong-way difference)] in cost
+    units per application.
+    """
+    n_pop = int(in_pop.sum())
+    c_cost = np.where(observed, cost_candidate, 0.0)
+    i_cost = np.where(observed, cost_incumbent, 0.0)
+    v_c, psi_c, w = _dr_parts(
+        c_cost, actions_candidate, amount, observed, propensity, in_pop, phat, costs
+    )
+    v_i, psi_i, _ = _dr_parts(
+        i_cost, actions_incumbent, amount, observed, propensity, in_pop, phat, costs
+    )
+    out = {
+        "candidate_value": v_c,
+        "incumbent_value": v_i,
+        "difference": float("nan"),
+        "difference_se": float("nan"),
+        "difference_ci_low": float("nan"),
+        "difference_ci_high": float("nan"),
+        "p_candidate_better": float("nan"),
+        "regret_candidate": float("nan"),
+        "regret_incumbent": float("nan"),
+        "decision": "not identified",
+        "n_pop": n_pop,
+        "n_observed": int(observed.sum()),
+        "max_weight": float(w[observed].max()) if observed.any() else float("nan"),
+    }
+    if not (np.isfinite(v_c) and np.isfinite(v_i)) or n_pop <= 1:
+        return out
+    diff = v_c - v_i
+    psi_d = psi_c - psi_i
+    se = float(psi_d[in_pop].std(ddof=1) / np.sqrt(n_pop))
+    out.update(
+        {
+            "difference": diff,
+            "difference_se": se,
+            "difference_ci_low": diff - 1.96 * se,
+            "difference_ci_high": diff + 1.96 * se,
+        }
+    )
+    if not np.isfinite(se) or se <= 0:
+        out["p_candidate_better"] = 1.0 if diff < 0 else 0.0
+        out["decision"] = "prefer candidate" if diff < 0 else "keep incumbent"
+        out["regret_candidate"] = float(max(diff, 0.0))
+        out["regret_incumbent"] = float(max(-diff, 0.0))
+        return out
+    z = diff / se
+    p_better = float(norm.cdf(-z))  # P(D < 0): candidate is cheaper
+    phi = float(norm.pdf(z))
+    cdf = float(norm.cdf(z))
+    # Regret of choosing the candidate is E[max(0, D)]; choosing the incumbent is
+    # E[max(0, -D)]. The labels were reversed in the first implementation.
+    regret_candidate = se * phi + diff * cdf
+    regret_incumbent = se * phi - diff * (1.0 - cdf)
+    if p_better >= 0.95:
+        decision = "prefer candidate"
+    elif p_better <= 0.05:
+        decision = "keep incumbent"
+    else:
+        decision = "inconclusive"
+    out.update(
+        {
+            "p_candidate_better": p_better,
+            "regret_candidate": float(max(regret_candidate, 0.0)),
+            "regret_incumbent": float(max(regret_incumbent, 0.0)),
+            "decision": decision,
+        }
+    )
+    return out
 
 
 def audit_only(

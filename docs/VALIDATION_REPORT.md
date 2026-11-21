@@ -29,7 +29,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **84 passed** |
+| Test result | **85 passed** |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12 |
 

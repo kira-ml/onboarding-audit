@@ -118,6 +118,22 @@ applications the incumbent policy approved or reviewed. Logging-rejected
 applications have no outcome and are outside the primary estimate. They enter
 only the full-population bounds.
 
+### Candidate vs incumbent
+
+The memo reports a paired comparison on `P0`:
+
+- the candidate's `P0` value and the incumbent's logged-policy `P0` value;
+- the difference (negative favors the candidate), with a 95% interval;
+- **P(candidate cheaper)**;
+- the **expected regret** of each choice, in cost units per application;
+- a recommendation: **prefer candidate** (P ≥ 0.95), **keep incumbent** (P ≤ 0.05),
+  or **inconclusive**.
+
+The comparison uses the same outcome model and propensities for both policies and
+the paired influence terms for the interval. It is a first-order approximation:
+it ignores nuisance-estimation uncertainty. It is `P0`-conditional; a candidate
+that changes logging-rejected rows is not fully evaluated.
+
 ### Identification gate
 
 Before printing a point estimate, the report checks:
@@ -145,7 +161,7 @@ onboarding-audit report ... --observation-assumption action
 | Value | Behavior |
 |---|---|
 | `action` | Labels are assumed ignorable given the logged action and covariates. The memo says **Measured**. |
-| `outcome` | The analyst declares that approved labels depend on the outcome. The report **refuses**: action-only estimators are known to fail there (up to 1,627.90% bias in the pilot). Use an audit-labeled sample. |
+| `outcome` | The analyst declares that approved labels depend on the outcome. The report **refuses**: action-only estimators are known to fail there (up to 1,737.0% bias in the pilot). Use an audit-labeled sample. |
 | `unknown` (default) | The memo says **Measured (observation assumption unverified)** and adds a warning. |
 
 The default is deliberately not `action`: a memo should not claim an assumption
