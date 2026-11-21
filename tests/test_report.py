@@ -283,3 +283,19 @@ def test_memo_reports_candidate_actions_on_rejected_rows(tmp_path):
     assert "Candidate actions on logging-rejected rows:** 1" in memo
     report = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
     assert report["result"]["diagnostics"]["candidate_approve_outside_p0"] == 1
+
+def test_audit_estimate_corrects_delay_cohort_bias():
+    from onboarding_audit.report import _audit_estimate
+
+    n = 1000
+    cost = np.concatenate([np.ones(500), np.full(500, 3.0)])
+    audit = np.ones(n, dtype=bool)
+    observed = np.concatenate(
+        [np.ones(500, dtype=bool), np.array([True, False] * 250)]
+    )
+    followup = np.concatenate([np.full(500, 60.0), np.full(500, 5.0)])
+    complete = _audit_estimate(cost, audit, observed)
+    corrected = _audit_estimate(cost, audit, observed, followup=followup, n_bins=2)
+    assert complete.value == pytest.approx((500 * 1 + 250 * 3) / 750)
+    assert corrected.value == pytest.approx(2.0)
+    assert corrected.value > complete.value

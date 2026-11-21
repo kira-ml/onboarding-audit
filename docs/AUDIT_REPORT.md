@@ -185,7 +185,7 @@ The audit should also record what survives, or it is only destruction.
 
 | Claim | Verdict | Basis |
 |---|---|---|
-| The repository is internally consistent, reproducible, and honestly scoped | **Pass (conditional)** | 86 tests, exact benchmark hash, claim ledger, gate, disclosed limitations |
+| The repository is internally consistent, reproducible, and honestly scoped | **Pass (conditional)** | 87 tests, exact benchmark hash, claim ledger, gate, disclosed limitations |
 | The simulation results hold as stated, conditional on the simulated mechanism | **Pass (conditional)** | Pre-registered sweep, Wilson intervals, Monte Carlo bounds, F5 split recorded |
 | The method will work on a specific bank's log | **Inconclusive** | No partner log, no independent validator, cost matrix unvalidated |
 | The reject margin is point-identified from logs alone | **Fail** | The narrow interval fails F5; the widened interval is valid but 4× wider and fails where `P0` is biased |
@@ -227,7 +227,7 @@ artifact. Those defects are fixed or disclosed below; the corrected claims are i
 | I4 | The gate passed a constant, wrong propensity column and printed "Measured". | High | **Fixed**: calibration ratio, impossible-calibration refusal, low-ratio flag |
 | I5 | The memo's outside-`P0` line read a key that did not exist and printed 0. | High | **Fixed** + regression test |
 | I6 | "5% approved-label rate" is **3.06%** realized (3.68% with audit). | High | **Fixed**: relabelled as pre-resolution report probability; realized rates reported |
-| I7 | The report's `audit_only` is a complete-case mean, not the pilot's resolution-weighted estimator. | Medium | **Disclosed** in the memo; not fixed |
+| I7 | The report's `audit_only` was a complete-case mean, not the pilot's resolution-weighted estimator. | Medium | **Fixed**: post-stratified by follow-up time (5 bins); within-bin MAR is the remaining assumption |
 | I8 | Some tests were decorative (label permutation only checked policy actions; hash test only checked length). | Medium | **Partially fixed**: added a target-shuffle AUC test, estimator recovery tests, and gate/memo regressions; the benchmark refit test is open |
 
 ### 7.2 Estimator review (independent)
@@ -245,7 +245,7 @@ artifact. Those defects are fixed or disclosed below; the corrected claims are i
 | C9 | NaN SE not guarded in the bounds widening. | Low | **Fixed** |
 | C10 | `<20` outcome-model fallback used `y.mean()` over unobserved rows. | Low | **Fixed**: NaN when no usable rows |
 | C11 | NaN bounds counted as coverage failures. | Low | **Fixed**: masked |
-| C12 | Two different `audit_only` estimators (pilot vs report). | Low–Med | **Disclosed** in the memo; not fixed |
+| C12 | Two different `audit_only` estimators (pilot vs report). | Low–Med | **Partially fixed**: the report post-stratifies by follow-up; the pilot uses the true per-row resolution probability |
 
 **What this changes.** The qualitative mechanism survives. Two quantitative
 claims do not survive as stated and are corrected: the DR precision (MC bounds)

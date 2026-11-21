@@ -21,6 +21,7 @@ from .estimators import (
     Estimate,
     compare_policies,
     dr,
+    effective_sample_size,
     fit_outcome_model,
     ipw_hajek,
     ipw_ht,
@@ -274,14 +275,59 @@ def _audit_estimate(
     cost: np.ndarray,
     audit: np.ndarray,
     observed: np.ndarray,
+    followup: np.ndarray | None = None,
+    n_bins: int = 5,
 ) -> Estimate:
+    """Audit-only mean, post-stratified by follow-up time when available.
+
+    A complete-case mean over observed audit labels is biased toward rows with a
+    short delay: late decisions have less time to resolve. Stratifying the audit
+    sample by follow-up time and weighting each stratum by 1/P(observed) removes
+    that cohort mix bias. Within a stratum the labels are assumed missing at
+    random; that is the remaining assumption.
+    """
     mask = audit & observed
     n = int(mask.sum())
     if n == 0:
         return Estimate(float("nan"), float("nan"), 0, 0.0, float("nan"))
-    c = cost[mask]
-    se = float(c.std(ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
-    return Estimate(float(c.mean()), se, n, float(n), 1.0)
+    if followup is None:
+        c = cost[mask]
+        se = float(c.std(ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+        return Estimate(float(c.mean()), se, n, float(n), 1.0)
+
+    audit_idx = np.where(audit)[0]
+    if len(audit_idx) < 2 * n_bins or not np.isfinite(followup[audit_idx]).all():
+        c = cost[mask]
+        se = float(c.std(ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+        return Estimate(float(c.mean()), se, n, float(n), 1.0)
+
+    edges = np.quantile(followup[audit_idx], np.linspace(0, 1, n_bins + 1))
+    if len(np.unique(edges)) < 3:
+        c = cost[mask]
+        se = float(c.std(ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+        return Estimate(float(c.mean()), se, n, float(n), 1.0)
+    bins = np.clip(np.digitize(followup, edges[1:-1]), 0, n_bins - 1)
+
+    weights = np.zeros(len(cost), dtype=float)
+    for b in range(n_bins):
+        idx_b = audit_idx[bins[audit_idx] == b]
+        if len(idx_b) == 0:
+            continue
+        p_obs = float(observed[idx_b].mean())
+        if p_obs <= 0:
+            # A stratum with no observed label cannot be reweighted; fall back
+            # to the complete-case mean rather than silently dropping it.
+            c = cost[mask]
+            se = float(c.std(ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+            return Estimate(float(c.mean()), se, n, float(n), 1.0)
+        weights[idx_b[observed[idx_b]]] = 1.0 / p_obs
+
+    total = float(weights.sum())
+    if total <= 0:
+        return Estimate(float("nan"), float("nan"), n, 0.0, float("nan"))
+    value = float((weights * cost).sum() / total)
+    se = float(np.sqrt((weights**2 * (cost - value) ** 2).sum()) / total)
+    return Estimate(value, se, n, effective_sample_size(weights), float(weights.max()))
 
 
 def evaluate_report(
@@ -371,7 +417,19 @@ def evaluate_report(
         if "audit_flag" in df.columns
         else np.zeros(len(df), dtype=bool)
     )
-    add("audit_only", _audit_estimate(cost, audit, observed), TARGET_APPROVED)
+    if "decision_time" in df.columns:
+        dt = pd.to_datetime(df["decision_time"], errors="coerce")
+        if dt.notna().any():
+            followup = (dt.max() - dt).dt.days.to_numpy(dtype=float)
+        else:
+            followup = None
+    else:
+        followup = None
+    add(
+        "audit_only",
+        _audit_estimate(cost, audit, observed, followup=followup),
+        TARGET_APPROVED,
+    )
 
     cost_incumbent = realized_cost(actions, y, amount, config.costs)
     if X is not None:
@@ -467,6 +525,9 @@ def evaluate_report(
         else float("nan"),
         "ess_ipw": estimates["ipw_ht"]["ess"],
         "max_weight_ipw": estimates["ipw_ht"]["max_weight"],
+        "audit_only_method": (
+            "post_stratified_by_followup" if followup is not None else "complete_case"
+        ),
         "feature_names": names,
     }
     if observed.any():
@@ -673,13 +734,23 @@ def write_memo(
             "the audit-only target; `full` is the reject-margin bounds target."
         )
         if "audit_only" in result.estimates:
-            L.append(
-                "- **Audit-only caveat:** this report's audit-only estimate is a "
-                "complete-case mean over observed audit labels. Under delayed "
-                "labels it is biased toward early-resolving rows. The pilot's "
-                "audit-only estimator is resolution-weighted; they are not the "
-                "same estimator."
-            )
+            method = result.diagnostics.get("audit_only_method", "complete_case")
+            if method == "post_stratified_by_followup":
+                L.append(
+                    "- **Audit-only method:** post-stratified by follow-up time "
+                    "(5 bins), weighted by 1/P(observed) within each bin. It "
+                    "assumes labels are missing at random within a bin. The pilot "
+                    "uses the true per-row resolution probability, so the two are "
+                    "close but not identical."
+                )
+            else:
+                L.append(
+                    "- **Audit-only caveat:** this report's audit-only estimate is "
+                    "a complete-case mean over observed audit labels. Under delayed "
+                    "labels it is biased toward early-resolving rows. The pilot's "
+                    "audit-only estimator is resolution-weighted; they are not the "
+                    "same estimator."
+                )
         if result.identification.warnings:
             L.append("")
             L.append("**Warnings:**")

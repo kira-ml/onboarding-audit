@@ -38,6 +38,7 @@ disagree, the precedence in §5 applies.
 | Document | Purpose |
 |---|---|
 | [`METHODS.md`](METHODS.md) | Estimand, identification, estimators, simulation, metrics |
+| [`TECHNICAL_NOTE.md`](TECHNICAL_NOTE.md) | The identification argument, influence functions, bounds proof, and evidence tiers |
 | [`PILOT_SPEC.md`](PILOT_SPEC.md) | The pre-registered protocol, scenarios, negative controls, and addenda |
 | [`RESULTS.md`](RESULTS.md) | The consolidated measured findings and verdicts |
 | [`MODEL_CARD.md`](MODEL_CARD.md) | Intended use, estimand, assumptions, performance, limitations |

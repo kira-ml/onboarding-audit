@@ -6,7 +6,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-86%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-87%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-0.2.1-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-research%20pilot-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
@@ -19,7 +19,7 @@
 
 ---
 
-> **Status:** `v0.2.1` research pilot. **86 tests pass.** The documentation is
+> **Status:** `v0.2.1` research pilot. **87 tests pass.** The documentation is
 > research-ready; the paper is not drafted. This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
@@ -88,7 +88,7 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v0.2.1 research pilot · 86 tests · not production |
+| **Status** | v0.2.1 research pilot · 87 tests · not production |
 
 ## Headline results
 
@@ -215,7 +215,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 86 tests, including negative controls
+├── tests/                 # 87 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -267,7 +267,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 86 tests, including negative controls |
+| Test suite | **Implemented** | 87 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |
@@ -290,12 +290,34 @@ discipline, not a new estimator. The closest work is mapped in
 | **Audit requires legal/risk review** | Post-hoc verification and shadow scoring; no random approvals or rejections |
 | **Not a fraud detector** | The project evaluates policies; it does not build a classifier |
 
+## For a reviewer
+
+A 10-minute path:
+
+1. [`docs/ONE_PAGER.md`](docs/ONE_PAGER.md) — the claim in one page.
+2. [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) — the decision the tool changes.
+3. [`docs/RESULTS.md`](docs/RESULTS.md) §10 — the double-robustness test.
+4. [`docs/CLAIMS.md`](docs/CLAIMS.md) — every number with its evidence and status.
+5. [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) — the adversarial audit, including
+   the findings that changed the claims.
+
+Then run:
+
+```bash
+pytest -q
+onboarding-audit demo --out reports/demo
+python scripts/check_claims.py
+```
+
+Expected: **87 passed**, the demo memo, and **35/35** claim checks.
+
 ## Documentation
 
 | Start here | Why |
 |---|---|
 | [`docs/PROBLEM.md`](docs/PROBLEM.md) | The evidence-backed problem brief and the Philippine context |
 | [`docs/METHODS.md`](docs/METHODS.md) | Estimand, identification, estimators, simulation, metrics |
+| [`docs/TECHNICAL_NOTE.md`](docs/TECHNICAL_NOTE.md) | The identification argument, influence functions, bounds proof, and evidence tiers |
 | [`docs/RESULTS.md`](docs/RESULTS.md) | Consolidated measured findings and H1–H6 verdicts |
 | [`docs/CLAIMS.md`](docs/CLAIMS.md) | The claim ledger: what may be said, with evidence |
 | [`docs/THREATS.md`](docs/THREATS.md) | The strongest counter-case and mitigations |

@@ -333,7 +333,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 
 ## 12. Negative controls
 
-`pytest -q`: **86 passed**, including:
+`pytest -q`: **87 passed**, including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);
