@@ -360,6 +360,7 @@ Expected: **101 passed**, the demo memo, and **43/43** claim checks.
 | [`docs/STRATEGIC_REVIEW_v1.md`](docs/STRATEGIC_REVIEW_v1.md) | The V1 strategic review: constraint table, pre-mortem, falsification ledger, findings |
 | [`docs/EXTERNAL_CREDIBILITY_REVIEW.md`](docs/EXTERNAL_CREDIBILITY_REVIEW.md) | The pre-review fintech data-scientist critique |
 | [`docs/RED_FLAG_AUDIT.md`](docs/RED_FLAG_AUDIT.md) | The red-flag audit log with severity and resolution status |
+| [`docs/DECISION_MEMO_PROJECT_FUTURE.md`](docs/DECISION_MEMO_PROJECT_FUTURE.md) | The 12-week project-future decision: options, payoffs, ruin test, kill criteria |
 | [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md) | What is tagged, what is not, and the open public-release gate |
 | [`docs/REVIEWER_PACKET.md`](docs/REVIEWER_PACKET.md) | The cover note, shortlist, agenda, and outreach tracker |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |

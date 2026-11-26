@@ -3,6 +3,21 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-27 — Future decision memo (proposed)
+
+**Recommendation:** choose B — finish as a narrow research/portfolio artifact
+plus a small outreach probe (5 asks, 2 reader calls, 1 real-log conversation).
+Do not push a commercial pilot, submit the paper now, freeze, or pivot unless
+the stop/upgrade conditions are met.
+
+**Why:** the binding constraint is external evidence; B has bounded downside,
+the highest subjective expected value, and buys the cheapest option on the
+fat-tailed external outcome. C risks absorbing barriers; D risks a repeated
+reputational drawdown.
+
+**Artifact:** [`DECISION_MEMO_PROJECT_FUTURE.md`](DECISION_MEMO_PROJECT_FUTURE.md);
+D16 in [`DECISIONS.md`](DECISIONS.md). Status: proposed, owner decision.
+
 ## 2026-11-27 — External credibility pre-review
 
 **Verdict:** the problem is real; the project is worth pursuing as a

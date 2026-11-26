@@ -49,6 +49,7 @@ disagree, the precedence in §5 applies.
 | [`STRATEGIC_REVIEW_v1.md`](STRATEGIC_REVIEW_v1.md) | The V1 strategic review: constraint table, pre-mortem, falsification ledger, findings |
 | [`EXTERNAL_CREDIBILITY_REVIEW.md`](EXTERNAL_CREDIBILITY_REVIEW.md) | The pre-review fintech data-scientist critique and external evidence |
 | [`RED_FLAG_AUDIT.md`](RED_FLAG_AUDIT.md) | The tracked red-flag/weakness log with severity and resolution status |
+| [`DECISION_MEMO_PROJECT_FUTURE.md`](DECISION_MEMO_PROJECT_FUTURE.md) | The 12-week project-future decision: options, payoffs, ruin test, kill criteria |
 | [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) | The partner-institution shadow-evaluation protocol |
 | [`BUSINESS_CASE.md`](BUSINESS_CASE.md) | The decision framework and break-even condition |
 | [`CLAIMS.md`](CLAIMS.md) | The claim ledger: what may be said, with evidence and status |

@@ -590,3 +590,54 @@ the beachhead.
 and the project stays at Level 2; the full-policy check reverses the flagship
 case recommendation → rewrite the headline and case study; a reviewer finds a
 false "Measured" claim → fix the ledger before any release.
+
+---
+
+## D16 — Project future: research artifact plus outreach probe, not a commercial push or paper submission now
+
+**Date:** 2026-11-27.
+**Status:** **Proposed; owner decision.**
+
+**Decision:** Choose **B**: finish the project as a narrow research/portfolio
+artifact and run a small external-outreach probe (5 asks, 2 reader calls, 1
+real-log conversation). Do **not** push a commercial pilot (C), submit the paper
+now (D), freeze (E), or pivot (F) unless the stop/upgrade conditions below are
+met.
+
+**Options considered:**
+- A. Finish as a research artifact (40–60 h).
+- B. A + small outreach probe (50–70 h).
+- C. Commercial/model-risk pilot push (120–200 h).
+- D. Submit paper now (10–20 h).
+- E. Freeze/stop (5 h).
+- F. Pivot to a new project (60–100 h).
+
+**Why:**
+- The binding constraint is external evidence, not code.
+- B has the highest subjective expected value (81.6 vs A 76.4, C 59.7, D 59.5,
+  E 58.0, F 51.1) **and** bounded downside.
+- B buys the cheapest option on the fat-tailed external outcome (one reader or
+  one real-log lead can change the trajectory).
+- C risks absorbing barriers (health/GPA, PII/legal, application window) for a
+  0.20 partner probability; the expected gain does not justify the tail.
+- D has a high rejection probability and a repeated reputational drawdown after
+  the v1.0.1 false-claim near-miss.
+- A is safe but leaves the binding constraint unaddressed; E/F are fallbacks,
+  not first choices.
+
+**Expected outcome:** A trimmed/repositioned paper or technical report, a
+holdout/ablation result, 2 reader calls or 1 real-log lead, an updated audit log,
+and a clear go/no-go on a 2027 pilot.
+
+**Assumptions:** 10–12 h/week cap; no warm partner at the start; no PII without a
+DPA/sandbox; the external review can be obtained in December–January.
+
+**Review dates:** 2026-12-15 (paper/trim/outreach), 2027-01-15 (reader/lead),
+2027-02-15 (end-of-period).
+
+**Kill/upgrade criteria:** No reader/lead by 2027-01-15 → freeze outreach. Paper
+not trimmed by 2026-12-31 → do not submit. Health/GPA/applications slip → stop.
+PII request without DPA → decline. Holdout baseline collapses the effect →
+narrow the claim. Upgrade to C only with a warm partner, a log, a DPA/sandbox,
+legal/ops review, an agreed cost matrix, and a respected time cap. Upgrade to D
+only after a reader says the paper is competitive and it is venue-trimmed.
