@@ -3,6 +3,9 @@
 **Current tag:** `v1.0.1`, 2026-11-26.
 **Previous tag:** `v1.0.0`, 2026-11-22 (commit `c7b5fe1`).
 **Public-release gate:** **NOT MET.**
+**Publication decision:** published to GitHub as `v1.0.1` by owner decision on
+2026-11-26. The gate is **waived, not met**; this is not an externally validated
+release.
 
 ---
 
@@ -29,7 +32,7 @@ The V1 plan and its definition of done are in [`V1/README.md`](V1/README.md).
 | Identification gate | **pass** | `tests/test_gates.py` |
 | Reviewer packet | **ready** | [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md); no reader recorded yet |
 | Two external readers | **open** | none recorded |
-| Public release | **not ready** | the gate above is open |
+| Public release | **published as review update** | owner decision; external validation gate remains open |
 
 ## 3. Why the tag exists before external review
 

@@ -27,9 +27,9 @@
 > deployment, and **not** a causal claim.
 >
 > **Public-release gate:** the two external readers required by the V1
-> definition of done are still open. `v1.0.1` is a review update, not an
-> externally validated release. See
-> [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md).
+> definition of done are still open. `v1.0.1` is published as a review update
+> **by owner decision**; the gate is not met, so this is not an externally
+> validated release. See [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md).
 >
 > **v1.0.1 review update:** adds the full-policy decision check, the
 > action-weighted baseline, the observational segment diagnostic, and the

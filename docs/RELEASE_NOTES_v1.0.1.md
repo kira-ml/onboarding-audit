@@ -59,7 +59,9 @@ rows are suppressed. It is **not** a fairness certification.
 
 ## 3. What is not in it
 
-- No external readers. The public-release gate is **not met**.
+- No external readers. The public-release gate is **not met**. This release is
+  published to GitHub by owner decision as a review update; the gate is waived,
+  not satisfied.
 - No production deployment, API, database, or dashboard.
 - No bank log or PII.
 - No claim that the reject margin is point-identified.
