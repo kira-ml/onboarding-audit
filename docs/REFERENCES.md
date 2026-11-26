@@ -78,14 +78,17 @@ checking it.
 
 ## 8. Recent finance work (2026)
 
-These are used in the related-work map. The working notes identify the venue and
-the authors, but the final metadata must be checked before submission.
+These are used in the related-work map. The three closest work entries are
+verified against ICAIF/ACM/arXiv records; the remaining entries still need a
+final metadata check.
 
 | Key | Citation | Status |
 |---|---|---|
-| OSCAR 2026 | Kuroki, et al. (2026). OSCAR: Certified Online Learning for Auditable Screening under Selective and Delayed Labels. *ICAIF 2026*. | verify |
-| Beyond Holdout Error 2026 | Bhola, et al. (2026). Beyond Holdout Error: A Layered Evaluation Framework for Financial Estimators under Selective Labels. *ICAIF 2026*. | verify |
-| DOiT 2026 | Hong, et al. (2026). DOiT: Money-Flow Ranking and Account Selection in AML Review. *ICAIF 2026*. | verify |
+| OSCAR 2026 | Kuroki, Y., Panisson, A., Rumi, A., & Bonchi, F. (2026). OSCAR: Certified Online Learning for Auditable Financial Screening under Selective and Delayed Labels. *ICAIF 2026*. DOI:10.1145/3858063.3858757. | verified |
+| Beyond Holdout Error 2026 | Bhola, A., Esmeir, S., Giannakoulias, G., & Yaskevich, S. (2026). Beyond Holdout Error: A Layered Framework for Evaluating Estimators under Selective Labels. *ICAIF 2026*. DOI:10.1145/3858063.3858808. | verified |
+| DOiT 2026 | Hong, G., Lim, S., & Kim, M.-S. (2026). DOiT: Better Money-Flow Ranking Can Coexist with Worse Account Selection in Anti-Money Laundering Review. *ICAIF 2026*. arXiv:2611.27809. | verified |
+| JUBILEE 2026 | Prado, D. S., de Jesus, T. A. P., de Souza, B. C., & De Oliveira, C. B. M. (2026). JUBILEE: A Benchmark Environment for Off-Policy Evaluation in Debt Collections. arXiv:2611.10972. | verified (preprint) |
+| Selection-Aware Certification 2026 | Pande, R., & Zeng, Y. (2026). Selection-Aware Certification of Client-Constrained Fraud Rule Portfolios Under Synthetic Distribution Shift. arXiv:2611.18687. | verified (preprint) |
 | Top-K Review 2026 | Zhang, et al. (2026). Cost-Sensitive Top-K Review under Capacity and Case Costs. | verify |
 | Alert-Feedback Trap 2026 | (2026). The Alert-Feedback Trap: Drift-Adaptive Fraud Detection under Label Feedback. *ICAIF 2026*. | verify |
 | Standardized Protocol 2026 | Mašková, & Šmídl (2026). A Standardized Training and Evaluation Protocol for Sequential Fraud Detection. *ICAIF 2026*. | verify |

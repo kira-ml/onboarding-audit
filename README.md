@@ -8,7 +8,7 @@
 [![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-101%20passed-2ea44f?style=flat-square)](tests/)
-[![Version](https://img.shields.io/badge/version-1.0.1-6f42c1?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.2-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-review%20release-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
 *A measurement layer for the question every onboarding team asks:*
@@ -20,24 +20,26 @@
 
 ---
 
-> **Status:** `v1.0.1` review update. **101 tests pass.** The documentation is
+> **Status:** `v1.0.2` corrective pre-release. **101 tests pass.** The documentation is
 > research-ready; an initial IEEEtran draft is in
 > [`paper/main.pdf`](paper/main.pdf). This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
-> deployment, and **not** a causal claim.
+> deployment, and **not** a causal claim. **“Audit-ready” means the memo exposes
+> its evidence and assumptions; it is not an audit opinion or a compliance
+> certification.**
 >
 > **Public-release gate:** the two external readers required by the V1
-> definition of done are still open. `v1.0.1` is published as a review update
+> definition of done are still open. `v1.0.2` is a corrective pre-release
 > **by owner decision**; the gate is not met, so this is not an externally
 > validated release. See [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md).
 >
-> **v1.0.1 review update:** adds the full-policy decision check, the
-> action-weighted baseline, the observational segment diagnostic, and the
-> reviewer packet. The bias claim is
+> **v1.0.2 corrective pre-release:** fixes the false 2026 research-gap claim,
+> adds OSCAR / Beyond Holdout Error / DOiT citations, repositions the paper,
+> and adds the data-readiness and red-flag audit. The bias claim is
 > conditional on an observation-rate sweep; F5 is recorded (the narrow interval
 > fails, the widened interval passes); the report has an identification gate; and
 > the benchmark pipeline reproduces the recorded hash. See
-> [`docs/RELEASE_NOTES_v1.0.1.md`](docs/RELEASE_NOTES_v1.0.1.md),
+> [`docs/RELEASE_NOTES_v1.0.2.md`](docs/RELEASE_NOTES_v1.0.2.md),
 > [`docs/V1/README.md`](docs/V1/README.md), and
 > [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md).
 
@@ -104,12 +106,17 @@ which is which.
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v1.0.1 review update · 101 tests · external review open · not production |
+| **Status** | v1.0.2 corrective pre-release · 101 tests · external review open · not production |
 
 ## Headline results
 
 Measured on the BAF account-opening test window, 100 replications for the main
 scenario and 50 for the sweeps and sensitivity studies.
+
+**All numbers below are simulation results on public synthetic BAF data. None is
+a bank estimate, a production result, or a causal effect.** Point estimates from
+50–100 replications are sample proportions/means, not certainties; Wilson and
+Monte Carlo intervals are in [`docs/RESULTS.md`](docs/RESULTS.md).
 
 | Finding | Result | Reading |
 |---|---|---|
@@ -345,14 +352,18 @@ Expected: **101 passed**, the demo memo, and **43/43** claim checks.
 | [`docs/RESULTS.md`](docs/RESULTS.md) | Consolidated measured findings and H1–H6 verdicts |
 | [`docs/CLAIMS.md`](docs/CLAIMS.md) | The claim ledger: what may be said, with evidence |
 | [`docs/THREATS.md`](docs/THREATS.md) | The strongest counter-case and mitigations |
-| [`docs/RELEASE_NOTES_v1.0.1.md`](docs/RELEASE_NOTES_v1.0.1.md) | The v1.0.1 review-update notes |
+| [`docs/RELEASE_NOTES_v1.0.2.md`](docs/RELEASE_NOTES_v1.0.2.md) | The v1.0.2 corrective pre-release notes |
+| [`docs/RELEASE_NOTES_v1.0.1.md`](docs/RELEASE_NOTES_v1.0.1.md) | The v1.0.1 review-update notes (superseded for the 2026 claim/paper) |
 | [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md) | The historical v1.0.0 review-release notes |
 | [`paper/main.pdf`](paper/main.pdf) | The initial IEEEtran two-column draft |
 | [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) | The adversarial red-team audit and verdict |
 | [`docs/STRATEGIC_REVIEW_v1.md`](docs/STRATEGIC_REVIEW_v1.md) | The V1 strategic review: constraint table, pre-mortem, falsification ledger, findings |
+| [`docs/EXTERNAL_CREDIBILITY_REVIEW.md`](docs/EXTERNAL_CREDIBILITY_REVIEW.md) | The pre-review fintech data-scientist critique |
+| [`docs/RED_FLAG_AUDIT.md`](docs/RED_FLAG_AUDIT.md) | The red-flag audit log with severity and resolution status |
 | [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md) | What is tagged, what is not, and the open public-release gate |
 | [`docs/REVIEWER_PACKET.md`](docs/REVIEWER_PACKET.md) | The cover note, shortlist, agenda, and outreach tracker |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
+| [`docs/DATA_READINESS.md`](docs/DATA_READINESS.md) | Whether a real log can support the audit, and when to stop |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`docs/REPORT_USAGE.md`](docs/REPORT_USAGE.md) | How to run and read the arbitrary-log report |
 | [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) | Environment, data, commands, seeds, outputs |
@@ -374,7 +385,8 @@ Research notes: [`paper/README.md`](paper/README.md).
 | **v0.1 — Pilot** | Complete | Problem, schema, estimators, 700-replication benchmark |
 | **v0.2 — Usable tool** | Complete | Arbitrary-log report, propensity and covariate sensitivity |
 | **v1.0.0 — Review release** | Tagged 2026-11-22 | Estimators, gate, bounds, sweep, case study, docs |
-| **v1.0.1 — Decision-reliability update** | Tagged 2026-11-26 | Full-policy difference/break-even, action-weighted baseline, segment diagnostic, reviewer packet; external review open |
+| **v1.0.1 — Decision-reliability update** | Tagged 2026-11-26 | Full-policy difference/break-even, action-weighted baseline, segment diagnostic, reviewer packet |
+| **v1.0.2 — Corrective pre-release** | Tagged 2026-11-27 | Corrected 2026 research-gap claim, added closest-work citations, repositioned paper, data-readiness and red-flag audit |
 | **v1.1 — Research + external review** | Next | Paper, second dataset, bootstrap intervals, two external readers |
 | **Public 1.0** | Later | After the external-review gate; arXiv, application package |
 
@@ -406,7 +418,7 @@ If you use this project, cite the software via [`CITATION.cff`](CITATION.cff):
 @software{Talingting_Onboarding_Audit_2026,
   author  = {Talingting, Ken Ira Lacson},
   title   = {Onboarding Audit: Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels},
-  version = {1.0.1},
+  version = {1.0.2},
   year    = {2026},
   license = {MIT},
   url     = {https://github.com/kira-ml/onboarding-audit}

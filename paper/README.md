@@ -1,6 +1,6 @@
 # Paper Workspace
 
-**Status:** Initial IEEEtran draft, v1.0.0 (2026-11-22). The manuscript is
+**Status:** Initial IEEEtran draft, updated v1.0.2 (2026-11-27). The manuscript is
 `main.tex`; `main.pdf` is the compiled two-column rendering. The canonical
 content remains the research documentation; the paper is a derived artifact.
 
@@ -20,7 +20,7 @@ research documentation, without duplicating the claims, methods, or results.
 |---|---|---|
 | [`main.tex`](main.tex) | The IEEEtran conference manuscript | The claim ledger |
 | [`references.bib`](references.bib) | The verified bibliography | A literature review |
-| [`main.pdf`](main.pdf) | The compiled two-column draft (6 pages) | A submission-ready camera copy |
+| [`main.pdf`](main.pdf) | The compiled two-column draft (7 pages) | A submission-ready camera copy |
 | [`make_figures.py`](make_figures.py) | Regenerates the three figures from committed JSON | A result |
 | [`figures/`](figures/) | The vector figures used by the paper | Source data |
 | [`brief.md`](brief.md) | A 2-page research brief for a reviewer | The paper |
@@ -52,8 +52,9 @@ To regenerate the figures:
 python paper/make_figures.py
 ```
 
-The draft is 6 pages. IEEE conference limits vary by venue; the current length
-fits a 6-page paper and leaves room for one page of revisions.
+The draft is **7 pages** after the full-policy and 2026-related-work additions.
+IEEE conference limits vary by venue; if the target is a strict 6-page paper,
+trim one page or choose a 7-page venue. Do not assume the 6-page target is met.
 
 ## 3. What the paper is built from
 

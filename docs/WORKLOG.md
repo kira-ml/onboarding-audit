@@ -3,6 +3,28 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-27 — External credibility pre-review
+
+**Verdict:** the problem is real; the project is worth pursuing as a
+research/portfolio artifact and open applied benchmark, not as a validated
+commercial product or a novel paper. The audit is in
+[`EXTERNAL_CREDIBILITY_REVIEW.md`](EXTERNAL_CREDIBILITY_REVIEW.md) and the
+tracked log is in [`RED_FLAG_AUDIT.md`](RED_FLAG_AUDIT.md).
+
+**Critical corrections:** removed the false “no peer-reviewed fraud-specific
+policy evaluation” claim; added OSCAR, Beyond Holdout Error, and DOiT (ICAIF
+2026) to the manuscript and bibliography; repositioned the contribution as the
+applied account-opening combination; added a data-readiness note; added the
+segment diagnostic and action-weighted baseline earlier in the release.
+
+**Residual open issues:** no real log; no external readers; no model ablation;
+the audit/legal feasibility is unverified; the paper is 7 pages and not
+peer-reviewed; the vendor-gap matrix is not committed; the bounds are wide in
+`frej_002`.
+
+**Next:** decide whether to continue as a narrow research artifact; if yes,
+close the open issues in the audit log before sending the reviewer packet.
+
 ## 2026-11-26 — Strategic review and full-policy check
 
 **Decision:** `v1.0.0` is a **review release**, not a public flagship release.

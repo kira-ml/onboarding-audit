@@ -2,6 +2,32 @@
 
 **Status:** Canonical version history.
 
+## [1.0.2] — 2026-11-27
+
+Corrective pre-release after the external-credibility audit.
+
+### Fixed
+
+- Removed the false “no peer-reviewed fraud-specific policy evaluation” claim
+  from `CLAIMS.md` and `PROBLEM.md`.
+- Added OSCAR (ICAIF 2026), Beyond Holdout Error (ICAIF 2026), DOiT (ICAIF 2026),
+  JUBILEE, and selection-aware certification to the manuscript and bibliography.
+- Repositioned the paper as the applied account-opening combination, not a new
+  estimator or ranking phenomenon.
+- Corrected the BSP 1213 date language (June 2026; 25 vs 30 June unresolved in
+  secondary sources).
+- Corrected related-work titles/authors/DOIs.
+- Added `DATA_READINESS.md`, `RED_FLAG_AUDIT.md`, and
+  `EXTERNAL_CREDIBILITY_REVIEW.md`.
+- Added simulation/point-estimate caveats above the README headline and the
+  “audit-ready is not an audit opinion” definition.
+
+### Known
+
+- Paper is 7 pages; the 6-page target requires trimming.
+- No real log, external readers, model ablation, or legal review.
+- The v1.0.1 release is superseded for the 2026 claim and paper.
+
 ## [1.0.1] — 2026-11-26
 
 The decision-reliability review update. It does not close the public-release

@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Status:** Canonical documentation map for v1.0.1 (2026-11-26).
+**Status:** Canonical documentation map for v1.0.2 (2026-11-27).
 **Rule:** Every public number traces to a committed JSON or a cited primary
 source. Every public claim appears in [`CLAIMS.md`](CLAIMS.md). If two documents
 disagree, the precedence in §5 applies.
@@ -47,6 +47,8 @@ disagree, the precedence in §5 applies.
 | [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md) | Cover note, shortlist template, agenda, and outreach tracker |
 | [`AUDIT_REPORT.md`](AUDIT_REPORT.md) | The adversarial red-team audit: gates, findings, verdict |
 | [`STRATEGIC_REVIEW_v1.md`](STRATEGIC_REVIEW_v1.md) | The V1 strategic review: constraint table, pre-mortem, falsification ledger, findings |
+| [`EXTERNAL_CREDIBILITY_REVIEW.md`](EXTERNAL_CREDIBILITY_REVIEW.md) | The pre-review fintech data-scientist critique and external evidence |
+| [`RED_FLAG_AUDIT.md`](RED_FLAG_AUDIT.md) | The tracked red-flag/weakness log with severity and resolution status |
 | [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) | The partner-institution shadow-evaluation protocol |
 | [`BUSINESS_CASE.md`](BUSINESS_CASE.md) | The decision framework and break-even condition |
 | [`CLAIMS.md`](CLAIMS.md) | The claim ledger: what may be said, with evidence and status |
@@ -66,6 +68,7 @@ disagree, the precedence in §5 applies.
 | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) | The verified benchmark rebuild: hashes, split, parameters, leakage controls |
 | [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) | Every column in the processed test frame |
 | [`SCHEMA.md`](SCHEMA.md) | The decision-log schema and validation rules |
+| [`DATA_READINESS.md`](DATA_READINESS.md) | Minimum fields, BSP 1213 gap, reconstruction paths, stop rules |
 | [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`REPORT_USAGE.md`](REPORT_USAGE.md) | How to run and read the arbitrary-log report |
 | [`PRIVACY.md`](PRIVACY.md) | Data handling, PII, sandbox, and incident rules |
@@ -94,7 +97,8 @@ disagree, the precedence in §5 applies.
 | [`DECISION_MEMO_2026-11.md`](DECISION_MEMO_2026-11.md) | The Nov–Dec 2026 strategic decision: options, expected value, tail risk, recommendation |
 | [`ONE_PAGER.md`](ONE_PAGER.md) | The one-page reviewer brief |
 | [`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) | The pre-release claim, data, code, and docs checklist |
-| [`RELEASE_NOTES_v1.0.1.md`](RELEASE_NOTES_v1.0.1.md) | The current review update: what is in, what changed, how to verify |
+| [`RELEASE_NOTES_v1.0.2.md`](RELEASE_NOTES_v1.0.2.md) | The current corrective pre-release: what changed, how to verify |
+| [`RELEASE_NOTES_v1.0.1.md`](RELEASE_NOTES_v1.0.1.md) | The v1.0.1 review update (superseded for the 2026 claim/paper) |
 | [`RELEASE_NOTES_v1.0.0.md`](RELEASE_NOTES_v1.0.0.md) | The historical v1.0.0 review release |
 | [`RELEASE_STATUS.md`](RELEASE_STATUS.md) | What is tagged, what is not, and the open public-release gate |
 | [`ROADMAP.md`](ROADMAP.md) | The milestones and review dates |

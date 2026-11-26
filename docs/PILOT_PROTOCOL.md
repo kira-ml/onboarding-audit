@@ -54,6 +54,11 @@ pilot. The candidate score is applied offline to historical rows.
 
 ## 4. Data requirements
 
+Before assembling the extract, run the readiness check in
+[`DATA_READINESS.md`](DATA_READINESS.md). It lists the minimum fields, the BSP
+1213 gap, and the stop rules. A log that cannot supply the action, label, and
+observation fields is a data-readiness failure, not a modeling result.
+
 ### 4.1 Required
 
 | Field | Requirement |

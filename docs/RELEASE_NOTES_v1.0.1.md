@@ -4,6 +4,9 @@
 **Tag:** `v1.0.1`.
 **Nature:** a decision-reliability review update, not a public `1.0` release.
 
+> **Superseded (2026-11-27):** `v1.0.2` corrects the 2026 research-gap claim and
+> adds the closest-work citations. Cite `v1.0.2` for the current artifact.
+
 ---
 
 ## 1. What this release is

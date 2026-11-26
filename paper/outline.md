@@ -89,10 +89,12 @@ result is a measurement layer, not another fraud detector.
 | Capacity / L2D | Alves et al. 2023 (FiFAR) | Public synthetic analysts and review capacity | Account-opening policy value under selective/delayed labels |
 | Recent finance work | OSCAR (ICAIF 2026); Beyond Holdout Error (ICAIF 2026); DOiT (ICAIF 2026); Top-K Review (2026); Alert-Feedback Trap (ICAIF 2026); Standardized Protocol (ICAIF 2026) | Selective/delayed labels, ranking vs selection, queue construction, feedback, protocols | The applied account-opening measurement layer, open tool, and regulatory logging/audit protocol |
 
-**Gap statement:** no peer-reviewed fraud-specific paper jointly handles
-policy-induced selection, delayed/censored labels, capacity-constrained review,
-and an audit-ready logging protocol for account-opening decisions. The closest
-work studies pieces; this paper assembles and tests the applied layer.
+**Gap statement:** no reviewed work jointly provides policy-induced selection,
+delayed/censored labels, capacity-constrained review, a reject-margin decision
+layer, and an audit-ready logging protocol for account-opening decisions. The
+closest 2026 work studies pieces (OSCAR, Beyond Holdout Error, DOiT); this paper
+assembles and tests the applied layer. It does not claim the ranking/selection
+phenomenon itself.
 
 ---
 

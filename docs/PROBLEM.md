@@ -133,23 +133,25 @@ rule and still be unable to evaluate its own onboarding policy.
 
 ### 3.4 The market gap
 
-A capability review of 18 vendors found:
+A capability review of 18 vendors found the following. It is a **search-based**
+review of public documentation, not a proof of absence; the matrix is in the
+archived origin repository and is not reproduced here.
 
 - Replay backtesting is commoditized (IBM, Alloy, Sardine, Unit21; claimed by
   Feedzai/SAS).
 - Champion–challenger is live traffic splitting, not causal estimation.
-- Randomized audit arms are essentially absent as a product feature. Stripe is
-  the only detailed public implementation of propensity-based random allows;
-  Sardine discusses 1% control groups as an advanced practice requiring scale
-  and loss budget.
-- No vendor publicly documents propensity logging as a first-class field,
-  label-delay distributions, overlap/ESS diagnostics, audit-power/loss-budget
-  tooling, capacity-constrained review optimization, or an audit memo that
-  separates measured/assumed/unverifiable claims.
-- No fraud-specific OPE library exists. General OPE (Open Bandit Pipeline,
-  SCOPE-RL), causal (EconML, DoWhy), and credit reject inference
-  (`rejectkit`) exist, but none combines account-opening actions, delayed
-  labels, selection, and review capacity.
+- Randomized audit arms are essentially absent as a product feature in the
+  reviewed sources. Stripe is the only detailed public implementation of
+  propensity-based random allows in those sources; Sardine discusses 1% control
+  groups as an advanced practice requiring scale and loss budget.
+- No vendor publicly documents, **in the reviewed sources**, propensity logging
+  as a first-class field, label-delay distributions, overlap/ESS diagnostics,
+  audit-power/loss-budget tooling, capacity-constrained review optimization, or
+  an audit memo that separates measured/assumed/unverifiable claims.
+- No fraud-specific OPE library was found in the 2026 search. General OPE (Open
+  Bandit Pipeline, SCOPE-RL), causal (EconML, DoWhy), credit reject inference
+  (`rejectkit`), and debt-collection OPE (JUBILEE) exist, but none combines
+  account-opening actions, delayed labels, selection, and review capacity.
 - `rejectkit`'s own benchmark warns that selection corrections can **hurt**
   under MNAR (naive AUC 0.749 vs oracle 0.820). A credible tool needs negative
   controls and honesty checks, not just an estimator.
@@ -175,10 +177,19 @@ The targeted review of 25 primary sources found:
 - **OPE** is mature but its core assumptions — positivity, unconfoundedness —
   are exactly the ones fraud violates; Namkoong et al. (2020) show small
   per-decision confounding can heavily bias OPE, using human fraud screening as
-  the motivating example.
-- **No peer-reviewed fraud-specific paper evaluates a policy or intervention
-  with a counterfactual design** in this setting. Pombal et al. (2022) study
-  bias and fairness in performative prediction, but do not provide a
+  the motivating example. JUBILEE (2026) shows the same failure mode in debt
+  collections: hidden assignment dependence makes log-based intervals miss.
+- **Fraud rule portfolios** have a separate 2026 certification literature
+  (selection-aware certification under synthetic distribution shift), which
+  addresses overfitting in rule selection but not the account-opening reject
+  margin.
+- **The closest peer-reviewed 2026 work** — OSCAR (ICAIF 2026), Beyond Holdout
+  Error (ICAIF 2026), and DOiT (ICAIF 2026) — studies selective labels,
+  estimator-ranking reversal, and account-selection trade-offs in financial
+  screening. None provides the full account-opening combination: a `P0`
+  estimand, reject-margin bounds, a capacity layer, an audit design, an
+  identification gate, and an open reproducible tool. Pombal et al. (2022)
+  study bias and fairness in performative prediction, but do not provide a
   policy-evaluation toolkit, delay-aware comparison, capacity layer, audit
   design, or benchmark.
 

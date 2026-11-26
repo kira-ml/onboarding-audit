@@ -170,6 +170,10 @@ a decision. If there are no logging-rejected rows, the full population equals
 
 ### Identification gate
 
+The gate is a **readiness screen**, not a proof of identification. It catches
+logs that are obviously unidentifiable; passing it does not prove the
+observation model is correct or that unmeasured confounding is absent.
+
 Before printing a point estimate, the report checks:
 
 - positivity on `P0`;
