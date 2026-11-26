@@ -139,6 +139,26 @@ This runs the main and `frej_050` scenarios (50 reps) with the
 `pilot.md`, and `pilot_rows.parquet` (local). It is a post-hoc sensitivity, not a
 pre-registered headline.
 
+### 4.4.2 Label-holdout baseline (post-hoc)
+
+```bash
+onboarding-audit pilot --config configs/holdout_baseline.yaml --out reports/holdout_baseline
+```
+
+This fits the outcome model on one random half of the `P0` labels and evaluates
+every estimator on the other half. It writes `reports/holdout_baseline/pilot.json`
+and `pilot.md`; the row-level parquet stays local.
+
+### 4.4.3 Model / score ablation (post-hoc)
+
+```bash
+python scripts/model_ablation.py
+```
+
+This reports AUC/AP/KS for the incumbent and candidate scores on month 6 and a
+same-feature logistic/HistGB ablation trained on month 5. It writes
+`reports/model_ablation.json` and `.md`.
+
 ### 4.5 Propensity and covariate sensitivity
 
 ```bash

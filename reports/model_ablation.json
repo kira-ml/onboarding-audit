@@ -1,0 +1,60 @@
+{
+  "note": "Post-hoc ablation on the BAF test window. The policy scores are not retrained; the logistic/HistGB models are trained on month 5 and tested on month 6. Not a production estimate.",
+  "n_train_month5": 119323,
+  "n_test_month6": 108168,
+  "score_metrics_month6": {
+    "incumbent_p_fraud": {
+      "auc": 0.8732829093240259,
+      "average_precision": 0.14421811962714753,
+      "ks": 0.5981459224472361,
+      "n": 108168,
+      "fraud_rate": 0.013405073589231566
+    },
+    "candidate_p_fraud_lgbm": {
+      "auc": 0.8829349603951374,
+      "average_precision": 0.15446431906029945,
+      "ks": 0.6113583786078811,
+      "n": 108168,
+      "fraud_rate": 0.013405073589231566
+    },
+    "random_forest_diagnostic": {
+      "auc": 0.8507596010368285,
+      "average_precision": 0.12625744109277948,
+      "ks": 0.5477750255103524,
+      "n": 108168,
+      "fraud_rate": 0.013405073589231566
+    }
+  },
+  "retrained_ablation_month6": {
+    "logistic_all_features": {
+      "n_features": 31,
+      "metrics": {
+        "auc": 0.8753611290083887,
+        "average_precision": 0.14962169857076618,
+        "ks": 0.5983091111540502,
+        "n": 108168,
+        "fraud_rate": 0.013405073589231566
+      }
+    },
+    "hist_gradient_boosting_all_features": {
+      "n_features": 31,
+      "metrics": {
+        "auc": 0.8772602689266136,
+        "average_precision": 0.15372560583773723,
+        "ks": 0.6009666985694169,
+        "n": 108168,
+        "fraud_rate": 0.013405073589231566
+      }
+    },
+    "logistic_reduced_no_velocity": {
+      "n_features": 26,
+      "metrics": {
+        "auc": 0.871089607092104,
+        "average_precision": 0.14412880349895313,
+        "ks": 0.5869488325984499,
+        "n": 108168,
+        "fraud_rate": 0.013405073589231566
+      }
+    }
+  }
+}

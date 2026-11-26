@@ -20,7 +20,7 @@ research documentation, without duplicating the claims, methods, or results.
 |---|---|---|
 | [`main.tex`](main.tex) | The IEEEtran conference manuscript | The claim ledger |
 | [`references.bib`](references.bib) | The verified bibliography | A literature review |
-| [`main.pdf`](main.pdf) | The compiled two-column draft (7 pages) | A submission-ready camera copy |
+| [`main.pdf`](main.pdf) | The compiled two-column draft (7 pages total: 6 body + references) | A submission-ready camera copy |
 | [`make_figures.py`](make_figures.py) | Regenerates the three figures from committed JSON | A result |
 | [`figures/`](figures/) | The vector figures used by the paper | Source data |
 | [`brief.md`](brief.md) | A 2-page research brief for a reviewer | The paper |
@@ -52,9 +52,10 @@ To regenerate the figures:
 python paper/make_figures.py
 ```
 
-The draft is **7 pages** after the full-policy and 2026-related-work additions.
-IEEE conference limits vary by venue; if the target is a strict 6-page paper,
-trim one page or choose a 7-page venue. Do not assume the 6-page target is met.
+The draft is **7 pages total: 6 pages of body plus a references page**, after
+the full-policy and 2026-related-work additions. IEEE conference limits vary by
+venue; confirm whether references count toward the limit. If the target is a
+strict 6-page paper including references, trim; otherwise the body fits.
 
 ## 3. What the paper is built from
 

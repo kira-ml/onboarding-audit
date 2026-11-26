@@ -2,6 +2,18 @@
 
 **Status:** Canonical version history.
 
+## [Unreleased] — post-v1.0.2 evidence
+
+### Added
+
+- Label-holdout baseline (`configs/holdout_baseline.yaml`,
+  `reports/holdout_baseline/`): the correction survives a disjoint label half;
+  the ranking remains unstable.
+- Model/score ablation (`scripts/model_ablation.py`,
+  `reports/model_ablation.*`): candidate AUC 0.8829 vs 0.8733; retrained HistGB
+  0.8773 vs logistic 0.8754.
+- Paper robustness paragraph; still 6 pages of body + references.
+
 ## [1.0.2] — 2026-11-27
 
 Corrective pre-release after the external-credibility audit.

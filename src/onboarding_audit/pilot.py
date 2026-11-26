@@ -199,6 +199,30 @@ def run_scenario(
             seed=config.seed + rep,
         )
 
+        # Label-holdout test: fit the outcome model on one random half of the
+        # observed rows and evaluate every estimator on the other half. This
+        # checks whether the correction is an overfitting artifact.
+        holdout_rng = np.random.default_rng(config.seed + 9000 + rep)
+        p0_idx = np.where(in_pop)[0]
+        if len(p0_idx) > 1:
+            eval_p0_idx = holdout_rng.choice(
+                p0_idx, size=len(p0_idx) // 2, replace=False
+            )
+        else:
+            eval_p0_idx = p0_idx
+        in_pop_eval = np.zeros(len(in_pop), dtype=bool)
+        in_pop_eval[eval_p0_idx] = True
+        eval_mask = draw.observed & in_pop_eval
+        fit_mask = draw.observed & ~in_pop_eval
+        phat_holdout = fit_outcome_model(
+            data.X,
+            data.y,
+            fit_mask,
+            e_est,
+            config.outcome_model,
+            seed=config.seed + rep + 9000,
+        )
+
         obs_frac += float(draw.observed.mean())
         audit_count += int(draw.audit.sum())
         for source in source_counts:
@@ -211,6 +235,20 @@ def run_scenario(
                 "naive": naive(cost, draw.observed),
                 "action_weighted": action_weighted(
                     cost, draw.observed, logging.actions, in_pop
+                ),
+                "naive_holdout": naive(cost, eval_mask),
+                "action_weighted_holdout": action_weighted(
+                    cost, eval_mask, logging.actions, in_pop_eval
+                ),
+                "dr_holdout": dr(
+                    cost,
+                    policy.actions,
+                    data.amount,
+                    eval_mask,
+                    e_est,
+                    in_pop_eval,
+                    phat_holdout,
+                    base_costs,
                 ),
                 "ipw_ht": ipw_ht(cost, draw.observed, e_est, in_pop),
                 "ipw_hajek": ipw_hajek(cost, draw.observed, e_est, in_pop),

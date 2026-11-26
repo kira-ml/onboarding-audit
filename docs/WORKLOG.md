@@ -3,6 +3,28 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-27 — Next actions executed (technical)
+
+**Freeze:** method set frozen; no new estimators except the test-only holdout
+diagnostics.
+
+**Label holdout:** fit on one random half of `P0` labels, evaluate on the other.
+Main: naive-holdout **275.1%** vs action-weighted **4.2%** / DR **2.8%**;
+`frej_050`: **286.2%** vs **6.1%** / **4.5%**. The correction survives; the
+ranking is unstable (DR-holdout 52% main, 70% `frej_050`).
+
+**Model ablation:** month 6 AUC candidate **0.8829** vs incumbent **0.8733**;
+retrained HistGB **0.8773** vs logistic **0.8754**. The candidate is a modestly
+better ranker; model class alone is not a large driver.
+
+**Paper:** still 6 pages of body + references; added a robustness paragraph;
+2026 citations compile.
+
+**Outreach:** packet remains ready; no emails sent or calls booked because no
+reviewer contacts are supplied. This is an open action for the owner.
+
+**Audit log:** updated with the holdout/ablation results; H9 is partial.
+
 ## 2026-11-27 — Future decision memo (proposed)
 
 **Recommendation:** choose B — finish as a narrow research/portfolio artifact

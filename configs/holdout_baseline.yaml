@@ -1,0 +1,57 @@
+# Post-hoc label-holdout baseline.
+# The outcome model is fit on one random half of the observed labels and every
+# estimator is evaluated on the other half. Companion to
+# configs/baseline_sensitivity.yaml; post-hoc, not a pre-registered headline.
+
+seed: 20261120
+
+data:
+  path: data/scored_test.parquet
+  label_col: fraud_bool
+  amount_col: amount_proxy
+  month_col: month
+  outcome_features:
+    - p_fraud
+    - p_fraud_lgbm
+    - customer_age
+    - credit_risk_score
+    - velocity_6h
+    - velocity_24h
+    - velocity_4w
+    - bank_months_count
+    - zip_count_4w
+    - session_length_in_minutes
+
+costs:
+  fraud_loss_rate: 0.0019187869
+  review_cost: 0.02
+  false_reject_cost: 0.10
+  residual_fraud_loss: 0.30
+  amount_scaled: true
+
+observation:
+  kappa_review: 0.90
+  e_approve: 0.05
+  audit_rate: 0.01
+  review_delay_median: 3.0
+  review_delay_sigma: 0.5
+  approve_delay_median: 45.0
+  approve_delay_sigma: 0.8
+  cutoff_day: 90.0
+  outcome_dependent: false
+  e_approve_fraud: 0.30
+
+outcome_model:
+  C: 0.5
+  max_iter: 300
+  n_splits: 5
+
+policies:
+  - {name: incumbent, score_col: p_fraud, review_capacity: 0.02, decision_false_reject_cost: null}
+  - {name: better_model, score_col: p_fraud_lgbm, review_capacity: 0.02, decision_false_reject_cost: null}
+  - {name: strict_cost, score_col: p_fraud_lgbm, review_capacity: 0.02, decision_false_reject_cost: 0.02}
+  - {name: lenient_cost, score_col: p_fraud_lgbm, review_capacity: 0.02, decision_false_reject_cost: 0.50}
+
+scenarios:
+  - {id: main, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.10}
+  - {id: frej_050, reps: 50, audit_rate: 0.01, approve_delay_median: 45.0, false_reject_cost: 0.50}

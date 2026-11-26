@@ -211,6 +211,48 @@ This is a **post-hoc** 50-replication sensitivity, not a pre-registered
 headline. It is reported because it is the strongest test of the "naive baseline
 is a straw man" objection.
 
+### 5.2 Label-holdout baseline (post-hoc)
+
+The outcome model is fit on one random half of the `P0` rows' observed labels
+and every estimator is evaluated on the other half. This tests whether the
+correction is an overfitting artifact.
+
+| Scenario | Estimator | Max \|relative bias\| | P(select true best) |
+|---|---|---:|---:|
+| main | naive-holdout | **275.1%** | **0%** |
+| main | action-weighted-holdout | **4.2%** | **56%** |
+| main | DR-holdout | **2.8%** | **52%** |
+| `frej_050` | naive-holdout | **286.2%** | **100%** |
+| `frej_050` | action-weighted-holdout | **6.1%** | **58%** |
+| `frej_050` | DR-holdout | **4.5%** | **70%** |
+
+**Read:** the point-estimate correction survives a disjoint label half: the
+naive bias remains >100%, while action-weighted/DR stay within ~6%. The ranking
+is not stable: DR-holdout selects the true best 52% in main and 70% in
+`frej_050`, while the naive rule is 0% and 100% respectively. The ranking result
+is noisy and cost-dependent, not a reliable correction claim. See
+`reports/holdout_baseline/`.
+
+### 5.3 Model / score ablation (post-hoc)
+
+On month 6, the candidate LightGBM is a **modestly** better ranker than the
+logistic incumbent:
+
+| Score / model | AUC | Average precision |
+|---|---:|---:|
+| incumbent `p_fraud` | 0.8733 | 0.1442 |
+| candidate `p_fraud_lgbm` | **0.8829** | **0.1545** |
+| retrained logistic (month 5 → 6) | 0.8754 | 0.1496 |
+| retrained HistGB (month 5 → 6) | 0.8773 | 0.1537 |
+| reduced logistic (no velocity) | 0.8711 | 0.1441 |
+
+**Read:** the candidate is better, but the gap is small (~1 AUC point). A
+same-feature HistGB barely beats logistic, so model class alone is not a large
+driver; the original candidate's advantage may come from training window,
+hyperparameters, or features. The ablation supports the “better model” premise
+weakly and does not isolate observation selection from model capacity. See
+`reports/model_ablation.md`.
+
 ## 6. Pilot: reject-margin bounds
 
 | Quantity | Value |

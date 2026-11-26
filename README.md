@@ -123,6 +123,8 @@ Monte Carlo intervals are in [`docs/RESULTS.md`](docs/RESULTS.md).
 | Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep (max across policies) | relative bias; **12/12** cells >5% for at least one policy; incumbent **1.5–218%**, 11/12 |
 | Naive ranking | **1.00 / 0%** main; **0.00 / 100%** at `frej_050` | mean pairwise inversions / P(select true best); ranking is cost-dependent |
 | Action-weighted baseline | main **2.9% / 62%**; `frej_050` **2.4% / 58%** | max relative bias / P(select true best); the naive gap is not just an unweighted-mean artifact |
+| Label-holdout | main naive **275% / 0%** vs action-weighted **4.2% / 56%**, DR **2.8% / 52%**; `frej_050` naive **286% / 100%** vs action-weighted **6.1% / 58%**, DR **4.5% / 70%** | correction survives a disjoint label half; ranking remains noisy |
+| Model/score ablation | candidate AUC **0.883** vs incumbent **0.873**; retrained HistGB **0.877** vs logistic **0.875** | the better-model premise is supported but modest; no isolation from model class |
 | Observation-rate sweep | **12/12** cells >5% (max across policies); DR mean ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
 | Doubly robust (DR) | **0.94% / 96.0%** | mean relative bias / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
 | Double robustness | DR **+0.14%** (wrong outcome model), **+0.36%** (wrong propensity) | known-truth test; IPW **−36.7%** with wrong `e`, plug-in **+5.1%** with wrong outcome |

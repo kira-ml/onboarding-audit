@@ -149,6 +149,10 @@ These are outputs, not editable sources:
 | [`../reports/baseline_sensitivity/pilot.json`](../reports/baseline_sensitivity/pilot.json) | yes | `onboarding-audit pilot --config configs/baseline_sensitivity.yaml` |
 | [`../reports/baseline_sensitivity/pilot.md`](../reports/baseline_sensitivity/pilot.md) | yes | Same run; compact report |
 | `reports/baseline_sensitivity/pilot_rows.parquet` | no | Same run; row-level output |
+| [`../reports/holdout_baseline/pilot.json`](../reports/holdout_baseline/pilot.json) | yes | `onboarding-audit pilot --config configs/holdout_baseline.yaml` |
+| [`../reports/holdout_baseline/pilot.md`](../reports/holdout_baseline/pilot.md) | yes | Same run; compact report |
+| [`../reports/model_ablation.json`](../reports/model_ablation.json) | yes | `python scripts/model_ablation.py` |
+| [`../reports/model_ablation.md`](../reports/model_ablation.md) | yes | Same run; readable table |
 | [`../reports/propensity_sensitivity.md`](../reports/propensity_sensitivity.md) | yes | `onboarding-audit sensitivity` |
 | `reports/pilot_rows.parquet` | no | `onboarding-audit pilot` |
 | `reports/sample_report/` | no | `onboarding-audit report` |

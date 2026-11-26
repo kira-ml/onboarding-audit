@@ -40,7 +40,7 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 | H6 | High | Vendor-gap claim is search-based; 18-vendor matrix not committed | Unverified | **Partial** |
 | H7 | High | Fairness is descriptive, not an audit | Verified | **Partial** |
 | H8 | High | No external validation; release gate waived by owner | Verified | **Open** |
-| H9 | High | “Better model” not ablated; model-class confound | Potential | **Open** |
+| H9 | High | “Better model” not ablated; model-class confound | Potential | **Partial** |
 | M1 | Medium | BSP 1213 date 25 vs 30 June 2026 | Unverified | **Fixed** (language) |
 | M2 | Medium | Related-work metadata errors | Verified | **Fixed** |
 | M3 | Medium | Search-based “25 sources / 18 vendors” not reproducible | Verified | **Partial** |
@@ -50,7 +50,7 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 | M7 | Medium | Candidate model not tuned; no feature ablation | Potential | **Open** |
 | M8 | Medium | Documentation/status drift | Verified | **Partial** |
 | L1 | Low | “Audit-ready” can be read as an audit opinion | Potential | **Fixed** |
-| L2 | Low | Paper is 7 pages; stated 6-page target not met | Verified | **Fixed** (disclosed) |
+| L2 | Low | Paper is 7 pages total (6 body + references); venue rule unconfirmed | Verified | **Fixed** (disclosed) |
 | L3 | Low | Release is a pre-release with a waived gate | Verified | **Fixed** |
 
 ---
@@ -182,10 +182,12 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 - **Credibility impact:** critical for the paper; the applied tool survives.
 - **Resolution:** added a 2026 related-work subsection and citations; repositioned
   the contribution as the applied account-opening combination; updated the
-  gap statement. The paper is now 7 pages, over the stated 6-page target.
-- **Status:** **Partial.** Residual: trim/venue choice; no peer review.
+  gap statement. The paper is 7 pages total: 6 pages of body plus a references
+  page.
+- **Status:** **Partial.** Residual: confirm the venue's reference policy; no
+  peer review.
 - **Verification:** PDF text contains the three citations; paper README notes
-  7 pages.
+  the 6-body + references layout.
 
 ---
 
@@ -325,9 +327,12 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 - **Evidence:** `configs/pilot.yaml`, `scripts/prepare_baf.py`,
   `CASE_STUDY.md`.
 - **Credibility impact:** high for the “better model” premise.
-- **Resolution:** none beyond disclosure; the paper says the candidate is a
-  different model.
-- **Status:** **Open.** Residual: run an ablation or a trained-model case.
+- **Resolution:** added a post-hoc model/score ablation (`scripts/model_ablation.py`).
+  Candidate AUC 0.8829 vs incumbent 0.8733 (AP 0.1545 vs 0.1442); retrained
+  HistGB 0.8773 vs logistic 0.8754; reduced logistic 0.8711. The candidate is a
+  modestly better ranker; model class alone is not a large driver.
+- **Status:** **Partial.** Residual: the ablation does not isolate observation
+  selection from model capacity; a trained-model case is still open.
 
 ---
 
@@ -445,16 +450,17 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
   assumptions; it is not an audit opinion or compliance certification.
 - **Status:** **Fixed.**
 
-### L2 — Paper is 7 pages; stated 6-page target not met
+### L2 — Paper is 7 pages total; 6 pages of body plus a references page
 
-- **What:** the PDF grew to 7 pages after the full-policy/2026 additions.
-- **Why it matters:** a strict 6-page venue would reject/overlength.
-- **Why an experienced DS notices:** page count.
+- **What:** the PDF has 6 pages of body plus a references page.
+- **Why it matters:** a strict 6-page venue may or may not exclude references.
+- **Why an experienced DS notices:** page count and the venue’s rule.
 - **Evidence:** `paper/main.pdf`, `paper/README.md`.
 - **Credibility impact:** low-medium.
-- **Resolution:** paper README now says 7 pages and “trim or choose a 7-page
-  venue”; do not claim 6.
-- **Status:** **Fixed (disclosed).** Residual: trim if targeting 6 pages.
+- **Resolution:** paper README now says “7 pages total: 6 pages of body plus a
+  references page; confirm the venue rule.”
+- **Status:** **Fixed (disclosed).** Residual: confirm the target venue’s
+  reference policy; trim only if required.
 
 ### L3 — Release is a pre-release with a waived gate
 
@@ -477,14 +483,14 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 | C2 | No real log | A partner historical log; holdout baseline |
 | C3 | Full-policy break-even is a sensitivity | Controlled approval/review design |
 | C4 | No native action log | A reconstructed real log or a partner pilot |
-| C5 | Paper 7 pages; no peer review | Trim/venue; submit after citations |
+| C5 | Paper 6 body + references; no peer review | Confirm venue rule; submit after citations |
 | C6 | v1.0.1 tag has old claim/paper | **Fixed:** v1.0.2 pushed; v1.0.1 body corrected |
 | H4 | Bounds wide | Controlled design or explicit assumption |
 | H5 | No bank costs/ROI | Institution cost matrix and volume |
 | H6 | 18-vendor matrix absent | Publish the matrix or remove the claim |
 | H7 | No rejected outcomes | Full fairness audit |
 | H8 | No external readers | Two reader calls, recorded |
-| H9 | No model ablation | Feature/model-class ablation or trained-model case |
+| H9 | Ablation run; candidate advantage modest; no isolation | Trained-model case or a stronger challenger |
 | M3 | Search protocol absent | Publish the search/matrix |
 | M4 | Some intervals missing | Add Wilson/MC intervals to every proportion |
 | M6 | Legal/ops review | Legal/risk sign-off on the audit design |
@@ -499,7 +505,9 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 | Unit tests | `pytest -q` | **101 passed** |
 | Claim checks | `python scripts/check_claims.py` | **43/43** |
 | Link check | `python scripts/check_links.py` | **0 missing** |
-| Paper build | `tectonic paper/main.tex` | PDF written; 7 pages; citations present |
+| Paper build | `tectonic paper/main.tex` | PDF written; 6 body + references; citations present |
+| Label holdout | `onboarding-audit pilot --config configs/holdout_baseline.yaml` | Naive >100%; action-weighted/DR ≤6%; ranking unstable |
+| Model ablation | `python scripts/model_ablation.py` | Candidate AUC 0.8829 vs 0.8733; HistGB 0.8773 vs logistic 0.8754 |
 | False claim removed | `grep "No peer-reviewed"` on current docs | Only the audit log/review quote it |
 | 2026 citations | PDF text search | OSCAR/Beyond Holdout/DOiT/Kuroki/Bhola/Hong present |
 | Release | GitHub | `main` + `v1.0.1` pre-release |
