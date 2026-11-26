@@ -65,6 +65,11 @@ It also adds the action-weighted baseline (`reports/baseline_sensitivity/`), the
 observational segment diagnostic, and the reviewer packet. These are review
 update changes; the public-release gate is unchanged.
 
+**Post-release evidence on `main` (not in the `v1.0.2` tag):** the
+label-holdout baseline (`reports/holdout_baseline/`) and the model/score
+ablation (`reports/model_ablation.*`). See `RESULTS.md` §5.2–5.3. Issue a
+`v1.1.0`/`v1.0.3` if these need to be in a tagged release.
+
 ## 5. Next release rule
 
 Do not announce a public `1.0` release until:
