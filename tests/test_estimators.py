@@ -8,6 +8,7 @@ from onboarding_audit.estimators import (
     effective_sample_size,
     expected_cost,
     fit_outcome_model,
+    full_policy_difference,
     ipw_hajek,
     ipw_ht,
     naive,
@@ -32,6 +33,20 @@ def test_full_observation_identity():
     assert naive(cost, observed).value == pytest.approx(truth)
     assert ipw_ht(cost, observed, prop, in_pop).value == pytest.approx(truth)
     assert ipw_hajek(cost, observed, prop, in_pop).value == pytest.approx(truth)
+
+
+def test_action_weighted_uses_observed_action_rates():
+    from onboarding_audit.estimators import action_weighted
+
+    actions = np.array(["approve", "approve", "review", "review"], dtype=object)
+    observed = np.array([True, False, True, True])
+    cost = np.array([2.0, 99.0, 1.0, 1.0])
+    in_pop = np.ones(4, dtype=bool)
+    est = action_weighted(cost, observed, actions, in_pop)
+    # approve: 1/2 observed -> weight 2; review: 2/2 -> weight 1.
+    # Hajek: (2*2 + 1*1 + 1*1) / (2 + 1 + 1) = 1.5.
+    assert est.value == pytest.approx(1.5)
+    assert est.max_weight == pytest.approx(2.0)
 
 
 def test_ess_bounds():
@@ -240,6 +255,170 @@ def test_compare_policies_prefers_the_cheaper_policy():
     assert comp["p_candidate_better"] > 0.5
     assert comp["decision"] == "prefer candidate"
     assert comp["regret_candidate"] < comp["regret_incumbent"]
+
+
+def test_full_policy_difference_breakeven():
+    n = 100
+    amount = np.full(n, 100.0)
+    actions_c = np.array(["approve"] * n, dtype=object)
+    actions_i = np.array(["approve"] * 80 + ["reject"] * 20, dtype=object)
+    in_pop = np.zeros(n, dtype=bool)
+    in_pop[:80] = True
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    out = full_policy_difference(actions_c, actions_i, amount, costs, in_pop, 0.0, 0.0)
+    assert out["reject_difference_if_legit"] == pytest.approx(-0.10)
+    assert out["reject_difference_if_fraud"] == pytest.approx(1.00)
+    assert out["full_difference_lower"] == pytest.approx(-0.02)
+    assert out["full_difference_upper"] == pytest.approx(0.20)
+    assert out["decision"] == "depends on the reject margin"
+    assert out["breakeven_reject_fraud_rate"] == pytest.approx(0.10 / 1.10)
+    assert "p <" in out["basis"] and "cheaper" in out["basis"]
+
+
+def test_full_policy_difference_without_rejected_rows():
+    n = 50
+    amount = np.full(n, 100.0)
+    actions = np.array(["approve"] * n, dtype=object)
+    in_pop = np.ones(n, dtype=bool)
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    out = full_policy_difference(actions, actions, amount, costs, in_pop, -0.01, 0.002)
+    assert out["n_rejected"] == 0
+    assert out["full_difference_lower"] == pytest.approx(-0.01 - 1.96 * 0.002)
+    assert out["full_difference_upper"] == pytest.approx(-0.01 + 1.96 * 0.002)
+    assert out["decision"] == "candidate cheaper"
+    assert "full population equals P0" in out["basis"]
+
+
+def test_full_policy_difference_candidate_rejects_all_rejected_rows():
+    n = 100
+    amount = np.full(n, 100.0)
+    actions_c = np.array(["approve"] * 80 + ["reject"] * 20, dtype=object)
+    actions_i = np.array(["approve"] * 80 + ["reject"] * 20, dtype=object)
+    in_pop = np.zeros(n, dtype=bool)
+    in_pop[:80] = True
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    out = full_policy_difference(
+        actions_c, actions_i, amount, costs, in_pop, -0.01, 0.0
+    )
+    assert out["reject_difference_if_legit"] == pytest.approx(0.0)
+    assert out["reject_difference_if_fraud"] == pytest.approx(0.0)
+    assert out["full_difference_lower"] == pytest.approx(-0.8 * 0.01)
+    assert out["full_difference_upper"] == pytest.approx(-0.8 * 0.01)
+    assert out["decision"] == "candidate cheaper for any reject outcome"
+    assert np.isnan(out["breakeven_reject_fraud_rate"])
+
+
+def test_full_policy_difference_does_not_blame_reject_margin_for_p0_noise():
+    n = 100
+    amount = np.full(n, 100.0)
+    actions_c = np.array(["approve"] * 80 + ["reject"] * 20, dtype=object)
+    actions_i = np.array(["approve"] * 80 + ["reject"] * 20, dtype=object)
+    in_pop = np.zeros(n, dtype=bool)
+    in_pop[:80] = True
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    out = full_policy_difference(
+        actions_c, actions_i, amount, costs, in_pop, -0.04, 0.03
+    )
+    # The reject margin is identical under both policies, so a zero-crossing is
+    # P0 uncertainty, not reject-margin dependence.
+    assert out["reject_min_mean"] == pytest.approx(0.0)
+    assert out["reject_max_mean"] == pytest.approx(0.0)
+    assert out["full_difference_lower"] < 0 < out["full_difference_upper"]
+    assert out["decision"] == "P0 inconclusive"
+    assert "P0 estimate is uncertain" in out["basis"]
+    assert np.isnan(out["breakeven_reject_fraud_rate"])
+
+
+def test_full_policy_difference_small_reject_range_does_not_flip_decision():
+    n = 1000
+    amount = np.full(n, 100.0)
+    amount[-1] = 1.0
+    actions_i = np.array(["approve"] * 900 + ["reject"] * 100, dtype=object)
+    actions_c = actions_i.copy()
+    actions_c[-1] = "approve"  # one rejected row changes; small exposure
+    in_pop = np.zeros(n, dtype=bool)
+    in_pop[:900] = True
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    out = full_policy_difference(
+        actions_c, actions_i, amount, costs, in_pop, -0.01, 0.01
+    )
+    assert out["reject_max_mean"] > out["reject_min_mean"]  # range is nonzero
+    assert out["full_difference_lower"] < 0 < out["full_difference_upper"]
+    assert out["decision"] == "P0 inconclusive"
+    assert "moves the magnitude" in out["basis"]
+
+
+def test_full_policy_difference_all_rejected_population():
+    n = 10
+    amount = np.full(n, 100.0)
+    actions_i = np.array(["reject"] * n, dtype=object)
+    actions_c = np.array(["approve"] * n, dtype=object)
+    in_pop = np.zeros(n, dtype=bool)
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    out = full_policy_difference(
+        actions_c, actions_i, amount, costs, in_pop, float("nan"), float("nan")
+    )
+    assert out["full_difference_lower"] == pytest.approx(-0.10)
+    assert out["full_difference_upper"] == pytest.approx(1.00)
+    assert out["decision"] == "depends on the reject margin"
+    assert "no P0 rows" in out["basis"]
+
+
+def test_compare_policies_includes_full_policy_check():
+    n = 200
+    amount = np.full(n, 100.0)
+    actions_c = np.array(["approve"] * n, dtype=object)
+    actions_i = np.array(["review"] * n, dtype=object)
+    y = np.zeros(n)
+    observed = np.ones(n, dtype=bool)
+    e = np.ones(n)
+    in_pop = np.ones(n, dtype=bool)
+    phat = np.zeros(n)
+    costs = Costs(
+        fraud_loss_rate=0.01,
+        review_cost=0.02,
+        false_reject_cost=0.10,
+        residual_fraud_loss=0.30,
+    )
+    from onboarding_audit.policies import realized_cost
+
+    cost_c = realized_cost(actions_c, y, amount, costs)
+    cost_i = realized_cost(actions_i, y, amount, costs)
+    comp = compare_policies(
+        cost_c, actions_c, cost_i, actions_i, amount, observed, e, in_pop, phat, costs
+    )
+    assert comp["full_policy"]["n_rejected"] == 0
+    assert comp["full_policy"]["decision"] == "candidate cheaper"
 
 
 def test_labels_for_power_known_value():

@@ -34,6 +34,9 @@ from .propensity import fit_covariate_propensity
 from .schema import validate_log
 
 TARGET_P0 = "P0"
+# The audit sample is drawn from the logging-approved population, not the
+# candidate's approved population. Keep the short label for compatibility, but
+# state the distinction in the memo and the docs.
 TARGET_APPROVED = "approved"
 TARGET_FULL = "full"
 
@@ -508,6 +511,16 @@ def evaluate_report(
         "candidate_approve_outside_p0": int(
             ((candidate_actions == "approve") & rejected).sum()
         ),
+        "review_fraud_rate_observed": (
+            float(y[(actions == "review") & observed].mean())
+            if ((actions == "review") & observed).any()
+            else float("nan")
+        ),
+        "approved_fraud_rate_observed": (
+            float(y[(actions == "approve") & observed].mean())
+            if ((actions == "approve") & observed).any()
+            else float("nan")
+        ),
         "propensity_source": propensity.source,
         "propensity_model": propensity.details.get("propensity_model"),
         "propensity_features": propensity.details.get("propensity_features", []),
@@ -565,6 +578,45 @@ def evaluate_report(
                 "p90": float(delay.quantile(0.9)),
                 "n": int(len(delay)),
             }
+    if "segment" in df.columns:
+        seg_values = df["segment"].astype("string").fillna("unknown")
+        segment_diagnostics: dict[str, dict] = {}
+        for name in sorted(seg_values.unique()):
+            mask = (seg_values == name).to_numpy()
+            n_seg = int(mask.sum())
+            if n_seg < 50:
+                segment_diagnostics[str(name)] = {
+                    "n": n_seg,
+                    "suppressed": True,
+                }
+                continue
+            seg_actions = actions[mask]
+            seg_observed = observed[mask]
+            seg_y = y[mask]
+            seg_candidate = candidate_actions[mask]
+            observed_legit = seg_observed & (seg_y == 0)
+            candidate_reject = seg_candidate == "reject"
+            segment_diagnostics[str(name)] = {
+                "n": n_seg,
+                "suppressed": False,
+                "incumbent_approve": int((seg_actions == "approve").sum()),
+                "incumbent_review": int((seg_actions == "review").sum()),
+                "incumbent_reject": int((seg_actions == "reject").sum()),
+                "candidate_reject_share": float(candidate_reject.mean()),
+                "candidate_change_share": float((seg_candidate != seg_actions).mean()),
+                "observed_fraud_rate": (
+                    float(seg_y[seg_observed].mean()) if seg_observed.any() else None
+                ),
+                "observed_legit_n": int(observed_legit.sum()),
+                "candidate_false_reject_share": (
+                    float(
+                        (candidate_reject & observed_legit).sum() / observed_legit.sum()
+                    )
+                    if observed_legit.any()
+                    else None
+                ),
+            }
+        diagnostics["segment_diagnostics"] = segment_diagnostics
 
     audit_rec = _audit_recommendation(
         df,
@@ -730,8 +782,10 @@ def write_memo(
             )
         L.append("")
         L.append(
-            "**Target note:** `P0` is the logging non-rejected population; `approved` is "
-            "the audit-only target; `full` is the reject-margin bounds target."
+            "**Target note:** `P0` is the logging non-rejected population; `approved` "
+            "is the **logging-approved** population (the audit sample), not the "
+            "candidate's approved population; `full` is the reject-margin bounds "
+            "target."
         )
         if "audit_only" in result.estimates:
             method = result.diagnostics.get("audit_only_method", "complete_case")
@@ -773,13 +827,50 @@ def write_memo(
         L.append(f"| P(candidate cheaper) | {_fmt(comp['p_candidate_better'])} |")
         L.append(f"| Expected regret if candidate | {_fmt(comp['regret_candidate'])} |")
         L.append(f"| Expected regret if incumbent | {_fmt(comp['regret_incumbent'])} |")
-        L.append(f"| **Recommendation** | **{comp['decision']}** |")
+        L.append(f"| **`P0`-conditional recommendation** | **{comp['decision']}** |")
+        full = comp.get("full_policy", {})
+        if full:
+            L.append(
+                f"| **Full-policy decision (including rejects)** | **{full['decision']}** |"
+            )
         L.append("")
+        if full:
+            full_decision = str(full.get("decision", "not identified"))
+            if comp["decision"] == "keep incumbent" and full_decision.startswith(
+                "candidate cheaper"
+            ):
+                L.append(
+                    "> **Warning:** the `P0`-conditional recommendation is to keep "
+                    "the incumbent, but the full-policy bound favors the candidate. "
+                    "The reject margin dominates; do not act on the `P0` "
+                    "recommendation alone."
+                )
+                L.append("")
+            elif comp["decision"] == "prefer candidate" and full_decision.startswith(
+                "incumbent cheaper"
+            ):
+                L.append(
+                    "> **Warning:** the `P0`-conditional recommendation favors the "
+                    "candidate, but the full-policy bound favors the incumbent. "
+                    "The reject margin dominates; do not act on the `P0` "
+                    "recommendation alone."
+                )
+                L.append("")
+            elif comp["decision"] in {"prefer candidate", "keep incumbent"} and (
+                full_decision == "depends on the reject margin"
+            ):
+                L.append(
+                    "> **Warning:** the `P0` recommendation is directional, but the "
+                    "full-policy direction is not identified. Do not present it as "
+                    "a full-policy decision."
+                )
+                L.append("")
         L.append(
             "Negative difference favors the candidate. The comparison is "
             "`P0`-conditional, uses the same observation model, and ignores "
             "nuisance-estimation uncertainty; it is not a production decision on "
-            "its own."
+            "its own. §4.1 reports whether the direction survives the unobserved "
+            "reject margin."
         )
         power = comp.get("power", {})
         if power:
@@ -877,6 +968,42 @@ def write_memo(
             f"- **Label delay (observed):** median {d['label_delay_days']['median']:.1f} days, "
             f"p90 {d['label_delay_days']['p90']:.1f} days."
         )
+    if "segment_diagnostics" in d:
+        L.append("")
+        L.append("### 3.1 Segment diagnostic (observational)")
+        L.append("")
+        L.append(
+            "| Segment | n | Incumbent A/R/J | Candidate reject | Candidate change | Observed fraud | Candidate false-reject (observed legit) |"
+        )
+        L.append("|---|---:|---|---:|---:|---:|---:|")
+        for name, seg in d["segment_diagnostics"].items():
+            if seg.get("suppressed"):
+                L.append(
+                    f"| `{name}` | {seg['n']:,} | suppressed | suppressed | "
+                    "suppressed | suppressed | suppressed |"
+                )
+                continue
+            fraud = seg.get("observed_fraud_rate")
+            false_rej = seg.get("candidate_false_reject_share")
+            prefix = (
+                f"| `{name}` | {seg['n']:,} | "
+                f"{seg['incumbent_approve']:,}/{seg['incumbent_review']:,}/"
+                f"{seg['incumbent_reject']:,} | "
+                f"{seg['candidate_reject_share']:.1%} | "
+                f"{seg['candidate_change_share']:.1%} | "
+            )
+            if fraud is None or false_rej is None:
+                L.append(prefix + "n/a | n/a |")
+            else:
+                L.append(prefix + f"{fraud:.1%} | {false_rej:.1%} |")
+        L.append("")
+        L.append(
+            "Small segments (<50 rows) are suppressed. The rates are "
+            "**descriptive**, not a fairness certification: logging-rejected "
+            "applicants have no outcome, and the observed false-reject share is "
+            "conditioned on the rows that were observed. Use this to decide "
+            "whether a full segment audit is needed, not to clear the policy."
+        )
     L.append("")
     L.append("## 4. Reject-margin bounds")
     L.append("")
@@ -897,6 +1024,115 @@ def write_memo(
         "coverage. If the reject margin is material and unobserved, report the "
         "bounds, not a point estimate."
     )
+    L.append("")
+    full = result.comparison.get("full_policy", {})
+    if full and not result.identification.passed:
+        L.append("### 4.1 Full-policy decision (candidate vs incumbent)")
+        L.append("")
+        L.append(
+            "**Not identified.** The `P0` identification gate failed; the "
+            "full-policy bound is diagnostic only and is not used for a decision."
+        )
+        full = {}
+    if full:
+        L.append("### 4.1 Full-policy decision (candidate vs incumbent)")
+        L.append("")
+        n_rej = int(full.get("n_rejected", 0))
+        if n_rej == 0:
+            L.append(
+                "There are no logging-rejected rows in this log; the full-policy "
+                "decision is the `P0` decision."
+            )
+        elif not np.isfinite(full.get("full_difference_lower", float("nan"))):
+            L.append(
+                "The full-policy difference is not identified because the `P0` "
+                "difference is not identified."
+            )
+        else:
+            lower = full["full_difference_lower"]
+            upper = full["full_difference_upper"]
+            L.append(
+                f"- **Logging-rejected rows:** {n_rej:,} "
+                f"({full['reject_share']:.1%} of the log)."
+            )
+            L.append(
+                f"- **Full-policy difference (candidate − incumbent):** "
+                f"[{_fmt(lower)}, {_fmt(upper)}] per application."
+            )
+            decision = str(full.get("decision", "not identified"))
+            if decision.startswith("candidate cheaper for any"):
+                reading = (
+                    "The candidate is cheaper even if every rejected outcome is "
+                    "adversarial. The `P0` recommendation is robust to the reject "
+                    "margin."
+                )
+            elif decision.startswith("incumbent cheaper for any"):
+                reading = (
+                    "The incumbent is cheaper even under the most favorable "
+                    "rejected outcomes. The `P0` recommendation does **not** "
+                    "survive the reject margin."
+                )
+            elif decision == "P0 inconclusive":
+                reading = (
+                    "The full-policy interval includes zero because the `P0` "
+                    "estimate is uncertain; the reject margin does not flip the "
+                    "sign at the `P0` point estimate. Collect more `P0` labels "
+                    "or report an inconclusive decision."
+                )
+            else:
+                reading = (
+                    "The direction depends on the unobserved reject margin. The "
+                    "`P0` recommendation alone is not a full-policy decision."
+                )
+            L.append(f"- **Interpretation:** {reading}")
+            p_star = full.get("breakeven_reject_fraud_rate", float("nan"))
+            if np.isfinite(p_star):
+                slope = (
+                    full["reject_difference_if_fraud"]
+                    - full["reject_difference_if_legit"]
+                )
+                if 0.0 < p_star < 1.0:
+                    side = "below" if slope > 0 else "above"
+                    L.append(
+                        f"- **Break-even:** under a common fraud rate `p` among "
+                        f"logging-rejected rows, the candidate is cheaper when "
+                        f"`p` is **{side} {p_star:.1%}**. This is a sensitivity "
+                        "threshold, not an estimate."
+                    )
+                    lo = full.get("breakeven_low", float("nan"))
+                    hi = full.get("breakeven_high", float("nan"))
+                    if np.isfinite(lo) and np.isfinite(hi):
+                        L.append(
+                            f"- **Break-even interval from the `P0` 95% "
+                            f"interval:** [{lo:.1%}, {hi:.1%}]."
+                        )
+                else:
+                    L.append(
+                        "- **Break-even:** the homogeneous-p threshold lies "
+                        "outside `[0, 1]`; the reject margin still leaves the "
+                        "direction unidentified."
+                    )
+            ref_review = d.get("review_fraud_rate_observed", float("nan"))
+            ref_approved = d.get("approved_fraud_rate_observed", float("nan"))
+            if np.isfinite(ref_review) and np.isfinite(ref_approved):
+                suffix = (
+                    "the break-even is a threshold for the risk team to judge, "
+                    "not a prior."
+                    if np.isfinite(p_star) and 0.0 < p_star < 1.0
+                    else "they are not a prior for the rejected population."
+                )
+                L.append(
+                    f"- **Reference rates:** observed fraud is {ref_review:.2%} "
+                    f"among reviewed applications and {ref_approved:.2%} among "
+                    "observed approved applications. Rejected applicants are not "
+                    f"a random sample of either; {suffix}"
+                )
+            L.append(
+                "- **Method:** per-row worst/best case over the two possible "
+                "outcomes of each rejected application. The sharp bound needs no "
+                "assumption about the rejected fraud rate; the break-even adds a "
+                "common-rate assumption for interpretation."
+            )
     L.append("")
     L.append("## 5. Audit recommendation")
     L.append("")
@@ -950,14 +1186,36 @@ def write_memo(
             "| `P0`-conditional policy value | **Not identified** | see §2 reasons |"
         )
     L.append(
-        "| Full-policy value including logging-rejected rows | **Not identified** | bounds only; see §5 |"
+        "| Full-policy value including logging-rejected rows | **Not identified** | bounds only; see §4 |"
     )
+    if full:
+        full_decision = str(full.get("decision", "not identified"))
+        if full_decision.endswith("for any reject outcome"):
+            full_status = "Derived (direction robust to the reject margin)"
+        elif full_decision == "depends on the reject margin":
+            full_status = "Derived (depends on the reject margin)"
+        elif full_decision == "P0 inconclusive":
+            full_status = "Derived (P0 inconclusive)"
+        elif full_decision in {"candidate cheaper", "incumbent cheaper"}:
+            full_status = f"Derived ({full_decision})"
+        elif full_decision == "inconclusive":
+            full_status = "Derived (inconclusive)"
+        else:
+            full_status = "Derived (not identified)"
+        L.append(
+            f"| Full-policy difference (candidate − incumbent) | {full_status} | §4.1 |"
+        )
     L.append(
         f"| Propensities are `{d['propensity_source']}` | Assumed | log's audit/observation design |"
     )
     L.append("| Reject margin is point-identified | **Not claimed** | bounds only |")
+    if "segment_diagnostics" in d:
+        L.append(
+            "| Segment diagnostic is a fairness certification | **Not claimed** | "
+            "descriptive only; see §3.1 |"
+        )
     L.append(
-        "| The candidate is better than the incumbent | **Not claimed** | no head-to-head experiment; this is a value estimate |"
+        "| The candidate is better in production | **Not claimed** | no head-to-head experiment; this is a value estimate |"
     )
     L.append("")
     L.append("## 7. What would change the estimate")

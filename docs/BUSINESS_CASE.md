@@ -68,30 +68,88 @@ p_wrong * L  >  C
 
 The measured evidence says `p_wrong` is not small when the policies are close:
 the naive rule picked the true best policy in **0%** of replications in 11 of 12
-cells. The pilot reduces `p_wrong` by replacing the naive comparison with an
-identified one.
+observation-rate cells. But the ranking is cost-dependent: at `frej_050` the
+naive rule is **100%** and DR **58%**. The pilot reduces `p_wrong` only if it
+improves the ranking on the institution's cost matrix.
 
-### Illustrative arithmetic (not a claim)
+### Benchmark-consistent arithmetic (not a forecast)
 
-The following is a template, not a result. Substitute the institution's own
-numbers.
+The following uses the project's committed main-scenario numbers, scaled to
+1,000,000 applications. It is a **lower bound** on the pilot cost: it counts the
+audit labels, not analyst or governance time.
 
-| Input | Illustrative value | Source |
+| Input | Benchmark value | Source |
 |---|---|---|
-| Annual applications in scope | 1,000,000 | Institution |
-| Cost difference between the better and worse policy, per application | 0.001 cost units | Institution's cost matrix |
-| Annual loss from adopting the worse policy `L` | 1,000 cost units | Derived |
-| `p_wrong` under the naive rule | 0.5 (illustrative) | Conservative midpoint |
-| Expected loss avoided | 500 cost units | `p_wrong * L` |
-| Pilot cost `C` | 50 cost units | Institution estimate |
+| Annual applications | 1,000,000 | Illustrative scale |
+| Cost difference per application | 0.000333 | `reports/pilot.json`, better model vs incumbent, main |
+| Annual loss from the worse policy `L` | 333 | Derived |
+| `p_wrong` under the naive rule | 1.0 (main) / 0.5 (illustrative) | `reports/pilot.json`; midpoint |
+| `p_wrong` after the pilot (DR P(best) 64–72%) | 0.28–0.36 | `reports/pilot.json` |
+| Audit cost `C` (1% of approved at `review_cost=0.02`) | 193 | 0.02 × 1% × 1,000,000 |
+| Value of the pilot: `(p_wrong_naive − p_wrong_pilot) × L − C` | **20–47 / −120** | Derived |
 
-In this template the pilot is worth running by a factor of ten. The factor is
-driven by `L` and `p_wrong`; both must be supplied by the institution. Do not
-quote the illustrative row as evidence.
+At the benchmark's main-scenario gap, the pilot is worth running only if (a) the
+naive rule is likely to pick the wrong policy and (b) the residual misranking
+after the pilot is small. With `p_wrong_naive=0.5` and a 28–36% residual, the net
+is **negative**. The "factor of ten" is not a benchmark result; it was a template
+with a much larger `L` and a much smaller `C`. Do not quote it.
+
+### 4.1 What the benchmark implies for `p_wrong`
+
+The pilot's naive rule selected the true best policy in **0%** of replications in
+11 of 12 observation-rate cells; at the easiest cell it was **52%**. That does
+not mean a bank's `p_wrong` is 1.0: the benchmark's top two policies are
+deliberately close. It does mean **0.5 is not a conservative default**. Use a
+range and show the break-even:
+
+`p_wrong * L > C` is equivalent to `L / C > 1 / p_wrong`.
+
+| `p_wrong` | Break-even `L / C` | Reading |
+|---:|---:|---|
+| 0.25 | 4.0 | the pilot pays only if the annual loss from the wrong policy is more than 4× the pilot cost |
+| 0.50 | 2.0 | the illustrative template |
+| 0.75 | 1.33 | the pilot pays if the wrong-policy loss is at least 1.33× the pilot cost |
+| 1.00 | 1.0 | the pilot pays if the wrong-policy loss exceeds the pilot cost |
+
+The measured 0% naive selection rate is a warning about close policy comparisons,
+not a claim that every bank is at 1.0. The ranking is cost-dependent: at
+`frej_050` (false-reject cost 0.50), the naive rule selects the true best policy
+**100%** of the time while DR selects it **58%**. The institution must estimate
+`p_wrong` from its own champion–challenger history and cost matrix, or accept the
+range.
+
+### 4.2 The audit cost can consume most of the value
+
+On the benchmark, the true `P0` gap between the better model and the incumbent is
+**0.000333** cost units per application. Over 227,491 applications that is
+**75.75** cost units. A 1% audit of 219,344 approved rows is 2,193 labels ×
+0.02 = **43.87** cost units, about **58%** of the gap. The residual misranking
+cost is **0.000093** per application (~21.16 units), leaving about **10.7** units
+of net value, or **0.000047** per application.
+
+This is benchmark arithmetic, not a bank forecast. The implication is real:
+**do not treat a 1% audit as free, and do not default to 1%.** Size the audit to
+the decision's effect size and compare its cost with the value of the policy
+switch. If the audit costs more than the decision is worth, bounds and a smaller
+validation sample may be the better buy.
+
+### 4.3 What the pilot must answer
+
+The pilot is not worth running if it cannot change the decision. Before the run,
+write down:
+
+1. the candidate-vs-incumbent decision and the cost matrix;
+2. the smallest effect that would change the decision;
+3. the audit size needed to distinguish that effect from zero;
+4. the audit cost as a share of the expected value;
+5. the stop rule if the gate fails or the interval is inconclusive.
 
 ## 5. What the pilot does not buy
 
 - It does not prove the candidate is better in production.
+- It does not identify the reject margin; the full-policy check bounds it and
+  reports a break-even, but the decision still depends on an unobserved fraud
+  rate among rejected applicants.
 - It does not replace a controlled live test for a high-stakes change.
 - It does not validate the cost matrix.
 - It does not remove the need for monitoring after adoption.

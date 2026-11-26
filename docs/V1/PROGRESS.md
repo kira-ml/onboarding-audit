@@ -1,8 +1,10 @@
 # V1 Progress Tracker
 
-**Status date:** 2026-11-21.
-**Current phase:** Phase 0 — credibility triage.
-**Release target:** v1.0.0, 2026-12-31.
+**Status date:** 2026-11-26.
+**Current phase:** Post-tag review. `v1.0.0` is a **review release** tagged
+2026-11-22. The public-release gate (two external readers) is open; see
+[`../RELEASE_STATUS.md`](../RELEASE_STATUS.md).
+**Release target:** public v1.0 after external review.
 
 ---
 
@@ -24,9 +26,9 @@
 | Decision layer | **Done** | P(candidate cheaper), expected regret, recommendation | None |
 | Case study | **Done** | 20k-row reproducible case; naive flips the ranking; report prefers the candidate | None |
 | Temporal stability | **Done** | Month 5 vs 6: naive 230%/255%, DR 0.89%/0.43%, naive P(best) 0%/0% | None |
-| CI/tests | **Done** | 92 tests pass; GitHub Actions green | None |
-| External review | **Not started** | Reviewer packet; 10-person shortlist | Calendar |
-| Release | **Not started** | v1.0.0 tag | Prior phases |
+| CI/tests | **Done** | 101 tests pass in the current tree (92 at v1.0.0); GitHub Actions green | None |
+| External review | **Not started** | Reviewer packet; 10-person shortlist; log in `../EXTERNAL_REVIEW.md` | Calendar |
+| Release | **Review tag** | v1.0.0 tagged 2026-11-22; public-release gate open | External review |
 
 ## 2. Milestones
 
@@ -41,11 +43,12 @@
 
 ## 3. Next actions (top five)
 
-1. Record F5 in `pilot.json`/`pilot.md` and in the claim ledger.
-2. Update `CLAIMS.md` with the gate, the reproduced benchmark hash, and F5.
-3. Run the adversarial red-team audit (inversion and falsification) on V1.
-4. Fix or disclose every red-team finding; do not soften a gate to pass.
-5. Freeze the reviewer packet.
+1. Freeze the reviewer packet and send it to 10 targeted practitioners.
+2. Record every objection in `../EXTERNAL_REVIEW.md`; do not soften a finding.
+3. Fix or disclose every critical/high objection; update `CLAIMS.md` first.
+4. Do not add a new estimator or simulation scenario before the external review.
+5. Release the full-policy decision check as v1.0.1 or v1.1, not silently into
+   the v1.0.0 tag.
 
 ## 4. Blockers
 

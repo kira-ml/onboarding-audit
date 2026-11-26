@@ -1,7 +1,12 @@
 # V1 — Credibility-First Release
 
-**Status:** Planning, 2026-11-21.
-**Target:** v1.0.0, 2026-12-31.
+> **Status update (2026-11-26):** `v1.0.0` was tagged on 2026-11-22 as a
+> **review release**. The public-release gate (two external readers) remains
+> open; see [`../RELEASE_STATUS.md`](../RELEASE_STATUS.md). This plan is the
+> planning record, not a claim that the gate was met.
+
+**Status:** Review release tagged; public-release gate open.
+**Target:** Public v1.0 release after external review.
 **Purpose:** Define the first release of `onboarding-audit` that a fintech risk
 team can review without the author in the room, and that a hostile reviewer
 cannot dismiss with an undocumented overclaim.
@@ -36,10 +41,13 @@ reproducible, and the package review-ready.
 > 538.5%**, and can reverse the policy ranking. DR with known propensities stays
 > within **1.89%** (coverage **84.5–96.0%**); at low approve-label rates its
 > P(select true best) is **64%**, so the correction is accurate but the ranking
-> is not guaranteed. Audit-only recovers the approved population under
-> outcome-dependent labels. The reject margin is a partial-identification
+> is not guaranteed. Audit-only recovers the **logging-approved** population
+> under outcome-dependent labels (not the candidate's approved population). The reject margin is a partial-identification
 > interval, not a point estimate or confidence interval. The tool refuses to
-> report a point estimate when identification fails.
+> report a point estimate when identification fails, and it bounds the
+> full-policy candidate-vs-incumbent difference when the reject margin is
+> unidentified. A `P0` recommendation that does not survive the reject margin is
+> flagged, not presented as a full-policy decision.
 
 **V1 does not claim:** a universal bias magnitude, a production estimate, a
 causal deployment effect, a point-identified full-population value, or a
@@ -133,12 +141,14 @@ V1 is done when:
 - [x] F5 is recorded as pass/fail; the narrow interval has no coverage claim.
 - [x] The report gate refuses or flags every adversarial unidentified log.
 - [x] The benchmark pipeline reproduces the scores byte-for-byte (SHA-256 match).
-- [x] `pytest` passes with 92 tests.
+- [x] `pytest` passes (92 at the v1.0.0 tag; 97 in the post-tag tree).
 - [x] CI is green on GitHub (run 44918141562).
 - [x] The model card, validation report, pilot protocol, and business case are
       complete.
-- [ ] Two external readers have reviewed the package (user-owned).
-- [ ] v1.0.0 is tagged and the README/claim ledger are consistent.
+- [ ] Two external readers have reviewed the package (user-owned; public-release
+      gate remains open).
+- [x] v1.0.0 review tag created 2026-11-22; the README/claim ledger are
+      consistent at the tag. The tag does not replace the external-review gate.
 - [x] No unresolved critical red-team finding (the independent findings are
       fixed or disclosed in `../AUDIT_REPORT.md`).
 

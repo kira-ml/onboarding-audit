@@ -71,16 +71,21 @@ canonical document is current, and a new collaborator can start from
 `docs/README.md` without reading the conversation history. **Met for the
 author; external readers remain.**
 
-## v1.0 — Credibility-first release (December 2026)
+## v1.0.0 — Review release (tagged 2026-11-22; public gate open)
 
-- [ ] Observation-rate sweep; bias claim conditional.
-- [ ] F5 pass/fail recorded; bounds language corrected.
-- [ ] Identification gate in the report; no "Measured" on unidentified logs.
-- [ ] Reproducible benchmark pipeline, or the Level 1 claim narrowed.
-- [ ] Model card, validation report, pilot protocol, business case.
-- [ ] Real-log adapter, one-command demo, CI.
-- [ ] Two external readers.
-- [ ] v1.0.0 tag.
+- [x] Observation-rate sweep; bias claim conditional.
+- [x] F5 pass/fail recorded; bounds language corrected.
+- [x] Identification gate in the report; no "Measured" on unidentified logs.
+- [x] Reproducible benchmark pipeline, or the Level 1 claim narrowed.
+- [x] Model card, validation report, pilot protocol, business case.
+- [x] Real-log adapter, one-command demo, CI.
+- [ ] Two external readers (the public-release gate).
+- [x] v1.0.0 review tag.
+
+> **2026-11-26:** the tag is a **review release**. The two external readers are
+> the open public-release gate; do not mark the v1.0 milestone complete until
+> they are recorded in [`EXTERNAL_REVIEW.md`](EXTERNAL_REVIEW.md). See
+> [`RELEASE_STATUS.md`](RELEASE_STATUS.md).
 
 **Exit criterion:** a risk team can review the package without the author, and a
 hostile reviewer cannot find an undocumented overclaim. The detailed plan is
@@ -123,6 +128,7 @@ limitations.
   started). **Met for the author.**
 - **2026-12-05:** V1 package freeze.
 - **2026-12-15:** V1 reviewer status and claim freeze.
-- **2026-12-31:** v1.0.0 credibility-first release.
+- **2026-12-31:** public v1.0 release gate (external review); the `v1.0.0`
+  review tag already exists.
 - **2027-02-15:** v1.1 paper draft gate.
 - **2027-03-15:** v2.0 publication and application package.

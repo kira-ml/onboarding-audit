@@ -1,7 +1,9 @@
 # Red-Team Audit — V1
 
 **Status:** V1 adversarial audit, 2026-11-21.
-**Subject:** `onboarding-audit` v0.2.1.
+**Subject:** `onboarding-audit` v0.2.1 — the audit that led to v1.0.0. The
+corrected claims are in the v1.0.0 [`CLAIMS.md`](CLAIMS.md); this report is a
+historical record.
 **Method:** Inversion and falsification: state the claim, try to disprove it, and
 report what survives.
 **Independence:** This is a **self-audit by the author**. It is weaker than an
@@ -86,6 +88,9 @@ the `P0` number as the policy value; the label is the only defense.
 
 The documented worst failure is outcome-dependent approved labels (DR bias up to
 1,627.90%). A log can pass every statistical check and still have that mechanism.
+**Historical note (2026-11-26):** the current ledger reports DR up to **1,737.0%**
+with estimated `e` and **1,301.5%** with oracle `e`; the 1,627.90% figure is from
+the audit run.
 Before this audit, the memo would say "Measured" without asking.
 
 **Fix applied:** the report now requires an observation-mechanism declaration.
@@ -131,6 +136,12 @@ normalized assumptions. The ranking is cost-sensitive.
 
 **Fix applied:** the derivation is documented. **Residual:** a real institution
 must supply its own matrix; the pilot cannot validate it.
+
+**Post-audit correction (2026-11-26):** the ranking is cost-dependent. At
+`frej_050` (false-reject cost 0.50), the naive rule selects the true best policy
+**100%** of the time while DR selects it **58%**; the main-scenario 0% is not
+universal. The point estimate remains biased at `frej_050` (+162.7% to +291.2%),
+so this is a ranking counterexample, not a case where naive is accurate.
 
 ### F7 — Reproducibility is one machine (medium, partially fixed)
 

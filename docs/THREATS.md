@@ -1,6 +1,7 @@
 # Threats to Validity
 
-**Status:** Canonical validity register for v1.0.0 (2026-11-22).
+**Status:** Canonical validity register for v1.0.0 (2026-11-22; updated
+2026-11-26).
 
 **Purpose:** The strongest reasons this project could be wrong, and the tests or
 statements that bound the damage. This is the inversion artifact; it should be
@@ -46,7 +47,7 @@ read before the results.
 
 | Threat | Why it matters | Mitigation | Residual risk |
 |---|---|---|---|
-| **Rank flips are noisy** | A single rep can flip by chance | 100 reps; Spearman/inversions/P(best)/cost of misranking; MC SE | The pilot's DR mean inversions is 0.29, concentrated in the close better-model/incumbent gap; P(select true best) is 72%, not 100% |
+| **Rank flips are noisy and cost-dependent** | A single rep can flip by chance; a different cost matrix can reverse which estimator ranks better | 100 reps; Spearman/inversions/P(best)/cost of misranking; MC SE; false-reject sweep | The pilot's DR mean inversions is 0.29 in the main scenario; P(select true best) is 72%, not 100%. At `frej_050`, naive P(best) is **100%** and DR **58%**, so the correction is not universally better at ranking. Report the cost curve. |
 | **Coverage is not nominal** | Influence-function SEs may understate uncertainty | Report coverage; treat the outcome model as fixed (stated); use MC SE | Coverage may be <95% in some scenarios; report it |
 | **Bounds are not CIs** | A reader may interpret the interval as a confidence interval | Label it a partial-identification interval; coverage of the true full value is a diagnostic, not a guarantee | The pilot's incumbent interval covers the true full value in only 34% of replications; the bounds can miss if the `P0` estimate is biased |
 | **H3 is strong** | Requiring <=5% max bias across all policies may fail | Report the failure honestly; narrow to bounds/diagnostic if needed | A weaker per-policy criterion would overclaim |

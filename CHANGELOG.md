@@ -2,6 +2,44 @@
 
 **Status:** Canonical version history.
 
+## [1.0.1] — 2026-11-26
+
+The decision-reliability review update. It does not close the public-release
+gate; it makes the product surface safe and adds the baseline and fairness
+evidence the V1 review required.
+
+### Added
+
+- `full_policy_difference`: bounds the candidate-vs-incumbent difference over
+  the unobserved reject margin and reports the break-even rejected-fraud rate;
+  memo §4.1, warnings, and seven regression tests.
+- `action_weighted`: the action-weighted Hájek baseline, plus
+  `configs/baseline_sensitivity.yaml` and `reports/baseline_sensitivity/`.
+  Main: naive 278.5% vs action-weighted 2.9%; `frej_050`: naive 291.2% vs
+  action-weighted 2.4%. The ranking effect survives (naive 100% vs 58% at
+  `frej_050`).
+- Observational segment diagnostic in the memo, with small-cell suppression and
+  a “not a fairness certification” caveat.
+- `docs/RELEASE_STATUS.md`, `docs/EXTERNAL_REVIEW.md`, `docs/REVIEWER_PACKET.md`,
+  `docs/STRATEGIC_REVIEW_v1.md`, and `docs/RELEASE_NOTES_v1.0.1.md`.
+
+### Changed
+
+- The ranking claim is cost-dependent: `frej_050` naive P(best) is **100%** and
+  DR **58%**; the main-scenario 0% is not universal.
+- The audit-only target is qualified as the **logging-approved** population.
+- The business case uses benchmark-consistent arithmetic instead of a
+  factor-of-ten template.
+- The case study is labeled as a synthetic **oracle** candidate.
+
+### Fixed
+
+- Full-policy attribution: a `P0` zero-crossing is no longer blamed on the
+  reject margin when the reject margin cannot flip the sign at the `P0` point
+  estimate.
+- §4.1 is suppressed when the identification gate fails.
+- Documentation counts/status; paper data-split and nuisance-model language.
+
 ## [1.0.0] — 2026-11-22
 
 The V1 review release. A credibility-first release: the claim is conditional and
@@ -15,8 +53,8 @@ published with the findings that changed the claims.
 - Propensity calibration diagnostic: observed/expected ratio, refusal when the
   observed count exceeds what the stated `e` allows, and a flag below 0.5.
 - Monte Carlo bounds on every headline bias; Wilson intervals on the sweep.
-- `scripts/check_claims.py`: 35 headline numbers recomputed from the committed
-  JSON; runs in CI.
+- `scripts/check_claims.py`: **35 headline numbers at the v1.0.0 tag** (43 in
+  the current tree) recomputed from the committed JSON; runs in CI.
 - `docs/AUDIT_REPORT.md`, `docs/MODEL_CARD.md`, `docs/VALIDATION_REPORT.md`,
   `docs/PILOT_PROTOCOL.md`, `docs/BUSINESS_CASE.md`,
   `docs/BENCHMARK_PROVENANCE.md`, `docs/TECHNICAL_NOTE.md`, `docs/CASE_STUDY.md`.

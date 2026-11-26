@@ -1,6 +1,6 @@
 # Credibility and Adoption Plan
 
-**Status:** Strategy document for v0.2.1 (2026-11-20).
+**Status:** Strategy document for v1.0.0 (2026-11-22; updated 2026-11-26).
 **Purpose:** Define what it would take for a fintech risk team to actually run
 this project, and for a hostile reviewer to engage with it rather than dismiss
 it. This is a plan, not a claim that the project is already there.

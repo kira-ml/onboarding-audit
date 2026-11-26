@@ -101,7 +101,10 @@ configuration.
 | `p_fraud_rf` | float64 | aux | V2 random-forest score; diagnostic, not used in the main pilot |
 
 All three scores are pre-decision. They were trained on months 0–2 and validated
-on months 3–4; the evaluation window is months 5–6. No evaluation labels were
+on months 3–4 but are not used for hyperparameter selection in the reproduction
+script; the evaluation window is months 5–6. The nuisance outcome model is
+cross-fitted on the evaluation window's observed labels; the candidate policy's
+labels are not used to fit the policy scores. No evaluation labels were
 used to fit them.
 
 ## 4. Feature set used by the outcome model

@@ -35,7 +35,10 @@ the full 39-column parquet, not only the score columns.
 | Test | 5, 6 | 227,491 |
 | Label delay | 1 month | — |
 
-The split is chronological. The test window is never used for fitting.
+The split is chronological. The policy scores are fit on the train window; the
+validation window is held out but not used for hyperparameter selection in the
+reproduction script. The test window's labels are used only for the cross-fitted
+nuisance outcome model in the evaluation, not for the policy scores.
 
 ## 3. Model parameters
 

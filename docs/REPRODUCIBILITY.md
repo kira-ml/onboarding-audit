@@ -44,7 +44,7 @@ python -c "import onboarding_audit; print(onboarding_audit.__version__)"
 pytest -q
 ```
 
-Expected: the version string and **92 passed**.
+Expected: the version string and **101 passed** in the current tree (92 at the v1.0.0 tag).
 
 ## 3. Data
 
@@ -127,6 +127,17 @@ python scripts/analyze_sweep.py
 
 This runs the 12-cell sweep (50 replications per cell) and writes the committed
 summary in `reports/obs_sweep/`.
+
+### 4.4.1 Action-weighted baseline (post-hoc)
+
+```bash
+onboarding-audit pilot --config configs/baseline_sensitivity.yaml --out reports/baseline_sensitivity
+```
+
+This runs the main and `frej_050` scenarios (50 reps) with the
+`action_weighted` estimator. It writes `reports/baseline_sensitivity/pilot.json`,
+`pilot.md`, and `pilot_rows.parquet` (local). It is a post-hoc sensitivity, not a
+pre-registered headline.
 
 ### 4.5 Propensity and covariate sensitivity
 

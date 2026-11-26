@@ -3,8 +3,9 @@
 **Project:** Onboarding Audit — audit-ready evaluation of account-opening fraud
 policies under selective and delayed labels.
 **Author:** Ken Ira Lacson Talingting.
-**Status:** v0.2.1 pilot; results from the pre-registered pilot, the propensity
-sensitivity, and the covariate sensitivity.
+**Status:** v1.0.0 review release; external review pending. Results from the
+pre-registered pilot, the observation-rate sweep, the propensity sensitivity, and
+the covariate sensitivity.
 
 ---
 
@@ -49,7 +50,9 @@ new policy is estimated on the subset the incumbent policy produced.
   for `e>=0.05`, **9.6%** at `e=0.01`). At the lowest report probability,
   DR's P(select true best) falls to **64%**.
 - **Rank inversion:** mean **1.00** pairwise inversion for the naive estimate;
-  P(select true best) **0%**.
+  P(select true best) **0%** in the main scenario. At `frej_050` (false-reject
+  cost 0.50), naive P(best) is **100%** and DR **58%**: the ranking is
+  cost-dependent, not a universal correction.
 - **Best corrected estimator: DR**, max |relative bias| **0.94%**, mean 95% CI
   coverage **96.0%**; IPW max **1.18%**, coverage **94.5%**.
 - **Audit-only:** unbiased but high variance at 1% — max |relative bias|
@@ -57,7 +60,8 @@ new policy is estimated on the subset the incumbent policy produced.
   **1.82% / 86.5% / 2,546**.
 - **Audit value:** modest in the main scenario (DR RMSE **0.001159 → 0.001068**
   from 0% to 2%; ESS **6,610 → 9,126**), but **the only approximately unbiased
-  option when approved labels are outcome-dependent**: audit-only bias
+  option for the logging-approved population when approved labels are
+  outcome-dependent**: audit-only bias
   **-2.37% to -1.98%**, while action-only IPW is **+43.9% to +368.3%** and DR
   **+596.4% to +1301.5%**.
 - **Reject-margin bounds:** main-scenario interval **0.009942**; **0.203** in
@@ -65,10 +69,15 @@ new policy is estimated on the subset the incumbent policy produced.
   interval covers the true full value in only **34%** of replications. The narrow
   interval is not a confidence interval; the widened interval passes F5 in
   **77/88** cells but is ~4× wider.
+- **Full-policy decision check:** the report bounds the candidate-vs-incumbent
+  difference over the reject margin and reports the break-even rejected-fraud
+  rate. A directional `P0` recommendation that does not survive the reject margin
+  is flagged, not presented as a full-policy decision.
 - **Case study:** a 20,000-row synthetic log where the naive backtest says the
-  candidate is **6.3% worse** and the truth is **12.4% better**. The report
-  returns **P(candidate cheaper) = 0.984** and recommends the candidate. Fully
-  reproducible; see `CASE_STUDY.md`.
+  candidate is **6.3% worse** and the truth is **12.4% better**. The candidate is
+  a synthetic oracle, not a trained model; the case isolates the evaluation bias.
+  The report returns **P(candidate cheaper) = 0.984** and recommends the
+  candidate. Fully reproducible; see `CASE_STUDY.md`.
 - **Propensity sensitivity:** with estimated action-level `e`, DR stays within
   **1.43%** with **93.5%** coverage; IPW **2.92% / 92.0%**. Under
   outcome-dependent labels with estimated `e`, only audit-only is honest
@@ -79,9 +88,11 @@ new policy is estimated on the subset the incumbent policy produced.
   45-day delay). Coverage is **89–91.5%**, below nominal 95%, because the
   weights are heavy-tailed. See `RESULTS.md`.
 
-**What this means:** the naive evaluation is not a small approximation; it would
-reject the better policy. Doubly robust estimation recovers the identified value
-and the true ranking, but the reject margin still requires bounds or a
+**What this means:** the naive evaluation is not a small approximation; in the
+main scenario it would reject the better policy. But the ranking is
+cost-dependent: at a high false-reject cost the naive rule can rank correctly
+while DR does not. Doubly robust estimation recovers the identified value more
+reliably than the ranking, and the reject margin still requires bounds or a
 controlled approval design. The audit is a validation and outcome-dependent-label
 tool, not a universal bias fix. When `e` is estimated from a log, use DR rather
 than IPW. When the observation rate varies with application features, use the
@@ -95,6 +106,8 @@ covariate propensity model; DR alone is not enough.
 - An **audit design**: random post-hoc verification of approved applications and
   shadow scoring; no random approvals/rejections.
 - An **audit-ready memo** separating measured, assumed, and unverifiable claims.
+- A **full-policy decision check** with reject-margin bounds and a break-even
+  rejected-fraud rate.
 - **Action-level and covariate propensity models** with weight/ESS diagnostics.
 - A **public benchmark** and reproducible pilot.
 

@@ -1,6 +1,7 @@
 # Methods
 
-**Status:** Canonical methods reference for v1.0.0 (2026-11-22).
+**Status:** Canonical methods reference for v1.0.0 (2026-11-22; updated
+2026-11-26).
 **Purpose:** State the estimand, identification assumptions, estimators,
 simulation design, and metrics in one place. The pre-registered protocol is
 [`PILOT_SPEC.md`](PILOT_SPEC.md); the measured findings are in
@@ -37,14 +38,16 @@ P0 = { i : a_incumbent(i) != reject }
 approved or reviewed. It is the part of the population for which the log can
 identify an outcome, under the assumptions in §3.
 
-### 2.2 Secondary: approved population
+### 2.2 Secondary: logging-approved population
 
 ```
 V_approved(pi) = E[ C(pi(X), Y) | a_incumbent(i) = approve ]
 ```
 
-This is the target of the audit-only estimator. It is not the primary estimand
-because it excludes the review band.
+This is the target of the audit-only estimator. It is the **logging-approved**
+population, not the candidate's approved population; a candidate that changes who
+is approved is outside this target. It is not the primary estimand because it
+excludes the review band.
 
 ### 2.3 Secondary: full population bounds
 
@@ -216,6 +219,14 @@ V_Hajek = sum_i w_i C_i / sum_i w_i
 
 Self-normalized; usually more stable, at the cost of a small ratio bias.
 
+### 6.3a Action-weighted baseline
+
+`action_weighted` is the Hájek estimator with the observation rate estimated
+within each logged action from the same draw. It is the realistic
+incumbent-backtest comparator to the unweighted naive mean: it fixes the label
+mix but does not use per-row propensities. It is a pilot baseline, not a product
+estimator; it is reported separately from IPW/DR.
+
 ### 6.4 Doubly robust
 
 Fit an outcome model `mu_i = E[C(pi(X_i), Y_i) | X_i]` on the observed rows, then:
@@ -239,8 +250,9 @@ V_audit = sum_{i in audit & resolved_approve} C_i / p_resolved_approve_i
           / sum_{i in audit & resolved_approve} 1 / p_resolved_approve_i
 ```
 
-Unbiased for the approved population under random audit and correct resolution.
-It does not target `P0` and is reported separately.
+Unbiased for the **logging-approved** population under random audit and correct
+resolution. It does not target `P0` or the candidate's approved population, and
+is reported separately.
 
 ### 6.6 Reject-margin bounds
 
@@ -262,7 +274,53 @@ They are not confidence intervals. The incumbent's narrow interval can miss the
 true full value because the `P0` estimate itself is noisy and because the
 unobserved cost can fall outside the assumed range.
 
-### 6.7 Standard errors and coverage
+### 6.7 Full-policy difference and break-even
+
+The bounds in §6.6 bound a single policy's full value. A decision needs the
+**difference** between two policies on the same applications. For each
+logging-rejected row, evaluate the candidate and incumbent costs at `Y=0` and
+`Y=1`; the per-row difference has two possible values. The sharp bound on the
+reject-margin mean difference is the mean of the per-row minima and maxima:
+
+```
+D_full in [ (n_P0/n)(D_P0 - 1.96 se) + (n_rej/n) mean_i min(d_i0, d_i1),
+            (n_P0/n)(D_P0 + 1.96 se) + (n_rej/n) mean_i max(d_i0, d_i1) ]
+```
+
+This is sharper than differencing two separate policy bounds because the same
+application's outcome is shared by both policies. It is still a partial
+identification interval: it says whether the direction survives **any** reject
+outcome, not what the reject outcome is.
+
+The report also computes a break-even fraud rate. If the rejected rows share a
+fraud rate `p`, the full difference is linear in `p`:
+
+```
+D_full(p) = (n_P0/n) D_P0 + (n_rej/n)[d_0 + p (d_1 - d_0)]
+```
+
+Solving `D_full(p) = 0` gives `p*`. If `p*` is inside `[0, 1]`, the decision
+depends on the unobserved reject margin; the memo states whether the candidate
+is cheaper below or above `p*`. `p*` is a sensitivity threshold, not an estimate,
+and the common-fraud-rate assumption is stated in the memo.
+
+The decision labels are:
+
+| Label | Meaning |
+|---|---|
+| **candidate cheaper for any reject outcome** | the full bound excludes zero below |
+| **incumbent cheaper for any reject outcome** | the full bound excludes zero above |
+| **depends on the reject margin** | the reject margin can flip the sign at the `P0` point estimate |
+| **P0 inconclusive** | the `P0` interval includes zero; the reject margin moves the magnitude but does not flip the sign at the `P0` point estimate |
+| **not identified** | the `P0` difference or its standard error is unavailable |
+
+With non-negative costs and the approve/review/reject cost model, the average
+slope is non-negative, so the candidate is cheaper **below** `p*`; the general
+sign logic is kept for safety, but the "above" direction is not reachable in this
+model. The direction claim also inherits the `P0` interval's coverage: it can be
+wrong about 5% of the time even when the reject bound is sharp.
+
+### 6.8 Standard errors and coverage
 
 The estimators use influence-function standard errors:
 
@@ -276,7 +334,7 @@ replications whose 95% interval `value +/- 1.96 se` contains the true target.
 Coverage is a diagnostic, not a guarantee: heavy-tailed weights can undercover
 even when the point estimate is close.
 
-### 6.8 Propensity estimation
+### 6.9 Propensity estimation
 
 The pilot compares four modes:
 
@@ -292,7 +350,7 @@ cross-fitting. Reject rows have `e = 0`. If an action has too few rows or one
 class, the action mean is used. The model is a diagnostic correction, not a
 claim that the observation mechanism is logistic.
 
-### 6.9 Double robustness
+### 6.10 Double robustness
 
 The DR estimator is consistent if either the propensity model or the outcome
 model is correct:

@@ -109,21 +109,14 @@ the authors, but the final metadata must be checked before submission.
 
 The problem brief cites BSP/industry figures (76% social-engineering share,
 821,279 mule STRs, 4M GCash accounts blocked, 142% synthetic-identity growth,
-70,112 → >120,000 complaints). The primary sources and the evidence tables are in
-the archived origin repository:
+70,112 → >120,000 complaints). The primary sources and the evidence tables are
+in the archived origin repository, which is **not part of this public release**.
+They are not reproduced here.
 
-```
-D:\delayed-label-fraud-decisioning\research_notes\
-  Philippine fintech fraud problem evidence\
-    regulatory_evidence.md
-    operations_evidence.md
-    loss_landscape.md
-    vendor_capabilities.md
-    literature_review.md
-```
-
-For a public release, replace the local path with a public evidence appendix or
-a list of URLs. Do not cite the local path in the paper.
+Treat those figures as **motivational context**, not as reproducible evidence,
+until the evidence appendix is published with URLs. The regulatory sources in §9
+are public and verified; the industry figures need the same treatment before a
+public release. Do not cite the private path in the paper.
 
 ## 11. How to cite this project
 

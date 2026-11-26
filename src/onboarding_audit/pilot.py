@@ -16,6 +16,7 @@ from . import __version__
 from .config import Costs, PilotConfig, PolicySpec, Scenario, load_config
 from .data import EvalData, load_eval_data
 from .estimators import (
+    action_weighted,
     audit_only,
     dr,
     fit_outcome_model,
@@ -208,6 +209,9 @@ def run_scenario(
             cost = costs_by_policy[policy.spec.name]
             estimates = {
                 "naive": naive(cost, draw.observed),
+                "action_weighted": action_weighted(
+                    cost, draw.observed, logging.actions, in_pop
+                ),
                 "ipw_ht": ipw_ht(cost, draw.observed, e_est, in_pop),
                 "ipw_hajek": ipw_hajek(cost, draw.observed, e_est, in_pop),
                 "dr": dr(

@@ -4,6 +4,12 @@
 **Tag:** `v1.0.0`.
 **Nature:** a review-ready measurement layer, not a production system.
 
+> **Post-release note (2026-11-26):** the ranking result is cost-dependent. In
+> the main scenario naive P(best) is 0%, but at `frej_050` it is **100%** while
+> DR is **58%**; see `RESULTS.md` §5 and `STRATEGIC_REVIEW_v1.md` C1. The point
+> estimate remains biased at `frej_050`; this is a ranking counterexample, not a
+> case where naive is accurate.
+
 ---
 
 ## 1. What this release is

@@ -62,6 +62,7 @@ def _synthetic_log(n=2500, seed=7, with_propensity=True, audit=True):
             "credit_risk_score": rng.normal(100, 20, n),
             "p_fraud": score,
             "p_fraud_lgbm": np.clip(score + rng.normal(0, 0.05, n), 0, 1),
+            "segment": rng.choice(["A", "B", "C"], n, p=[0.6, 0.3, 0.1]),
         }
     )
     if with_propensity:
@@ -198,8 +199,29 @@ def test_report_withholds_point_estimate_on_small_log(tmp_path):
     assert "Point estimates are withheld" in memo
     assert "| `P0`-conditional policy value is estimated | Measured |" not in memo
     assert "Full-policy value including logging-rejected rows" in memo
+    assert "**Full-policy decision (including rejects)**" not in memo
+    assert "Derived (direction" not in memo
+    assert "full-policy bound is diagnostic only" in memo
     report = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
     assert "policy_value_target_5pct" not in report["result"]["audit"]
+
+
+def test_report_includes_segment_diagnostic_and_suppresses_small_cells(tmp_path):
+    df, candidate, _, _, _ = _synthetic_log(n=600)
+    df.loc[:4, "segment"] = "rare"
+    log_path = tmp_path / "log.csv"
+    cand_path = tmp_path / "candidate.csv"
+    df.to_csv(log_path, index=False)
+    candidate.to_csv(cand_path, index=False)
+    result = run_report(log_path, cand_path, CONFIG, tmp_path / "out", capacity=0.10)
+    seg = result.diagnostics["segment_diagnostics"]
+    assert seg["rare"]["suppressed"] is True
+    assert "observed_fraud_rate" not in seg["rare"]
+    assert seg["A"]["suppressed"] is False
+    assert "observed_fraud_rate" in seg["A"]
+    memo = Path(result.memo_path).read_text(encoding="utf-8")
+    assert "Segment diagnostic (observational)" in memo
+    assert "not a fairness certification" in memo
 
 
 def test_covariate_propensity_model_varies_within_action():
@@ -260,6 +282,7 @@ def test_report_covariate_propensity_model_runs(tmp_path):
     memo = Path(result.memo_path).read_text(encoding="utf-8")
     assert "Propensity model" in memo
 
+
 def test_memo_reports_candidate_actions_on_rejected_rows(tmp_path):
     log = pd.read_csv(ROOT / "examples" / "demo_log.csv")
     cand = pd.read_csv(ROOT / "examples" / "demo_candidate.csv")
@@ -284,15 +307,14 @@ def test_memo_reports_candidate_actions_on_rejected_rows(tmp_path):
     report = json.loads(Path(result.report_path).read_text(encoding="utf-8"))
     assert report["result"]["diagnostics"]["candidate_approve_outside_p0"] == 1
 
+
 def test_audit_estimate_corrects_delay_cohort_bias():
     from onboarding_audit.report import _audit_estimate
 
     n = 1000
     cost = np.concatenate([np.ones(500), np.full(500, 3.0)])
     audit = np.ones(n, dtype=bool)
-    observed = np.concatenate(
-        [np.ones(500, dtype=bool), np.array([True, False] * 250)]
-    )
+    observed = np.concatenate([np.ones(500, dtype=bool), np.array([True, False] * 250)])
     followup = np.concatenate([np.full(500, 60.0), np.full(500, 5.0)])
     complete = _audit_estimate(cost, audit, observed)
     corrected = _audit_estimate(cost, audit, observed, followup=followup, n_bins=2)

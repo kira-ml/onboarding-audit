@@ -1,6 +1,6 @@
 # Onboarding Policy Change Memo — Template
 
-**Status:** Canonical memo template for v0.2.1 (2026-11-20).
+**Status:** Canonical memo template for v1.0.0 (2026-11-22; updated 2026-11-26).
 
 **Policy:** `[name / model version / threshold version]`
 **Prepared by:** `[decision strategy / analytics / model risk]`

@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Status:** Canonical documentation map for v1.0.0 (2026-11-22).
+**Status:** Canonical documentation map for v1.0.1 (2026-11-26).
 **Rule:** Every public number traces to a committed JSON or a cited primary
 source. Every public claim appears in [`CLAIMS.md`](CLAIMS.md). If two documents
 disagree, the precedence in §5 applies.
@@ -43,7 +43,10 @@ disagree, the precedence in §5 applies.
 | [`RESULTS.md`](RESULTS.md) | The consolidated measured findings and verdicts |
 | [`MODEL_CARD.md`](MODEL_CARD.md) | Intended use, estimand, assumptions, performance, limitations |
 | [`VALIDATION_REPORT.md`](VALIDATION_REPORT.md) | The V1 validation record: commands, results, gates, open items |
+| [`EXTERNAL_REVIEW.md`](EXTERNAL_REVIEW.md) | The external-review log and the gate that the tag does not replace |
+| [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md) | Cover note, shortlist template, agenda, and outreach tracker |
 | [`AUDIT_REPORT.md`](AUDIT_REPORT.md) | The adversarial red-team audit: gates, findings, verdict |
+| [`STRATEGIC_REVIEW_v1.md`](STRATEGIC_REVIEW_v1.md) | The V1 strategic review: constraint table, pre-mortem, falsification ledger, findings |
 | [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) | The partner-institution shadow-evaluation protocol |
 | [`BUSINESS_CASE.md`](BUSINESS_CASE.md) | The decision framework and break-even condition |
 | [`CLAIMS.md`](CLAIMS.md) | The claim ledger: what may be said, with evidence and status |
@@ -91,7 +94,9 @@ disagree, the precedence in §5 applies.
 | [`DECISION_MEMO_2026-11.md`](DECISION_MEMO_2026-11.md) | The Nov–Dec 2026 strategic decision: options, expected value, tail risk, recommendation |
 | [`ONE_PAGER.md`](ONE_PAGER.md) | The one-page reviewer brief |
 | [`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) | The pre-release claim, data, code, and docs checklist |
-| [`RELEASE_NOTES_v1.0.0.md`](RELEASE_NOTES_v1.0.0.md) | The release: what is in, what changed, how to verify |
+| [`RELEASE_NOTES_v1.0.1.md`](RELEASE_NOTES_v1.0.1.md) | The current review update: what is in, what changed, how to verify |
+| [`RELEASE_NOTES_v1.0.0.md`](RELEASE_NOTES_v1.0.0.md) | The historical v1.0.0 review release |
+| [`RELEASE_STATUS.md`](RELEASE_STATUS.md) | What is tagged, what is not, and the open public-release gate |
 | [`ROADMAP.md`](ROADMAP.md) | The milestones and review dates |
 | [`../paper/README.md`](../paper/README.md) | The paper workspace: IEEEtran draft and build instructions |
 | [`../paper/main.tex`](../paper/main.tex) | The IEEEtran conference manuscript |
@@ -136,6 +141,9 @@ These are outputs, not editable sources:
 | [`../reports/double_robustness.json`](../reports/double_robustness.json) | yes | `scripts/double_robustness.py` |
 | [`../reports/temporal_stability.json`](../reports/temporal_stability.json) | yes | `scripts/temporal_stability.py` |
 | [`../reports/temporal_stability.md`](../reports/temporal_stability.md) | yes | `scripts/temporal_stability.py` |
+| [`../reports/baseline_sensitivity/pilot.json`](../reports/baseline_sensitivity/pilot.json) | yes | `onboarding-audit pilot --config configs/baseline_sensitivity.yaml` |
+| [`../reports/baseline_sensitivity/pilot.md`](../reports/baseline_sensitivity/pilot.md) | yes | Same run; compact report |
+| `reports/baseline_sensitivity/pilot_rows.parquet` | no | Same run; row-level output |
 | [`../reports/propensity_sensitivity.md`](../reports/propensity_sensitivity.md) | yes | `onboarding-audit sensitivity` |
 | `reports/pilot_rows.parquet` | no | `onboarding-audit pilot` |
 | `reports/sample_report/` | no | `onboarding-audit report` |

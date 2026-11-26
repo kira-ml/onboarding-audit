@@ -2,7 +2,8 @@
 
 **Status:** Frozen before the first account-opening pilot run. The
 pre-registered sections are unchanged; post-run addenda are at the end.
-**Current:** v0.2.1 (2026-11-20).
+**Current:** v1.0.0 working tree (pre-registration recorded at v0.2.1,
+2026-11-20; updated 2026-11-26).
 **Date:** 2026-11-19.
 **Owner:** Ken Ira Lacson Talingting.
 **Purpose:** Test whether naive onboarding-policy evaluation is materially
@@ -77,7 +78,7 @@ value.
 | Label | `fraud_bool`; base rate 1.2576% |
 | Exposure | `amount_proxy = proposed_credit_limit` (credit-line exposure proxy) |
 | Scores | `p_fraud` (logistic regression, V2 incumbent) and `p_fraud_lgbm` (LightGBM) |
-| Score provenance | Trained on months 0–2, validated on 3–4; no evaluation labels used |
+| Score provenance | Trained on months 0–2 with fixed hyperparameters; months 3–4 held out but not used for selection in the reproduction script; the nuisance outcome model is cross-fitted on evaluation-window labels |
 | Features for the outcome model | scores + pre-decision numeric features + `log1p(amount)` + month |
 | Replication | FiFAR capacity layer in a follow-on; not in this pilot |
 

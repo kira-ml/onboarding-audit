@@ -1,6 +1,6 @@
 # Open Questions
 
-**Status:** Canonical research backlog for v0.2.1 (2026-11-20).
+**Status:** Canonical research backlog for v1.0.0 (2026-11-22; updated 2026-11-26).
 **Purpose:** Record what the project does **not** answer, why it matters, and how
 to resolve it. This is the source for the paper's future-work section and for
 the next round of experiments.

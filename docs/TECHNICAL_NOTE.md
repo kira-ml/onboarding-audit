@@ -120,6 +120,57 @@ The 11 widened-interval failures are exactly the cells where `v` itself is
 biased (outcome-dependent labels, action-level covariate misspecification,
 `delay_90`). Widening cannot repair a biased center.
 
+### 4.1 Full-policy difference and break-even
+
+For a decision between a candidate and the incumbent, bound the **difference**
+rather than differencing two separate policy bounds. For each rejected row `i`,
+the two potential costs under the candidate and the incumbent imply
+
+```
+d_i(0) = C(candidate, Y=0) - C(incumbent, Y=0)
+d_i(1) = C(candidate, Y=1) - C(incumbent, Y=1)
+```
+
+The same application's outcome is shared by both policies, so the mean
+reject-margin difference lies in
+
+```
+[mean_i min(d_i(0), d_i(1)), mean_i max(d_i(0), d_i(1))]
+```
+
+and the full difference lies in
+
+```
+[(n_P0/n)(D_P0 - 1.96 se) + (n_rej/n) mean min,
+ (n_P0/n)(D_P0 + 1.96 se) + (n_rej/n) mean max]
+```
+
+This is sharper than the difference of the two separate bounds in §4 because it
+does not allow the same application to be assigned a favorable outcome under one
+policy and an unfavorable outcome under the other. It is still a partial
+identification interval: it does not identify the reject margin.
+
+Under a common fraud rate `p` among rejected rows, the full difference is linear:
+
+```
+D_full(p) = (n_P0/n) D_P0 + (n_rej/n)[d_0 + p (d_1 - d_0)]
+```
+
+where `d_y = mean_i d_i(y)`. The break-even `p*` solves `D_full(p*) = 0`. If
+`p*` is inside `[0,1]`, the decision depends on the unobserved reject margin;
+the memo reports the direction and the threshold. `p*` is a sensitivity, not an
+estimate, and the common-rate assumption is stated.
+
+The decision labels are: **candidate/incumbent cheaper for any reject outcome**
+(the sharp bound excludes zero), **depends on the reject margin** (the reject
+margin can flip the sign at the `P0` point estimate), **P0 inconclusive** (the
+`P0` interval includes zero; the reject margin moves the magnitude but does not
+flip the sign at the point estimate), and **not identified** (the `P0` difference
+or its SE is unavailable). With non-negative costs in this model, the average
+slope is non-negative, so the candidate is cheaper **below** `p*`; the general
+sign logic is defensive. The direction claim inherits the `P0` interval's
+coverage and can be wrong about 5% of the time.
+
 ## 5. The identification gate
 
 | Check | Threshold | Rationale |

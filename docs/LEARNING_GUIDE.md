@@ -1,6 +1,6 @@
 # Learning Guide — How to Explain and Defend Onboarding Audit
 
-**Status:** Supporting learning document for v0.2.1 (2026-11-20).
+**Status:** Supporting learning document for v1.0.0 (2026-11-22; updated 2026-11-26).
 **Purpose:** A plain-English path to understanding the flagship project, so you
 can explain its value in a fintech interview, a portfolio review, or a
 risk-committee conversation.
@@ -239,9 +239,10 @@ answer must contain" bullets.
 
 **Q5. Why does the naive estimate overstate cost and flip the ranking?**
 - Good answer: the labeled sample is dominated by reviewed/rejected rows with
-  non-zero costs, and approved fraud is more likely to be labeled than approved
-  legitimate behavior. The naive mean is a different estimand; it can put the
-  incumbent ahead of the better model.
+  non-zero costs; in the main scenario the review band is overrepresented and
+  carries a cost floor. (Outcome-dependent approve labels are a separate stress
+  test, not the main mechanism.) The naive mean is a different estimand; in the
+  main scenario it can put the incumbent ahead of the better model.
 
 **Q6. Why is audit-only unbiased but high variance?**
 - Good answer: the audit is a random sample of approved applications, so its mean
@@ -433,7 +434,9 @@ audit-ready memo that separates measured, assumed, and unverifiable claims.
 
 The headline result: doubly robust estimation recovers the identified policy
 value within **0.94%** with **96%** coverage, while the naive estimate is off by
-more than 100% and would reject the better model. The audit is not a universal
+more than 100% and, in the main cost matrix, would reject the better model. The
+ranking is cost-dependent; at `frej_050` the naive rule ranks correctly while DR
+does not. The audit is not a universal
 fix: at a 5% approved-label base rate it mainly validates the approved margin,
 but it becomes the only approximately unbiased option when approved fraud is more
 likely to be labeled than approved legitimate accounts (with an interval that is
@@ -480,7 +483,8 @@ is rare and credible.
 
 The strongest interview story is not "I built a fraud model." It is:
 
-> "I found that the naive evaluation would reject the better policy. I built the
+> "I found that the naive evaluation would reject the better policy in the main
+> scenario, and that the ranking is cost-dependent. I built the
 > correction, the audit design, and the memo that make the comparison defensible.
 > Then I tested where the correction fails: estimated propensities, outcome-
 > dependent labels, and covariate-dependent observation. The result is a tool

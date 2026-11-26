@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
-RANKED_ESTIMATORS = ("naive", "ipw_ht", "ipw_hajek", "dr")
+RANKED_ESTIMATORS = ("naive", "action_weighted", "ipw_ht", "ipw_hajek", "dr")
 
 
 def pairwise_inversions(est: np.ndarray, true: np.ndarray) -> int:

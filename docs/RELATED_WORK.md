@@ -3,9 +3,9 @@
 **Status:** Canonical related-work map for v1.0.0 (2026-11-22).
 
 **Purpose:** Show what is established, what is adjacent, and what this project
-adds. The curated public bibliography is [`REFERENCES.md`](REFERENCES.md). The
-full annotated bibliography is in the archived origin repository:
-`D:\delayed-label-fraud-decisioning\research_notes\Philippine fintech fraud problem evidence\literature_review.md`.
+adds. The curated public bibliography is [`REFERENCES.md`](REFERENCES.md). The full
+annotated bibliography is in the archived origin repository, which is not part
+of this public release; the entries cited in the paper are in `REFERENCES.md`.
 
 ---
 

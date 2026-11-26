@@ -55,7 +55,8 @@ these facts.
 
 The current v1.0.0 is a strong **Level 1 reproducible research artifact**:
 
-- 92 tests, a schema, an audit design, a report/memo, 22 configured scenarios,
+- 101 tests in the current tree (92 at v1.0.0), a schema, an audit design, a
+  report/memo, 22 configured scenarios,
   and 11 sensitivity scenarios.
 - A public repository at `https://github.com/kira-ml/onboarding-audit`.
 - A documentation set covering methods, results, claims, threats, decisions,
@@ -103,10 +104,13 @@ V1 is therefore a **credibility-first release**:
 > 538.5%**, and can reverse the policy ranking. DR with known propensities stays
 > within **1.89%** (coverage **84.5–96.0%**); at low approve-label rates its
 > P(select true best) is **64%**, so the correction is accurate but the ranking
-> is not guaranteed. Audit-only recovers the approved population under
-> outcome-dependent labels. The reject margin is a partial-identification
+> is not guaranteed. Audit-only recovers the **logging-approved** population
+> under outcome-dependent labels (not the candidate's approved population). The reject margin is a partial-identification
 > interval, not a point estimate or confidence interval. The tool refuses to
-> report a point estimate when identification fails.
+> report a point estimate when identification fails, and it bounds the
+> full-policy candidate-vs-incumbent difference when the reject margin is
+> unidentified. A `P0` recommendation that does not survive the reject margin is
+> flagged, not presented as a full-policy decision.
 
 The claim is **conditional and evidence-tiered**. V1 does not claim a universal
 bias magnitude, a production estimate, a causal deployment effect, or a

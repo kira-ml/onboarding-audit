@@ -87,6 +87,26 @@ def ipw_ht(
     return Estimate(value, se, int(observed.sum()), effective_sample_size(w), max_w)
 
 
+def action_weighted(
+    cost: np.ndarray,
+    observed: np.ndarray,
+    actions: np.ndarray,
+    in_pop: np.ndarray,
+) -> Estimate:
+    """Hajek estimate with action-level observation rates estimated from the log.
+
+    This is the natural "incumbent backtest with action weights" comparator to
+    the unweighted labeled mean. It is not the oracle IPW: the observation rate
+    is estimated within each logged action from the same draw.
+    """
+    e = np.zeros(len(cost), dtype=float)
+    for action in ("approve", "review"):
+        mask = actions == action
+        if mask.any():
+            e[mask] = float(observed[mask].mean())
+    return ipw_hajek(cost, observed, e, in_pop)
+
+
 def ipw_hajek(
     cost: np.ndarray,
     observed: np.ndarray,
@@ -234,6 +254,241 @@ def labels_for_power(
     return int(np.ceil(n_observed * (z * se / delta) ** 2))
 
 
+def full_policy_difference(
+    actions_candidate: np.ndarray,
+    actions_incumbent: np.ndarray,
+    amount: np.ndarray,
+    costs: Costs,
+    in_pop: np.ndarray,
+    p0_difference: float,
+    p0_difference_se: float,
+    *,
+    z: float = 1.96,
+) -> dict:
+    """Bound the full-policy difference and report its reject-margin sensitivity.
+
+    The `P0` difference is identified (up to its standard error). The reject
+    margin is not. For each logging-rejected application, the candidate and
+    incumbent costs are evaluated at ``Y=0`` and ``Y=1``; the per-row difference
+    therefore has two possible values, and the mean difference is bounded by the
+    means of the per-row minima and maxima. That bound is sharp when the
+    unobserved outcomes can vary freely across rejected rows.
+
+    The break-even fraud rate assumes a **common** fraud rate ``p`` among
+    logging-rejected rows. It is a sensitivity threshold, not an estimate: if
+    the full-policy difference changes sign inside ``[0, 1]``, the decision
+    depends on an unobserved quantity, and the memo should say so.
+    """
+    n = len(actions_candidate)
+    in_pop = np.asarray(in_pop, dtype=bool)
+    rejected = ~in_pop
+    n_pop = int(in_pop.sum())
+    n_rej = int(rejected.sum())
+    out = {
+        "p0_difference": p0_difference,
+        "p0_difference_se": p0_difference_se,
+        "p0_share": float(n_pop / n) if n else float("nan"),
+        "reject_share": float(n_rej / n) if n else float("nan"),
+        "n_rejected": n_rej,
+        "reject_difference_if_legit": float("nan"),
+        "reject_difference_if_fraud": float("nan"),
+        "reject_min_mean": float("nan"),
+        "reject_max_mean": float("nan"),
+        "full_difference_lower": float("nan"),
+        "full_difference_upper": float("nan"),
+        "breakeven_reject_fraud_rate": float("nan"),
+        "breakeven_low": float("nan"),
+        "breakeven_high": float("nan"),
+        "decision": "not identified",
+        "basis": "",
+    }
+    if n == 0:
+        out["basis"] = "empty population"
+        return out
+
+    se = 0.0 if not np.isfinite(p0_difference_se) else max(float(p0_difference_se), 0.0)
+
+    if n_rej == 0:
+        if not np.isfinite(p0_difference):
+            out["basis"] = "P0 difference not identified"
+            return out
+        if not np.isfinite(p0_difference_se):
+            out["basis"] = (
+                "P0 standard error is not available; the full-policy interval is "
+                "not identified"
+            )
+            return out
+        lower = p0_difference - z * se
+        upper = p0_difference + z * se
+        if se > 0:
+            p_better = float(norm.cdf(-p0_difference / se))
+            if p_better >= 0.95:
+                decision = "candidate cheaper"
+            elif p_better <= 0.05:
+                decision = "incumbent cheaper"
+            else:
+                decision = "inconclusive"
+        else:
+            if p0_difference < 0:
+                decision = "candidate cheaper"
+            elif p0_difference > 0:
+                decision = "incumbent cheaper"
+            else:
+                decision = "inconclusive"
+        out.update(
+            {
+                "full_difference_lower": lower,
+                "full_difference_upper": upper,
+                "decision": decision,
+                "basis": "no logging-rejected rows; the full population equals P0",
+            }
+        )
+        return out
+
+    y0 = np.zeros(n, dtype=int)
+    y1 = np.ones(n, dtype=int)
+    c0 = realized_cost(actions_candidate, y0, amount, costs)
+    c1 = realized_cost(actions_candidate, y1, amount, costs)
+    i0 = realized_cost(actions_incumbent, y0, amount, costs)
+    i1 = realized_cost(actions_incumbent, y1, amount, costs)
+    d0 = (c0 - i0)[rejected]
+    d1 = (c1 - i1)[rejected]
+    reject_d0 = float(d0.mean())
+    reject_d1 = float(d1.mean())
+    reject_min = float(np.minimum(d0, d1).mean())
+    reject_max = float(np.maximum(d0, d1).mean())
+    out.update(
+        {
+            "reject_difference_if_legit": reject_d0,
+            "reject_difference_if_fraud": reject_d1,
+            "reject_min_mean": reject_min,
+            "reject_max_mean": reject_max,
+        }
+    )
+    if n_pop == 0:
+        if reject_max < 0:
+            decision = "candidate cheaper for any reject outcome"
+        elif reject_min > 0:
+            decision = "incumbent cheaper for any reject outcome"
+        else:
+            decision = "depends on the reject margin"
+        out.update(
+            {
+                "full_difference_lower": reject_min,
+                "full_difference_upper": reject_max,
+                "decision": decision,
+                "basis": (
+                    "no P0 rows; the full population is the logging-rejected "
+                    "population, bounded by its per-row min/max"
+                ),
+            }
+        )
+        return out
+    if not np.isfinite(p0_difference):
+        out["basis"] = (
+            "P0 difference not identified; reject margin reported for diagnostics"
+        )
+        return out
+    if not np.isfinite(p0_difference_se):
+        out["basis"] = (
+            "P0 standard error is not available; the full-policy interval is not "
+            "identified"
+        )
+        return out
+
+    p0_share = n_pop / n
+    rej_share = n_rej / n
+    full_lower = p0_share * (p0_difference - z * se) + rej_share * reject_min
+    full_upper = p0_share * (p0_difference + z * se) + rej_share * reject_max
+    # Does the reject margin have leverage on the *decision*? A nonzero range
+    # that only moves the magnitude is not enough; it must be able to flip the
+    # sign at the P0 point estimate. Otherwise a zero-crossing is P0
+    # uncertainty, not reject-margin dependence.
+    point_lo = p0_share * p0_difference + rej_share * reject_min
+    point_hi = p0_share * p0_difference + rej_share * reject_max
+    reject_can_flip = (point_lo < 0 < point_hi) or (point_hi < 0 < point_lo)
+    reject_moves_magnitude = (reject_max - reject_min) > 1e-12
+    if full_upper < 0:
+        decision = "candidate cheaper for any reject outcome"
+    elif full_lower > 0:
+        decision = "incumbent cheaper for any reject outcome"
+    elif reject_can_flip:
+        decision = "depends on the reject margin"
+    else:
+        decision = "P0 inconclusive"
+
+    basis = ""
+    if decision == "P0 inconclusive":
+        if reject_moves_magnitude:
+            basis = (
+                "the combined interval includes zero because the P0 estimate is "
+                "uncertain; the reject margin moves the magnitude but does not "
+                "flip the sign at the P0 point estimate"
+            )
+        else:
+            basis = (
+                "the combined interval includes zero because the P0 estimate is "
+                "uncertain; the reject margin cannot change the difference"
+            )
+    elif decision != "depends on the reject margin":
+        basis = "the sharp bounds exclude zero; no reject-margin assumption is needed"
+    else:
+        # Homogeneous-p sensitivity. The full difference is linear in p:
+        #   D(p) = p0_share * D_P0 + reject_share * [d0 + p * (d1 - d0)].
+        intercept = p0_share * p0_difference + rej_share * reject_d0
+        slope = rej_share * (reject_d1 - reject_d0)
+        if abs(slope) > 1e-12:
+            p_star = -intercept / slope
+            intercept_lo = p0_share * (p0_difference - z * se) + rej_share * reject_d0
+            intercept_hi = p0_share * (p0_difference + z * se) + rej_share * reject_d0
+            p_lo = -intercept_lo / slope
+            p_hi = -intercept_hi / slope
+            out.update(
+                {
+                    "breakeven_reject_fraud_rate": p_star,
+                    "breakeven_low": min(p_lo, p_hi),
+                    "breakeven_high": max(p_lo, p_hi),
+                }
+            )
+            if 0.0 < p_star < 1.0:
+                if intercept < 0 < intercept + slope:
+                    basis = (
+                        "under a common rejected fraud rate p, the candidate is "
+                        f"cheaper for p < {p_star:.3f} and the incumbent is "
+                        f"cheaper for p > {p_star:.3f}; the sharp bounds still "
+                        "include zero"
+                    )
+                elif intercept + slope < 0 < intercept:
+                    basis = (
+                        "under a common rejected fraud rate p, the candidate is "
+                        f"cheaper for p > {p_star:.3f} and the incumbent is "
+                        f"cheaper for p < {p_star:.3f}; the sharp bounds still "
+                        "include zero"
+                    )
+                else:
+                    basis = "the homogeneous-p sensitivity has no sign change in [0, 1]"
+            else:
+                basis = (
+                    "the homogeneous-p break-even lies outside [0, 1]; "
+                    "the sharp bounds still include zero"
+                )
+        else:
+            basis = (
+                "the average reject-margin slope is zero; the sharp bounds still "
+                "include zero because the per-row differences can differ"
+            )
+
+    out.update(
+        {
+            "full_difference_lower": full_lower,
+            "full_difference_upper": full_upper,
+            "decision": decision,
+            "basis": basis,
+        }
+    )
+    return out
+
+
 def compare_policies(
     cost_candidate: np.ndarray,
     actions_candidate: np.ndarray,
@@ -281,6 +536,15 @@ def compare_policies(
         "max_weight": float(w[observed].max()) if observed.any() else float("nan"),
     }
     if not (np.isfinite(v_c) and np.isfinite(v_i)) or n_pop <= 1:
+        out["full_policy"] = full_policy_difference(
+            actions_candidate,
+            actions_incumbent,
+            amount,
+            costs,
+            in_pop,
+            out["difference"],
+            out["difference_se"],
+        )
         return out
     diff = v_c - v_i
     psi_d = psi_c - psi_i
@@ -298,6 +562,15 @@ def compare_policies(
         out["decision"] = "prefer candidate" if diff < 0 else "keep incumbent"
         out["regret_candidate"] = float(max(diff, 0.0))
         out["regret_incumbent"] = float(max(-diff, 0.0))
+        out["full_policy"] = full_policy_difference(
+            actions_candidate,
+            actions_incumbent,
+            amount,
+            costs,
+            in_pop,
+            diff,
+            se,
+        )
         return out
     z = diff / se
     p_better = float(norm.cdf(-z))  # P(D < 0): candidate is cheaper
@@ -331,6 +604,15 @@ def compare_policies(
             "additional_labels": max(0, needed - int(observed.sum())),
         }
     out["power"] = power_targets
+    out["full_policy"] = full_policy_difference(
+        actions_candidate,
+        actions_incumbent,
+        amount,
+        costs,
+        in_pop,
+        diff,
+        se,
+    )
     return out
 
 

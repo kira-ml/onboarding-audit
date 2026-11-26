@@ -1,6 +1,6 @@
 # FAQ
 
-**Status:** Canonical question bank for v0.2.1 (2026-11-20).
+**Status:** Canonical question bank for v1.0.0 (2026-11-22; updated 2026-11-26).
 **Purpose:** Answer the questions a practitioner, a researcher, or an interviewer
 will actually ask, with links to the canonical document instead of a new claim.
 
@@ -189,11 +189,13 @@ is legally/operationally infeasible. See [`THREATS.md`](THREATS.md) §6.
 ### Why is the naive bias positive?
 
 The labeled subset is dominated by reviewed/rejected applications with non-zero
-costs, and approved fraud is more likely to be labeled than approved legitimate
-accounts. The naive mean therefore overstates cost. The direction is not
-universal: it depends on the action mix and the cost matrix. The practical harm
-is that it reverses the better-model/incumbent ranking. See
-[`CLAIMS.md`](CLAIMS.md) §Interpretation.
+costs. In the main scenario the approve channel is outcome-independent; the
+overrepresentation of the review band, which carries a cost floor, drives the
+positive bias. Outcome-dependent approve labels are a separate stress test, not
+the main mechanism. The direction is not universal: it depends on the action mix
+and the cost matrix. The practical harm is that, in the main scenario, it
+reverses the better-model/incumbent ranking; at `frej_050` the naive rule ranks
+correctly while DR does not. See [`CLAIMS.md`](CLAIMS.md) §Interpretation.
 
 ### Why is the audit not a universal fix?
 

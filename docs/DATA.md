@@ -39,7 +39,10 @@ Every column, its role, and its limitations are in
 | Other columns | BAF application features |
 
 The file is derived from the archived V2 pipeline. The scores were trained on
-months 0–2 and validated on 3–4; no evaluation labels were used. The V2
+months 0–2 with fixed hyperparameters; months 3–4 are held out but are not used
+for hyperparameter selection in the reproduction script. The nuisance outcome
+model is cross-fitted on the evaluation window's observed labels; the candidate
+policy's labels are not used to fit the policy scores. The V2
 `observed` and `label_month` columns are ignored; this pilot simulates its own
 observation mechanism.
 

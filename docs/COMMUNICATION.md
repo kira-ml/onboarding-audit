@@ -1,6 +1,6 @@
 # Communication Plan
 
-**Status:** Canonical communication guide for v0.2.1 (2026-11-20).
+**Status:** Canonical communication guide for v1.0.0 (2026-11-22; updated 2026-11-26).
 
 **Purpose:** Make the project legible to a fintech research team, a risk
 committee, and an internship interviewer without overclaiming.
@@ -28,9 +28,11 @@ committee, and an internship interviewer without overclaiming.
 > and bounds estimators on the public BAF account-opening benchmark. I also
 > show when a random post-hoc verification audit helps and when it does not.
 >
-> In the pilot, naive evaluation overstated cost by **112–278%** and ranked the
-> better model below the incumbent; doubly robust estimation recovered the
-> identified value within **0.94%** with **96%** coverage. The audit-only
+> In the pilot's main scenario, naive evaluation overstated cost by
+> **112–278%** and ranked the better model below the incumbent. The ranking is
+> cost-dependent: at `frej_050`, the naive rule ranks correctly while DR does
+> not. Doubly robust estimation recovered the identified value within **0.94%**
+> with **96%** coverage. The audit-only
 > estimator was unbiased but high-variance, and action-only weighting collapsed
 > when approved fraud was more likely to be labeled than approved legitimate
 > accounts. The reject margin required bounds, not a point estimate.

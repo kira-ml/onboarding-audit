@@ -1,6 +1,6 @@
 # Audit Design
 
-**Status:** Canonical audit design for v0.2.1 (2026-11-20).
+**Status:** Canonical audit design for v1.0.0 (2026-11-22; updated 2026-11-26).
 
 **Purpose:** Define what a defensible audit can and cannot buy when the
 onboarding policy chooses its own labels.
@@ -67,9 +67,11 @@ so.
 
 ### 3.1 Approved-population labels
 
-The audit sample gives an unbiased estimate of the approved population's fraud
-rate and cost. It also validates the IPW/DR estimates and can be used to fit
-the outcome model.
+The audit sample gives an unbiased estimate of the **logging-approved**
+population's fraud rate and cost. It also validates the IPW/DR estimates and can
+be used to fit the outcome model. It does not estimate the **candidate's**
+approved population if the candidate changes who is approved: the audit labels
+were drawn under the incumbent's approval decision.
 
 ### 3.2 Variance reduction for policy value
 

@@ -50,3 +50,56 @@ the plan as verified without external review.
 
 **Next:** Add the red-team findings to `docs/CREDIBILITY_PLAN.md`; keep D13 as
 the decision record.
+
+---
+
+## 2026-11-26 — V1 strategic review
+
+**Task:** Decide whether `v1.0.0` is ready for a public flagship release, and
+strengthen it using the Mental Models OS (Inversion & Falsification, Theory of
+Constraints, Goodhart & Counter-Metrics).
+
+**Scores (0–2):**
+
+| Dimension | Score | Evidence |
+|---|---:|---|
+| Goal | 2 | The review names the decision, the binding constraint, and the smallest acceptable outcome; it produced a release verdict and a ranked finding set. |
+| Verification | 2 | Tests, claim checks, link check, and a constructed full-policy reversal case were run. The paper PDF was not rebuilt (no TeX toolchain). |
+| Efficiency | 1 | The review touched many documents; the test-count change required a second consistency pass. |
+| Process | 2 | Models were selected by failure mode; a constraint table, pre-mortem, falsification ledger, decision entry, and independent red-team pass were produced. |
+| Learning | 2 | A specific rule change below. |
+
+**Total: 9/10.**
+
+**Expected vs actual:** Expected a documentation review; found a product-decision
+defect (the `P0` recommendation can reverse on the reject margin), a release-gate
+bypass, and a false "Measured" claim. The code fix was smaller than the
+documentation cleanup.
+
+**What worked:**
+
+- Started from the repository's own OS and decision journal, not generic
+  red-teaming.
+- Found the strongest failure mode: the product answers a narrower question than
+  it promises.
+- Implemented a small, testable extension instead of a new estimator.
+- Preserved the identification discipline, gate, reproducibility, and recorded
+  negative results.
+
+**What failed:**
+
+- The first pass did not anticipate that adding four tests would change every
+  public test count; that is the same drift the review criticizes.
+- The paper PDF remains stale because the environment has no TeX toolchain.
+- The independent red-team pass was launched but not a human external reader;
+  the release gate remains open.
+
+**Rule change:** **Before a version tag or a public release, run the project's
+own definition-of-done check and record the result in `RELEASE_STATUS.md`. A tag
+must not outrun the gate.** A second rule: **a decision-surface change must be
+tested with a constructed case where the recommendation reverses; a passing
+happy-path test is not enough.**
+
+**Next:** Send the reviewer packet; record objections in `EXTERNAL_REVIEW.md`;
+release the full-policy check as `v1.0.1` or `v1.1`; do not tag a public `1.0`
+until the gate is met.

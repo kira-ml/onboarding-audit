@@ -1,6 +1,6 @@
 # Glossary
 
-**Status:** Canonical glossary for v0.2.1 (2026-11-20).
+**Status:** Canonical glossary for v1.0.0 (2026-11-22; updated 2026-11-26).
 
 | Term | Meaning in this project |
 |---|---|

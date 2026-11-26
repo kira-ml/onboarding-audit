@@ -59,7 +59,8 @@ The estimate is valid only when all of the following hold:
 1. **Action-dependent observation.** The label mechanism is ignorable given the
    logged action and the observed covariates. If approval labels are
    outcome-dependent in a way the model does not capture, the corrected
-   estimators break (measured: DR relative bias up to **1,627.90%**).
+   estimators break (measured: DR relative bias up to **1,737.0%** with
+   estimated `e`; **1,301.5%** with oracle `e`).
 2. **Positivity.** Every `P0` row has a positive probability of observation.
    The report refuses on a zero-propensity row.
 3. **Consistency.** The logged action and the candidate action are well defined
@@ -102,7 +103,7 @@ A candidate score file with `application_id` and `score`.
 
 | Output | Contents |
 |---|---|
-| `report.md` | Memo: gate status, estimates or refusal, candidate-vs-incumbent comparison, diagnostics, bounds, decision guidance |
+| `report.md` | Memo: gate status, estimates or refusal, candidate-vs-incumbent comparison, diagnostics, observational segment table, bounds, decision guidance |
 | `report.json` | The same result, machine-readable, including the comparison and the diagnostic estimates when the gate fails |
 | Gate | Pass/fail with reasons and warnings |
 
@@ -141,9 +142,10 @@ public synthetic data**, not a production estimate.
 | Failure | Value | Artifact |
 |---|---|---|
 | IPW with estimated action-level propensities | max **2.92%**, coverage **92.0%** | `reports/propensity_sensitivity.json` |
-| Outcome-dependent approved labels | IPW **1,350.76%**, DR **1,627.90%**, coverage **0%** | `reports/propensity_sensitivity.json` |
+| Outcome-dependent approved labels | Oracle `e`: IPW **368.3%**, DR **1,301.5%**; estimated `e`: IPW **2,064.9%**, DR **1,737.0%**; coverage **0%** | `reports/propensity_sensitivity.json` |
 | Action-level IPW under covariate-dependent observation | max **67.52%**, coverage **1.5%** | `reports/propensity_sensitivity.json` |
 | Heavy weights | coverage **89–91.5%**, below nominal 95% | `reports/propensity_sensitivity.json` |
+| Ranking is cost-dependent | `frej_050`: naive P(best) **100%**, DR **58%**; `frej_002`: naive **64%**, DR **68%**; main: naive **0%**, DR **72%** | `reports/pilot.json` |
 | Both nuisances wrong | DR **+2.09%**, IPW **−36.87%**; DR is no longer guaranteed | `reports/double_robustness.json` |
 | Reject-margin bounds | incumbent covers the true full value in **34%** of replications (narrow interval); F5 **15/88** narrow, **77/88** widened | `reports/pilot.json` |
 
@@ -164,7 +166,10 @@ intervals**, not confidence intervals.
    the Level 1 claim holds.
 6. **The gate is necessary, not sufficient.** It catches unidentified logs; it
    cannot detect an unmeasured confounder or a wrong cost model.
-7. **Single maintainer.** Bus factor 1.
+7. **The segment diagnostic is not a fairness certification.** It is
+   descriptive, small cells are suppressed, and rejected applicants have no
+   outcome. A full fairness audit of the rejected margin is not implemented.
+8. **Single maintainer.** Bus factor 1.
 
 ## 9. Ethical and privacy considerations
 

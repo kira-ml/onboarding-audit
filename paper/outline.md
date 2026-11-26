@@ -162,7 +162,8 @@ The true P0 ranking is `better_model < incumbent < lenient_cost < strict_cost`;
 the naive ranking is `incumbent < better_model < lenient_cost < strict_cost`.
 The naive estimate has a mean **1.00** pairwise inversion and selects the true
 best policy **0%** of the time. Practical consequence: the naive evaluation
-would reject the better model.
+would reject the better model in the main scenario; at `frej_050` the naive rule
+ranks correctly while DR does not, so the ranking claim is cost-dependent.
 
 A 12-cell observation-rate sweep shows the magnitude is conditional: the maximum
 naive bias across policies ranges **7.8–538.5%**, and exceeds 5% in **12/12**
@@ -217,7 +218,7 @@ reject margin is not point-identified from logs alone.
 
 ### 6.7 Negative controls
 
-`pytest -q`: 92 tests pass, including full-observation identity, full-audit
+`pytest -q`: 101 tests pass in the current tree (92 at the v1.0.0 tag), including full-observation identity, full-audit
 identity, propensity recovery, bounds validity, capacity, no leakage, schema
 validation, the arbitrary-log report's known-ground-truth check, and the
 propensity/covariate helpers.

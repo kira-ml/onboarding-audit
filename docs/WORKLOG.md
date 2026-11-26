@@ -3,6 +3,36 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-26 — Strategic review and full-policy check
+
+**Decision:** `v1.0.0` is a **review release**, not a public flagship release.
+The public-release gate (two external readers) is open. The next code release is
+`v1.0.1`/`v1.1`, not a silent addition to the tag. See
+[`STRATEGIC_REVIEW_v1.md`](STRATEGIC_REVIEW_v1.md), [`RELEASE_STATUS.md`](RELEASE_STATUS.md),
+and D15 in [`DECISIONS.md`](DECISIONS.md).
+
+**Product change:** `full_policy_difference` in `estimators.py` bounds the
+candidate-vs-incumbent difference over the unobserved reject margin and reports
+the break-even rejected-fraud rate. The memo labels the recommendation
+`P0`-conditional, adds §4.1, and warns when the `P0` recommendation does not
+survive the reject margin. Nine new tests (full-policy, action-weighted,
+segment diagnostic); **101 passed**.
+
+**Integrity fixes:** the vendor-review claim is downgraded from Measured to
+Limitation; BSP 1213 is qualified as an FMS circular; the validation report's
+sweep grid, test counts, claim-check count, and CI status are corrected; the
+one-pager status is updated; `RELEASE_STATUS.md` and `EXTERNAL_REVIEW.md` are
+added; the README and V1 status docs now say the external gate is open.
+
+**Not verified:** no human external reader; no partner log; the paper PDF was
+not rebuilt (no TeX toolchain); the benchmark hash was not re-run on another
+stack.
+
+**Next:** send the reviewer packet to 10 targeted practitioners/researchers;
+record objections; fix or narrow critical/high findings; release the full-policy
+check as `v1.0.1` or `v1.1`; do not add new methods before the external log has
+entries.
+
 ## 2026-11-21 — Red-team corrections
 
 **Found by the independent estimator review and adversarial pass:**

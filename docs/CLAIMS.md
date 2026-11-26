@@ -1,6 +1,6 @@
 # Claim Ledger
 
-**Status:** Canonical claim ledger for v1.0.0 (2026-11-22).
+**Status:** Canonical claim ledger for v1.0.0 (2026-11-22; updated 2026-11-26).
 
 **V1 re-evaluation (2026-11-21):** the 12-cell observation-rate sweep is
 complete. The maximum naive bias across the four policies is **7.8–538.5%** and
@@ -19,13 +19,13 @@ pilot output or a cited primary source does not appear in the paper.
 |---|---|---|---|
 | BAF is account-opening fraud data, not transaction authorization data | **Measured** (dataset paper) | Jesus et al., NeurIPS 2022, arXiv:2211.13358 | — |
 | Pombal et al. used account-opening fraud for selective labels/performative prediction | **Measured** (paper) | arXiv:2206.13183 | — |
-| BSP Circular 1213 mandates calibration, stress testing, independent review/audit | **Measured** (regulation) | BSP Circular 1213 (2025) | A superseding circular |
+| BSP Circular 1213 (an FMS circular, not the draft MRM) mandates calibration, stress testing, independent review/audit | **Measured** (regulation) | BSP Circular 1213 (2025); `BSP_MAPPING.md` §6 | A superseding circular; final MRM guidance |
 | The 11 mandated log fields contain no decision, score, or outcome | **Measured** (regulation) | BSP Circular 1213 logging provision | A new circular adding fields |
 | BSP Circular 1170 governs eKYC/digital identity proofing | **Measured** (regulation) | BSP Circular 1170 (2023) | A superseding circular |
 | AFASA s.6 ties inadequate controls to restitution without conviction | **Measured** (statute) | RA 12010, s.6 | A statutory amendment |
 | BSP Project Sapiens names sampling/labelling bias | **Measured** (BSP document) | Project Sapiens 2024, bias taxonomy | — |
 | Only 6/10 deep-dive institutions validate AI models during development and ongoing | **Measured** (BSP document) | Project Sapiens 2024 | A different sample or later review |
-| Vendors sell replay/champion–challenger but not selection/delay-aware policy evaluation | **Measured** (vendor review) | 18-vendor capability matrix, 2026 | A vendor shipping the missing layer |
+| Vendors sell replay/champion-challenger but not selection/delay-aware policy evaluation | **Limitation** (search-based absence; the 18-vendor review is not committed here) | Archived vendor review, 2026; not reproducible from this repository | A vendor shipping the missing layer; publishing the review |
 | No fraud-specific OPE library exists | **Limitation** (search-based absence) | Open-source review, 2026 | A new release |
 | No peer-reviewed fraud-specific policy evaluation with a counterfactual design | **Limitation** (search-based absence) | Literature review, 25 sources | A paper not surfaced by the search |
 | Naive onboarding evaluation is materially biased under the main scenario | **Measured** (H1 supported) | `reports/pilot.json`; relative bias **+111.55% to +278.49%** across the four policies | A different logging action mix, cost matrix, or observation mechanism |
@@ -33,11 +33,14 @@ pilot output or a cited primary source does not appear in the paper.
 | The bias magnitude is conditional on observation rates | **Measured** (V1 E1 sweep) | **386-538%** at `e_approve=0.01`; **7.8-34.7%** at `e_approve=0.50` (max across policies) | A different frame or cost matrix |
 | DR with known propensities is robust to observation-rate changes | **Measured** (V1 E1 sweep) | Mean bias max **1.89%**; 95% MC upper bound on \|bias\| **4.3%** for `e>=0.05`, **9.6%** at `e=0.01`; coverage **84.5-96.0%** | Estimated propensities, not oracle `e` |
 | The corrected ranking is weaker at low approve-label rates | **Measured** (V1 E1 sweep) | DR P(select true best) **64%** at `e_approve=0.01`; **96–100%** at `0.50` | A larger audit or a wider policy gap |
-| The naive estimate reverses at least one policy ranking | **Measured** (H2 supported) | True ranking `better_model < incumbent < lenient_cost < strict_cost`; naive ranking `incumbent < better_model < lenient_cost < strict_cost`; mean inversions **1.00**, P(select true best) **0%** | A larger gap between the top policies, or a different review capacity |
+| The naive estimate reverses at least one policy ranking in the main scenario | **Measured** (H2 supported) | True ranking `better_model < incumbent < lenient_cost < strict_cost`; naive ranking `incumbent < better_model < lenient_cost < strict_cost`; mean inversions **1.00**, P(select true best) **0%** | A larger gap between the top policies, or a different review capacity; the reversal is not universal (see the cost-sensitivity row) |
 | At least one corrected estimator recovers the identified policy value | **Measured** (H3 supported) | DR max \|relative bias\| **0.94%**, mean coverage **96.0%**; IPW max **1.18%**, mean coverage **94.5%** | Estimated propensities, a different observation mechanism, or a much smaller audit |
-| The corrected ranking is better but not perfect | **Measured** | DR mean inversions **0.29**, P(select true best) **72%**, cost of misranking **0.000093**; IPW **0.26 / 75% / 0.000083** | A larger audit, a wider policy gap, or a better outcome model |
-| The naive estimate would reject the better model | **Measured** | Naive: `better_model` **0.025835** vs `incumbent` **0.018584**; true: `better_model` **0.008452** vs `incumbent` **0.008785** | A different cost matrix or action mix; the direction of the bias is not universal |
-| Audit-only is unbiased but high variance at a 1% audit | **Measured** | Max \|relative bias\| **2.98%**, mean coverage **84.5%**, mean ESS **1,271** | A larger audit; a different approved-label base rate |
+| The corrected ranking is better but not perfect in the main scenario | **Measured** | DR mean inversions **0.29**, P(select true best) **72%**, cost of misranking **0.000093**; IPW **0.26 / 75% / 0.000083** | A larger audit, a wider policy gap, or a better outcome model; at `frej_050` DR is **58%**, below naive |
+| The ranking effect is cost-matrix-dependent | **Measured** (negative result) | `frej_050`: naive P(best) **100%**, DR **58%**; `frej_002`: naive **64%**, DR **68%**; main: naive **0%**, DR **72%** (`reports/pilot.json`) | A different cost matrix, policy gap, or estimator; this is a boundary of the ranking claim |
+| The naive point-estimate bias survives action weighting | **Measured** (post-hoc) | main: naive **278.5%** vs action-weighted **2.9%**; `frej_050`: naive **291.2%** vs action-weighted **2.4%** (`reports/baseline_sensitivity/pilot.json`) | A different action-weighting model or observation mechanism |
+| Action weighting does not restore the ranking at `frej_050` | **Measured** (post-hoc) | main: action-weighted P(best) **62%**, naive **0%**; `frej_050`: action-weighted **58%**, naive **100%** (`reports/baseline_sensitivity/pilot.json`) | A different cost matrix, policy gap, or baseline |
+| The naive estimate would reject the better model in the main scenario | **Measured** | Naive: `better_model` **0.025835** vs `incumbent` **0.018584**; true: `better_model` **0.008452** vs `incumbent` **0.008785** | A different cost matrix or action mix; at `frej_050` the naive rule ranks correctly |
+| Audit-only is unbiased for the logging-approved population but high variance at a 1% audit | **Measured** | Max \|relative bias\| **2.98%**, mean coverage **84.5%**, mean ESS **1,271** | A larger audit; a different approved-label base rate; a candidate that changes the approved set is outside the target |
 | A larger audit improves the corrected estimator modestly in the main scenario | **Measured** (H4 supported, modest effect) | DR RMSE **0.001159 → 0.001068** (0% → 2%), ESS **6,610 → 9,126**; IPW **0.001162 → 0.001088** | A lower base approve-label rate, or outcome-dependent labels |
 | Both DR and IPW survive estimated action-level propensities when observation is action-dependent | **Measured** | DR max \|relative bias\| **1.43%**, mean coverage **93.5%**; IPW max **2.92%**, coverage **92.0%** (`reports/propensity_sensitivity.json`) | Covariate-dependent observation (tested below); a much smaller audit |
 | The earlier "IPW fails with estimated e" result was a propensity bug | **Measured** (correction) | The old action-level `e_approve` omitted the resolution factor on the audit channel; after the fix IPW is **2.92%**, not 11.19% | A different audit design or resolution model |
@@ -51,7 +54,7 @@ pilot output or a cited primary source does not appear in the paper.
 | DR degrades gracefully when both nuisances are wrong | **Measured** (one DGP) | Both wrong: DR **+2.09%**, IPW **−36.87%**, plug-in **+5.33%** | A different data-generating process; this is not a guarantee |
 | The main result holds separately in both BAF test months | **Measured** (temporal stability) | Month 5: naive **230.37%**, DR **0.89%**, naive P(best) **0%**, DR **65%**; month 6: **254.99%**, **0.43%**, **0%**, **63%** (`reports/temporal_stability.json`) | A different split, or a real log |
 | Heavy weights undercover even with oracle propensities | **Measured** (caveat) | Covariate-oracle coverage **89–90%**, covariate-model **89.5–91.5%**, below nominal 95% | A bootstrap/randomization-inference interval, or a different weight estimator |
-| The audit stays approximately unbiased when approved labels are outcome-dependent | **Measured** (H6 supported) | Audit-only bias **-2.37% to -1.98%**, coverage **80-86%** (below nominal); IPW **+43.90% to +368.25%**; DR **+596.41% to +1301.53%** | An observation mechanism that is action-dependent after all |
+| The audit stays approximately unbiased for the logging-approved population when approved labels are outcome-dependent | **Measured** (H6 supported) | Audit-only bias **-2.37% to -1.98%**, coverage **80-86%** (below nominal); IPW **+43.90% to +368.25%**; DR **+596.41% to +1301.53%** | An observation mechanism that is action-dependent after all; a candidate that changes the approved set is outside the target |
 | The reject margin is not point-identified from logs alone | **Measured** (H5 supported) | Widest **0.009942** in the main scenario; **0.203** in `frej_002` (12.3% reject share); incumbent width **0.001581** with **34%** coverage of the true full value | A controlled approval design or a defensible assumption |
 | The bounds are not confidence intervals | **Measured** (caveat) | Incumbent bounds cover the true full value in **34%** of replications; bounds are conditional on the P0 estimate | A different P0 estimator or a wider interval construction |
 | The pre-registered bounds coverage gate fails for the narrow interval | **Measured** (V1 E2, F5 failed) | Narrow `coverage_full >= 90%` in **15/88** cells; widened interval **77/88**; the 11 widened failures are the biased-`P0` cells | A valid narrow confidence-interval construction |
@@ -62,6 +65,8 @@ pilot output or a cited primary source does not appear in the paper.
 | An undeclared observation mechanism is marked unverified, not measured | **Measured** (mechanism) | The memo says "Measured (observation assumption unverified)" by default | — |
 | The report post-stratifies the audit-only estimate by follow-up time | **Measured** (mechanism) | Cohort test: complete-case 1.667, post-stratified 2.0, truth 2.0 (`tests/test_report.py`) | Within-stratum missing-at-random; a per-row resolution model would be sharper |
 | The report outputs a paired candidate-vs-incumbent comparison | **Measured** (mechanism) | P(candidate cheaper), expected regret, and a recommendation; `tests/test_estimators.py`, `tests/test_demo.py` | Nuisance-estimation uncertainty is ignored; the comparison is `P0`-conditional |
+| The report includes an observational segment diagnostic | **Measured** (mechanism) | `tests/test_report.py`; memo §3.1; small cells suppressed | Descriptive only; rejected outcomes are unobserved; it is not a fairness certification |
+| The report bounds the full-policy candidate-vs-incumbent difference and reports a reject-margin break-even | **Measured** (mechanism) | `full_policy_difference`; `tests/test_estimators.py`; memo §4.1 | The break-even assumes a common fraud rate among rejected rows; the sharp bound still needs the `P0` estimate and its interval |
 | The naive ranking flips in the committed case study | **Measured** (known truth) | Naive candidate **+6.3% worse**; true candidate **−12.4% better**; report P(better) **0.984** (`examples/case_truth.json`, `tests/test_case_study.py`) | A different cost matrix or observation rate |
 | The pilot generalizes to a Philippine production system | **Not claimed** | Public synthetic data; simulation | A bank partner and real logs |
 | A random approval/rejection arm is acceptable | **Not claimed** | `AUDIT_DESIGN.md` | Legal/risk review |
@@ -112,3 +117,10 @@ pilot output or a cited primary source does not appear in the paper.
    (−36.7%) and the plug-in fails with a wrong outcome model (+5.1%). When both
    are wrong, DR is no longer guaranteed (+2.1%). The practical rule: get one of
    the two models right, and report which one you trust.
+8. **Ranking is cost-dependent.** In the main scenario, the naive rule selects
+   the true best policy **0%** of the time and DR **72%**. At a high false-reject
+   cost (`frej_050`), the naive rule selects it **100%** of the time and DR
+   **58%**, even though the naive point estimate is still biased by **+162.7% to
+   +291.2%**. A biased point estimate can preserve the ranking; an accurate one
+   can lose it. Report the cost curve and both metrics; do not claim that the
+   correction always ranks better.

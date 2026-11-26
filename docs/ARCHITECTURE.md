@@ -17,7 +17,8 @@ src/onboarding_audit/
   observation.py  Observation model, delay resolution, audit, label draws
   propensity.py   Action-level, noisy, and covariate propensity estimation
   gates.py        Identification gate for the arbitrary-log report
-  estimators.py   Naive, IPW-HT, IPW-Hajek, DR, audit-only, bounds
+  estimators.py   Naive, IPW-HT, IPW-Hajek, DR, audit-only, bounds,
+                  full-policy difference/break-even
   metrics.py      Bias, RMSE, coverage, ESS, ranking, bounds summaries, verdict
   pilot.py        Scenario runner, pilot report writer, CLI entry point
   sensitivity.py  Propensity/covariate sensitivity runner and report
@@ -54,7 +55,8 @@ for each replication:
     observation.draw_observation  --->  ObservationDraw (observed, audit, source)
     propensity.<mode>             --->  e_est
     estimators.fit_outcome_model  --->  phat
-    estimators.{naive, ipw_ht, ipw_hajek, dr, audit_only, policy_bounds}
+    estimators.{naive, ipw_ht, ipw_hajek, dr, audit_only, policy_bounds,
+                full_policy_difference}
         |
         v
 metrics.summarize / ranking_metrics / bounds_summary / verdict
@@ -153,6 +155,8 @@ The policy's decision cost may differ from the evaluation cost through
 ### `estimators.py`
 
 - `naive`, `ipw_ht`, `ipw_hajek`, `dr`, `audit_only`, `policy_bounds`.
+- `full_policy_difference`: bounds the candidate-vs-incumbent difference over
+  the reject margin and reports the break-even rejected-fraud rate.
 - `fit_outcome_model`: cross-fitted weighted logistic regression.
 - `expected_cost`: outcome-model expected cost per action.
 - `effective_sample_size`, `coverage`.
@@ -222,7 +226,9 @@ The policy's decision cost may differ from the evaluation cost through
 5. **Audit is post-approval only.** `audit_flag=1` implies `action=approve`; the
    validator rejects inconsistent logs.
 6. **Bounds are conditional.** `policy_bounds` takes the `P0` estimate as input;
-   it does not pretend to be a confidence interval.
+   it does not pretend to be a confidence interval. `full_policy_difference`
+   bounds the candidate-vs-incumbent difference directly and labels the
+   break-even as a sensitivity, not an estimate.
 7. **Reject rows have `e=0`.** The propensity model and estimators exclude them
    from `P0`; they enter only the bounds.
 8. **One source of truth for numbers.** Public numbers trace to
@@ -267,7 +273,7 @@ The policy's decision cost may differ from the evaluation cost through
 
 | Test file | Protects |
 |---|---|
-| `test_estimators.py` | Full-observation identity, full-audit identity, propensity recovery, bounds validity |
+| `test_estimators.py` | Full-observation identity, full-audit identity, propensity recovery, bounds validity, full-policy break-even |
 | `test_observation.py` | Delay monotonicity, positivity, empirical frequency, outcome-dependent labels, covariate gradient |
 | `test_policies.py` | Capacity, cost accounting, action construction |
 | `test_metrics.py` | Bias, coverage, ranking, bounds summaries |

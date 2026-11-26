@@ -1,6 +1,6 @@
 # Decision Journal
 
-**Status:** Canonical decision journal for v0.2.1 (2026-11-20).
+**Status:** Canonical decision journal for v1.0.0 (2026-11-22; updated 2026-11-26).
 
 **Rule:** Record material, hard-to-reverse decisions with options, expected
 outcome, assumptions, review date, and kill criteria.
@@ -538,3 +538,55 @@ red-team plus one strong peer, and plan January. Package work exceeds 75 hours
 or GPA/applications/health slip → stop. A partner asks for PII/proprietary data
 without a DPA/sandbox → decline. The risk team finds the assumptions untenable
 → narrow the claim to a methods paper; do not claim a pilot.
+
+---
+
+## D15 — V1.1 is a decision-reliability release, not a methods release
+
+**Date:** 2026-11-26.
+**Status:** Accepted for the full-policy check; positioning is proposed for
+external review.
+
+**Context:** The V1 strategic review (`STRATEGIC_REVIEW_v1.md`) found that the
+`P0` recommendation can reverse once the unobserved reject margin is included.
+The current memo prints a directional `P0` recommendation and a later
+"full-policy: not identified" row; a reader can act on the first and miss the
+second. The review also found that the release gate is open, the validation
+report contradicted itself, and a "Measured" vendor claim had no artifact.
+
+**Options:**
+1. Keep the current framing; add more simulation evidence.
+2. Reposition around decision reliability; add a full-policy difference bound and
+   break-even; complete the external review before a public release.
+3. Drop the reject margin from the product and sell only the `P0` estimate.
+
+**Decision:** Option 2. The full-policy check is implemented in the working tree
+(`full_policy_difference`, memo §4.1, tests). The public-release gate stays open
+until two external readers (or a documented fallback) are recorded. No new
+estimator or simulation scenario before that review.
+
+**Why:**
+- Option 1 optimizes the non-binding constraint (internal evidence) and leaves
+  the decision-surface defect.
+- Option 3 is narrower but abandons the buyer's actual question; the honest
+  answer is to bound the full-policy difference, not to ignore it.
+- The full-policy check is a small, testable extension of the existing cost
+  model; it does not require a new estimator.
+- The decision-reliability framing (point accuracy ≠ ranking; structural
+  fragility; conditional audit value) is a stronger scientific contribution than
+  the bias magnitude.
+
+**Expected outcome:** A `v1.0.1`/`v1.1` release that states the `P0` estimate,
+the full-policy bound, and the break-even; a memo that warns when the
+recommendation does not survive the reject margin; an external review log with
+two entries; a paper framed around decision reliability.
+
+**Assumptions:** The common-fraud-rate break-even is a useful sensitivity, not a
+claim; the external review can be obtained in December; the model-risk buyer is
+the beachhead.
+
+**Review date:** 2026-12-15.
+**Kill criteria:** No external reader by 2026-12-15 → the public release slips
+and the project stays at Level 2; the full-policy check reverses the flagship
+case recommendation → rewrite the headline and case study; a reviewer finds a
+false "Measured" claim → fix the ledger before any release.

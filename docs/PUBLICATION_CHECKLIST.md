@@ -5,6 +5,11 @@
 privacy mistake, a broken reproduction path, or an overclaim. This is the last
 document to read before a tag, a blog post, or a paper submission.
 
+> **Status update (2026-11-26):** the mechanical gates are recorded in
+> [`RELEASE_STATUS.md`](RELEASE_STATUS.md); the external-review and sign-off
+> items remain open. An unchecked box is not a completed gate, and `v1.0.0` is a
+> review tag, not a public release.
+
 ---
 
 ## 1. Claims and numbers
@@ -49,7 +54,7 @@ document to read before a tag, a blog post, or a paper submission.
 
 ## 3. Code and tests
 
-- [ ] `pytest -q` passes (92 tests on v1.0.0).
+- [ ] `pytest -q` passes (101 tests in the current tree; 92 at the v1.0.0 tag).
 - [ ] The version in `pyproject.toml`, `src/onboarding_audit/__init__.py`, and
       `CITATION.cff` agree.
 - [ ] `CHANGELOG.md` has an entry for the release.

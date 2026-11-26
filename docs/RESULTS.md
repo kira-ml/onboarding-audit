@@ -1,6 +1,7 @@
 # Results
 
-**Status:** Canonical results summary for v1.0.0 (2026-11-22).
+**Status:** Canonical results summary for v1.0.0 (2026-11-22; updated
+2026-11-26).
 **Source of truth:** `reports/pilot.json` and
 `reports/propensity_sensitivity.json`. The prose here interprets those files; it
 does not replace them.
@@ -59,14 +60,16 @@ True ranking: `better_model < incumbent < lenient_cost < strict_cost`.
 Naive ranking: `incumbent < better_model < lenient_cost < strict_cost`.
 
 The naive estimate has mean **1.00** pairwise inversion and selects the true best
-policy **0%** of the time. The practical consequence: the naive evaluation would
-reject the better model.
+policy **0%** of the time in this scenario. The practical consequence: the naive
+evaluation would reject the better model.
 
 **Direction caveat:** the bias is positive (overstates cost) in this scenario
 because the labeled subset is dominated by reviewed/rejected applications with
-non-zero costs, and approved fraud is more likely to be labeled than approved
-legitimate accounts. The direction is not universal; it depends on the action mix
-and the cost matrix. The harm is the ranking, not the sign.
+non-zero costs; the review band is overrepresented and carries a cost floor. The
+main scenario's approve channel is outcome-independent; outcome-dependent
+approve labels are a separate stress test. The direction is not universal; it
+depends on the action mix and the cost matrix. The harm is the ranking, not the
+sign — and the ranking is cost-dependent (see §5).
 
 ## 3. Pilot: estimator comparison
 
@@ -76,7 +79,7 @@ and the cost matrix. The harm is the ranking, not the sign.
 | `ipw_ht` | `P0` | 1.18% | 94.5% | 7,864 |
 | `ipw_hajek` | `P0` | 1.18% | 95.0% | 7,864 |
 | `dr` | `P0` | **0.94%** | **96.0%** | 7,864 |
-| `audit_only` | approved | 2.98% | 84.5% | 1,271 |
+| `audit_only` | logging-approved | 2.98% | 84.5% | 1,271 |
 
 The corrected ranking is much better than naive but not perfect:
 
@@ -151,8 +154,9 @@ main scenario:
 | 1% | — | — | 2.98% | 84.5% |
 | 2% | 0.001068 | 9,126 | 1.82% | 86.5% |
 
-The audit is the only approximately unbiased option when approved fraud is more
-likely to be labeled than approved legitimate accounts. In the outcome-dependent
+The audit is the only approximately unbiased option for the **logging-approved**
+population when approved fraud is more likely to be labeled than approved
+legitimate accounts. In the outcome-dependent
 scenario, audit-only bias is **-2.37% to -1.98%** (coverage 80–86%, below
 nominal), while action-only IPW is **+43.9% to +368.3%** and DR **+596.4% to
 +1301.5%**. This is the strongest practical
@@ -164,10 +168,48 @@ argument for the audit.
 |---|---|
 | Review capacity 1–10% | Max \|relative bias\| **1.71%**; coverage **94–98%** |
 | Approve-label delay 0–90 days | At 90 days, mean ESS **3,308**; max \|relative bias\| **1.28%**; coverage **84–96%** |
-| False-reject cost 0.02–0.50 | The correction holds; the ranking is cost-sensitive, so report the cost curve |
+| False-reject cost 0.02–0.50 | The point-estimate correction holds; the ranking is cost-sensitive. At `frej_050` (0.50), naive P(best) is **100%** and DR is **58%**; at `frej_002` (0.02), naive is **64%** and DR is **68%**; in the main scenario, naive is **0%** and DR is **72%**. |
 
 Precision falls with delay; the correction still holds. Capacity 1–10% does not
 break the correction.
+
+**The ranking counterexample.** At the highest false-reject cost (`frej_050`,
+50 reps), the naive labeled mean ranks the true best policy **100%** of the time
+while DR ranks it **58%**. The naive estimate is still badly biased (relative
+bias **+162.7% to +291.2%**, coverage **0%**), so this is not a case where naive
+is accurate. It is a case where a biased point estimate preserves the ranking
+and an accurate point estimate does not. The ranking failure is therefore
+**cost-matrix-dependent**, not a universal property of naive evaluation. Report
+the cost curve and both metrics; do not claim that the correction always ranks
+better.
+
+### 5.1 Action-weighted baseline (post-hoc)
+
+The naive estimator is an unweighted labeled mean. A realistic incumbent
+backtest would weight by the action's observation rate. We added an
+**action-weighted Hájek** baseline and reran the main and `frej_050` scenarios
+(50 reps each; `reports/baseline_sensitivity/`).
+
+| Scenario | Estimator | Max \|relative bias\| | P(select true best) |
+|---|---|---:|---:|
+| main | naive | **278.5%** | **0%** |
+| main | action-weighted | **2.9%** | **62%** |
+| main | DR | **0.96%** | **68%** |
+| `frej_050` | naive | **291.2%** | **100%** |
+| `frej_050` | action-weighted | **2.4%** | **58%** |
+| `frej_050` | DR | **0.36%** | **58%** |
+
+**Read:** the main-scenario naive bias is **not** an artifact of the unweighted
+mean. The action-weighted baseline is accurate (≤2.9% bias) but still selects the
+true best policy only **62%** of the time, versus **0%** for naive. At
+`frej_050`, the naive rule still ranks first **100%** while the action-weighted
+and DR estimators rank **58%**, despite the naive estimate being biased by
+163–291%. Action weighting fixes the point estimate, not the ranking. The
+ranking effect is cost-dependent and is not removed by a more realistic baseline.
+
+This is a **post-hoc** 50-replication sensitivity, not a pre-registered
+headline. It is reported because it is the strongest test of the "naive baseline
+is a straw man" objection.
 
 ## 6. Pilot: reject-margin bounds
 
@@ -352,7 +394,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 
 ## 13. Negative controls
 
-`pytest -q`: **92 passed**, including:
+`pytest -q`: **101 passed** in the current tree (92 at the v1.0.0 tag), including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);

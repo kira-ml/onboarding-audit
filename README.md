@@ -7,8 +7,8 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-92%20passed-2ea44f?style=flat-square)](tests/)
-[![Version](https://img.shields.io/badge/version-1.0.0-6f42c1?style=flat-square)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-101%20passed-2ea44f?style=flat-square)](tests/)
+[![Version](https://img.shields.io/badge/version-1.0.1-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-review%20release-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
 *A measurement layer for the question every onboarding team asks:*
@@ -20,17 +20,24 @@
 
 ---
 
-> **Status:** `v1.0.0` review release. **92 tests pass.** The documentation is
+> **Status:** `v1.0.1` review update. **101 tests pass.** The documentation is
 > research-ready; an initial IEEEtran draft is in
 > [`paper/main.pdf`](paper/main.pdf). This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim.
 >
-> **v1.0.0 review release:** a credibility-first release. The bias claim is
+> **Public-release gate:** the two external readers required by the V1
+> definition of done are still open. `v1.0.1` is a review update, not an
+> externally validated release. See
+> [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md).
+>
+> **v1.0.1 review update:** adds the full-policy decision check, the
+> action-weighted baseline, the observational segment diagnostic, and the
+> reviewer packet. The bias claim is
 > conditional on an observation-rate sweep; F5 is recorded (the narrow interval
 > fails, the widened interval passes); the report has an identification gate; and
 > the benchmark pipeline reproduces the recorded hash. See
-> [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md),
+> [`docs/RELEASE_NOTES_v1.0.1.md`](docs/RELEASE_NOTES_v1.0.1.md),
 > [`docs/V1/README.md`](docs/V1/README.md), and
 > [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md).
 
@@ -49,6 +56,12 @@ reject the better policy. A 12-cell observation-rate sweep shows the maximum
 bias across policies is **7.8–538.5%** and exceeds 5% in **every** cell; the
 incumbent's own bias is **1.5–218%**, above 5% in 11/12 cells. The direction is
 robust; the magnitude is conditional.
+
+The ranking is also **cost-dependent**. At the highest false-reject cost
+(`frej_050`), the naive rule ranked the true best policy first in **100%** of
+replications while DR ranked it first in **58%**, even though the naive point
+estimate was still biased by 163–291%. The point estimate and the ranking are
+different objects; the tool reports both.
 
 This repository builds the missing measurement layer: a decision-log schema,
 selection- and delay-aware estimators, a capacity-constrained review model, a
@@ -85,13 +98,13 @@ which is which.
 |---|---|
 | **Decision** | Approve / review / reject a new account application |
 | **Primary estimand** | Policy value on `P0` — the logging non-rejected population |
-| **Reject margin** | Partial-identification bounds, not a point estimate |
+| **Reject margin** | Partial-identification bounds, a full-policy difference bound, and a break-even rejected-fraud rate |
 | **Estimators** | Naive, IPW-HT, IPW-Hájek, doubly robust, audit-only, bounds |
 | **Propensity modes** | Oracle, action-level estimated, noisy, covariate |
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v1.0.0 review release · 92 tests · not production |
+| **Status** | v1.0.1 review update · 101 tests · external review open · not production |
 
 ## Headline results
 
@@ -101,7 +114,8 @@ scenario and 50 for the sweeps and sensitivity studies.
 | Finding | Result | Reading |
 |---|---|---|
 | Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep (max across policies) | relative bias; **12/12** cells >5% for at least one policy; incumbent **1.5–218%**, 11/12 |
-| Naive ranking | **1.00 / 0%** | mean pairwise inversions / P(select true best) |
+| Naive ranking | **1.00 / 0%** main; **0.00 / 100%** at `frej_050` | mean pairwise inversions / P(select true best); ranking is cost-dependent |
+| Action-weighted baseline | main **2.9% / 62%**; `frej_050` **2.4% / 58%** | max relative bias / P(select true best); the naive gap is not just an unweighted-mean artifact |
 | Observation-rate sweep | **12/12** cells >5% (max across policies); DR mean ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
 | Doubly robust (DR) | **0.94% / 96.0%** | mean relative bias / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
 | Double robustness | DR **+0.14%** (wrong outcome model), **+0.36%** (wrong propensity) | known-truth test; IPW **−36.7%** with wrong `e`, plug-in **+5.1%** with wrong outcome |
@@ -110,7 +124,7 @@ scenario and 50 for the sweeps and sensitivity studies.
 | Outcome-dependent labels | audit-only **−2.37% to −1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** | relative bias |
 | Reject-margin bounds | **0.009942** main; **0.203** in `frej_002`; incumbent coverage **34%**; F5 **failed** for the narrow interval (**15/88**), **passed** for the widened interval (**77/88**) | width / coverage of true full value — the narrow interval is **not** a confidence interval |
 | DR ranking at low approve-label rate | **64%** [50–76%] vs naive **0%** | P(select the true best policy), 95% Wilson interval |
-| Case study | naive **+6.3% worse**; true **−12.4% better**; report **P=0.984** | the naive backtest would keep the worse policy |
+| Case study | naive **+6.3% worse**; true **−12.4% better**; report **P=0.984** | a synthetic oracle candidate; the naive backtest would keep the worse policy |
 | Temporal stability | naive **230% / 255%**; DR **0.89% / 0.43%**; naive P(best) **0% / 0%** | month 5 vs month 6, 100 reps each |
 | Estimated action-level `e` | DR **1.43% / 93.5%**; IPW **2.92% / 92.0%** | max relative bias / mean coverage |
 | Covariate-dependent observation | action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage **89–91.5%** | relative bias; coverage is reported separately |
@@ -200,6 +214,11 @@ The core design choice is the **estimand split**:
   observed, so the honest output is a **partial-identification interval**, not a
   point estimate.
 
+The report also computes the **full-policy difference** between the candidate and
+the incumbent over the reject margin, and a **break-even rejected-fraud rate**.
+If a directional `P0` recommendation does not survive the reject margin, the memo
+flags it instead of presenting it as a full-policy decision.
+
 ## Project structure
 
 ```text
@@ -220,7 +239,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 92 tests, including negative controls
+├── tests/                 # 101 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -265,21 +284,21 @@ discipline, not a new estimator. The closest work is mapped in
 | Decision-log schema + validator | **Implemented** | Extends BSP 1213's 11 fields; `validate` command |
 | Cost-sensitive policy construction | **Implemented** | Approve/review/reject with a hard review capacity |
 | Observation model | **Implemented** | Action-dependent, delay/censoring, audit, outcome-dependent, covariate-dependent |
-| Estimators | **Implemented** | Naive, IPW-HT, IPW-Hájek, DR, audit-only, bounds |
+| Estimators | **Implemented** | Naive, IPW-HT, IPW-Hájek, DR, audit-only, bounds, full-policy difference/break-even |
 | Propensity estimation | **Implemented** | Action-level, noisy, and covariate models |
 | Pilot benchmark | **Implemented** | 22 configured scenarios (13 core + 9 sensitivity), 1,150 replications |
 | Observation-rate sweep | **Implemented** | 12 cells, 600 replications; see `reports/obs_sweep/` |
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 92 tests, including negative controls |
+| Test suite | **Implemented** | 101 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |
-| External readers / red team | **Planned** | Before public release |
-| Paper draft / arXiv | **Planned** | `paper/` contains research notes only |
+| External readers / red team | **Partial** | Red team done; external readers open (the public-release gate) |
+| Paper draft / arXiv | **Draft** | Initial IEEEtran draft; not submission-ready |
 | Transaction-fraud extension | **Planned** | Separate scope; not evaluated here |
-| Fairness diagnostics | **Planned** | Schema has segment fields; the pilot does not evaluate fairness |
+| Fairness diagnostics | **Partial** | Minimal observational segment table with small-cell suppression; full fairness audit (with rejected outcomes) planned for V1.1 |
 | Production integration | **Out of scope** | Not a vendor replacement or a production approval system |
 
 ## Limitations and non-claims
@@ -314,7 +333,7 @@ onboarding-audit demo --out reports/demo
 python scripts/check_claims.py
 ```
 
-Expected: **92 passed**, the demo memo, and **43/43** claim checks.
+Expected: **101 passed**, the demo memo, and **43/43** claim checks.
 
 ## Documentation
 
@@ -326,9 +345,13 @@ Expected: **92 passed**, the demo memo, and **43/43** claim checks.
 | [`docs/RESULTS.md`](docs/RESULTS.md) | Consolidated measured findings and H1–H6 verdicts |
 | [`docs/CLAIMS.md`](docs/CLAIMS.md) | The claim ledger: what may be said, with evidence |
 | [`docs/THREATS.md`](docs/THREATS.md) | The strongest counter-case and mitigations |
-| [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md) | The v1.0.0 release notes |
+| [`docs/RELEASE_NOTES_v1.0.1.md`](docs/RELEASE_NOTES_v1.0.1.md) | The v1.0.1 review-update notes |
+| [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md) | The historical v1.0.0 review-release notes |
 | [`paper/main.pdf`](paper/main.pdf) | The initial IEEEtran two-column draft |
 | [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) | The adversarial red-team audit and verdict |
+| [`docs/STRATEGIC_REVIEW_v1.md`](docs/STRATEGIC_REVIEW_v1.md) | The V1 strategic review: constraint table, pre-mortem, falsification ledger, findings |
+| [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md) | What is tagged, what is not, and the open public-release gate |
+| [`docs/REVIEWER_PACKET.md`](docs/REVIEWER_PACKET.md) | The cover note, shortlist, agenda, and outreach tracker |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`docs/REPORT_USAGE.md`](docs/REPORT_USAGE.md) | How to run and read the arbitrary-log report |
@@ -350,9 +373,10 @@ Research notes: [`paper/README.md`](paper/README.md).
 |---|---|---|
 | **v0.1 — Pilot** | Complete | Problem, schema, estimators, 700-replication benchmark |
 | **v0.2 — Usable tool** | Complete | Arbitrary-log report, propensity and covariate sensitivity |
-| **v1.0.0 — Documentation freeze** | Complete | Canonical research and technical documentation |
-| **v0.3 — Research** | Next | Paper draft, second dataset, bootstrap intervals, independent red team |
-| **v1.0 — Release** | Later | Public release, arXiv, external readers, application package |
+| **v1.0.0 — Review release** | Tagged 2026-11-22 | Estimators, gate, bounds, sweep, case study, docs |
+| **v1.0.1 — Decision-reliability update** | Tagged 2026-11-26 | Full-policy difference/break-even, action-weighted baseline, segment diagnostic, reviewer packet; external review open |
+| **v1.1 — Research + external review** | Next | Paper, second dataset, bootstrap intervals, two external readers |
+| **Public 1.0** | Later | After the external-review gate; arXiv, application package |
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the review dates and out-of-scope
 items.
@@ -382,7 +406,7 @@ If you use this project, cite the software via [`CITATION.cff`](CITATION.cff):
 @software{Talingting_Onboarding_Audit_2026,
   author  = {Talingting, Ken Ira Lacson},
   title   = {Onboarding Audit: Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels},
-  version = {1.0.0},
+  version = {1.0.1},
   year    = {2026},
   license = {MIT},
   url     = {https://github.com/kira-ml/onboarding-audit}

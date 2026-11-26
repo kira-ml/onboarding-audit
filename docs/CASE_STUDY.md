@@ -9,7 +9,7 @@
 ## 1. The question
 
 A bank reviews 5% of account applications and approves the rest. A candidate
-model ranks fraud better than the incumbent. The team runs the usual backtest on
+score ranks fraud better than the incumbent. The team runs the usual backtest on
 the labeled data:
 
 > The candidate looks **6.3% more expensive**. Should we keep the incumbent?
@@ -30,8 +30,11 @@ study shows why, and what the audit layer reports.
 | Candidate score | true fraud probability + noise (sd 0.003) |
 | Cost unit | normalized; fraud loss `amount * 0.02`, review cost 0.02, residual fraud 0.30, false reject 1000 |
 
-The candidate is a *less noisy* estimate of the same probability, so it is
-better calibrated and ranks better; it has no access to the outcome.
+The candidate is an **oracle score**: a less noisy estimate of the true
+probability, not a model trained on pre-decision features. It is a best-case
+benchmark for the evaluation layer, not a demonstration that a real challenger
+model would produce the same gain. It does not observe the label `y`, but it does
+observe the data-generating probability, which a real model cannot.
 
 ## 3. The naive answer
 
@@ -83,6 +86,8 @@ kept the worse policy.
 
 ## 5. Why the correction works here
 
+- The candidate is an oracle score (true probability plus small noise); this
+  isolates the evaluation bias from model-training quality.
 - The observation mechanism is action-dependent and the action-level propensity
   is correct: review 90%, approve 8.9%.
 - The outcome model uses the incumbent score, age, and credit risk; it is an
@@ -106,6 +111,13 @@ kept the worse policy.
 - It uses a normalized cost matrix, not pesos.
 - It evaluates `P0`; a candidate that changes logging-rejected rows needs the
   bounds and a controlled design.
+- It deliberately uses a high false-reject cost (one logging-rejected row), so it
+  isolates the **selection** margin. It does not demonstrate the full-policy
+  decision check; the unit tests and the BAF pilot exercise a material reject
+  margin. Do not read this case as evidence that the reject margin is solved.
+- The candidate is an **oracle** by construction. It does not show that a model
+  trained on pre-decision features would produce the same gain. A trained-model
+  case is a separate experiment.
 - It is one draw. The report's interval is the relevant uncertainty; the point
   estimate alone is not a decision.
 

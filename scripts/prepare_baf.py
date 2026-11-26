@@ -244,6 +244,8 @@ def main() -> int:
     df = simulate_delay(df)
     observed = df[df["observed"]]
     train = observed[observed["month"].isin(TRAIN_MONTHS)]
+    # Held out and reported for provenance. This reproduction uses the archived
+    # V2 fixed hyperparameters; it does not tune on `val`.
     val = observed[observed["month"].isin(VAL_MONTHS)]
     test = observed[observed["month"].isin(TEST_MONTHS)]
     if train.empty or test.empty:

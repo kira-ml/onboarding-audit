@@ -100,7 +100,9 @@ one the business is asking.
 | Covariate coverage (oracle / model) | **89–90% / 89.5–91.5%** (heavy tails) |
 
 **Interpretation:** the naive evaluation is not a small approximation; it
-overstates cost and would reject the better policy. DR recovers the identified
+overstates cost and, in the main cost matrix, would reject the better policy;
+the ranking is cost-dependent (at `frej_050`, naive ranks correctly while DR does
+not). DR recovers the identified
 value and the true ranking, and both DR and IPW survive estimated action-level
 propensities; DR is better under noise. Under covariate-dependent observation,
 action-level IPW fails and

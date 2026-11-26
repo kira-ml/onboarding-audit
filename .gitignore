@@ -29,6 +29,7 @@ reports/covariate_smoke/
 reports/sample_report/
 reports/sample_covariate/
 reports/*.parquet
+reports/*/pilot_rows.parquet
 .serena/
 reports/obs_sweep_smoke/
 reports/obs_sweep/pilot.md
@@ -47,3 +48,4 @@ paper/main.log
 paper/main.blg
 paper/main.out
 paper/main.xdv
+reports/demo_strategy/

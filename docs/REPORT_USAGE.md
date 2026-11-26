@@ -132,7 +132,41 @@ The memo reports a paired comparison on `P0`:
 The comparison uses the same outcome model and propensities for both policies and
 the paired influence terms for the interval. It is a first-order approximation:
 it ignores nuisance-estimation uncertainty. It is `P0`-conditional; a candidate
-that changes logging-rejected rows is not fully evaluated.
+that changes logging-rejected rows is not fully evaluated by that comparison.
+
+### Full-policy check
+
+The memo adds a **full-policy check** that includes the logging-rejected rows:
+
+- the full-policy difference (candidate − incumbent) over **all possible**
+  outcomes for the rejected rows, not a point estimate;
+- whether the direction survives any reject outcome, or depends on the unobserved
+  reject margin;
+- a **break-even** rejected-fraud rate under a common-rate assumption;
+- reference fraud rates among reviewed and observed approved applications, as
+  anchors — not as a prior for the rejected population.
+
+Read the `P0` recommendation as conditional. If the full-policy check says
+**depends on the reject margin**, the `P0` recommendation is not a full-policy
+decision. The memo prints a warning when a directional `P0` recommendation does
+not survive the reject margin.
+
+A break-even near **0%** or **100%** means the decision is practically robust
+even though it is not identified: the reject margin would have to be almost
+entirely legitimate or almost entirely fraud to change the sign. A mid-range
+break-even means the reject margin can change the decision, and the risk team
+must judge which side is plausible. Do not quote the break-even as an estimate
+of the rejected fraud rate. With this cost model, the candidate is cheaper
+**below** `p*`; the "above" direction is not reachable under non-negative costs.
+
+The decision labels are **candidate cheaper for any reject outcome**,
+**incumbent cheaper for any reject outcome**, **depends on the reject margin**,
+**P0 inconclusive**, and **not identified**. `P0 inconclusive` means the `P0`
+interval includes zero and the reject margin does not flip the sign at the `P0`
+point estimate; collecting more `P0` labels is the fix, not more reject labels.
+If the identification gate fails, §4.1 is **diagnostic only** and does not print
+a decision. If there are no logging-rejected rows, the full population equals
+`P0` and the section says so.
 
 ### Identification gate
 
@@ -196,8 +230,13 @@ trusting the interval.
 | `ipw_ht` | `P0` | Inverse-probability weighted; can be unstable with high weights. |
 | `ipw_hajek` | `P0` | Self-normalized; usually more stable. |
 | `dr` | `P0` | Doubly robust; the preferred point estimate when the outcome model is reasonable. |
-| `audit_only` | `approved` | Mean cost on the random audit sample; unbiased for the approved population, high variance. |
+| `audit_only` | `approved` | Mean cost on the random audit sample; unbiased for the **logging-approved** population, high variance. |
 | `bounds` | `full` | Partial-identification interval for the full population, including logging-rejected rows. |
+
+`audit_only` targets the **logging-approved** population: the rows the incumbent
+approved and the audit sampled. A candidate that expands or shrinks the approved
+set is outside that target; the candidate's approved-population value is not
+identified without a candidate-specific audit.
 
 ### Positivity and overlap
 
@@ -208,6 +247,19 @@ trusting the interval.
 - Check the candidate review/approve-outside-`P0` counts. If the candidate
   explores regions the logging policy never labeled, the log cannot identify
   that region without an audit or a model assumption.
+
+### Segment diagnostic
+
+If the log has a `segment` column, the memo adds an **observational** segment
+table: incumbent approve/review/reject counts, candidate reject share, candidate
+change share, observed fraud rate, and the candidate false-reject share among
+observed legitimate rows. Segments with fewer than 50 rows are suppressed.
+
+This is **not** a fairness certification. Logging-rejected applicants have no
+outcome, and the observed false-reject share is conditioned on the rows that were
+observed. Use it to decide whether a full segment audit is needed, not to clear
+the policy. A full fairness audit needs outcomes for the rejected margin, which
+the log does not have.
 
 ### Choosing the propensity model
 
@@ -227,6 +279,11 @@ trusting the interval.
 The bounds are **partial-identification intervals conditional on the `P0`
 estimate**, not confidence intervals. Do not report 95% coverage. If the reject
 margin is material, the bounds are the honest output.
+
+The full-policy **difference** bounds are separate and usually sharper than
+differencing two policy bounds, because the same rejected application's outcome
+is shared by both policies. The break-even is a sensitivity threshold, not an
+estimate; it assumes a common fraud rate among rejected rows.
 
 ### Audit recommendation
 
