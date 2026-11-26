@@ -1,6 +1,8 @@
 # External Credibility Review — V1
 
-**Status:** Pre-mortem, 2026-11-27.
+**Status:** Pre-mortem, 2026-11-27. **Post-review note:** the critical
+research-gap claim and citation defects identified here were corrected in
+`v1.0.2`; the tracked status is in [`RED_FLAG_AUDIT.md`](RED_FLAG_AUDIT.md).
 **Stance:** Skeptical fintech data scientist. The objective is to find the
 embarrassing mistake before an external reviewer does.
 **Method:** Inversion & Falsification (pre-mortem + falsification ledger),
