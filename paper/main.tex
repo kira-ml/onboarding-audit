@@ -116,12 +116,12 @@ For a candidate and the logged policy, the paired DR difference uses $\psi_i^{\t
 
 The paired comparison is \Pzero-conditional. To keep a \Pzero\ recommendation from being read as a full-policy decision, we bound the candidate-vs-incumbent difference directly. For each logging-rejected row $i$, let $d_i(y)=C(\pi_c(X_i),y,m_i)-C(\pi_0(X_i),y,m_i)$ for $y\in\{0,1\}$. The mean reject-margin difference lies in $[\overline{\min(d_i(0),d_i(1))},\overline{\max(d_i(0),d_i(1))}]$, and the full difference lies in
 \begin{equation}
-\left[
-\frac{n_0}{n}\left(\Delta - z\,\mathrm{se}_\Delta\right)
-+\frac{n_{\text{rej}}}{n}\overline{\min\{d_i(0),d_i(1)\}},\;
-\frac{n_0}{n}\left(\Delta + z\,\mathrm{se}_\Delta\right)
-+\frac{n_{\text{rej}}}{n}\overline{\max\{d_i(0),d_i(1)\}}
-\right].
+\begin{aligned}
+L &= \frac{n_0}{n}\left(\Delta - z\,\mathrm{se}_\Delta\right)
++\frac{n_{\text{rej}}}{n}\overline{\min\{d_i(0),d_i(1)\}},\\
+U &= \frac{n_0}{n}\left(\Delta + z\,\mathrm{se}_\Delta\right)
++\frac{n_{\text{rej}}}{n}\overline{\max\{d_i(0),d_i(1)\}}.
+\end{aligned}
 \end{equation}
 This is sharper than differencing two separate policy bounds because the same application's outcome is shared by both policies. If the interval excludes zero, the direction survives any reject outcome. If it does not, we report the break-even fraud rate $p^\ast$ under a common-rate assumption, $D_{\text{full}}(p)=0$; a \Pzero\ recommendation that does not survive the reject margin is flagged. The break-even is a sensitivity threshold, not an estimate.
 
