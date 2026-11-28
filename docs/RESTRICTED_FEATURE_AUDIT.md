@@ -60,11 +60,25 @@ point-estimate result in the main scenario.
 | Identified directional accuracy | **1 of 8 (12%)** |
 | All directional accuracy | **1 of 11 (9%)** |
 
-All five false certifications are in the high-false-reject-cost scenario
-(`frej_050`). The true candidate advantage there is about **0.53% of cost**.
-The estimate put the candidate about **7% worse**; the bootstrap agreed with the
-wrong sign (`P(candidate better)` 0.00–0.04), the 3×3 cost grid was 9/9 stable,
-and the full-policy bound also said the incumbent was cheaper.
+All five false certifications in the 60-replication audit are in the
+high-false-reject-cost scenario (`frej_050`). The true candidate advantage there
+is about **0.53% of cost**. The estimate put the candidate about **7% worse**;
+the bootstrap agreed with the wrong sign (`P(candidate better)` 0.00–0.04), the
+3×3 cost grid was 9/9 stable, and the full-policy bound also said the incumbent
+was cheaper.
+
+### 3.1 100-replication `frej_050` confirmation
+
+Because the 60-replication audit has only 20 `frej_050` draws, the scenario was
+rerun with 100 replications. The failure is stronger, not weaker:
+
+| Metric | Result |
+|---|---|
+| Grades | **13 A, 87 C** |
+| A/B releases | **13 of 100** |
+| Correct A/B releases | **0 of 13** |
+| False certifications | **13 of 13** (95% upper bound 21%) |
+| Identified directional accuracy | **1 of 15 (7%)** |
 
 **Read:** every measured reliability dimension agreed with a biased estimate.
 The profile had no diagnostic that could see the bias. A near-tie plus a small
@@ -74,6 +88,37 @@ outcome-model bias was enough to produce a confident wrong release.
 
 This is not evidence that the code has a bug. It is evidence that the **grade is
 not a certification** and that the current A/B rule is unsafe for small effects.
+
+### 4.1 Root-cause assessment
+
+The failure is **bias-detection failure**, not a bootstrap failure:
+
+- the bootstrap was stable and agreed with the wrong sign;
+- the 3×3 cost grid was stable and agreed with the wrong sign;
+- the full-policy bound agreed with the wrong sign;
+- the outcome calibration did not flag the error.
+
+The point estimates themselves were biased in `frej_050`. The residual cause is
+not yet isolated. Candidate causes, in order of plausibility:
+
+1. **Outcome-model misspecification** after removing the protected features;
+2. **Near-tie amplification**: a true effect of 0.53% is smaller than the
+   observed estimation bias;
+3. **Unmodeled heterogeneity** in the observation/delay mechanism that the
+   oracle action-level `e` does not capture;
+4. finite-sample variation in the paired difference.
+
+The next diagnostic must isolate these. A known-truth simulation with the same
+restricted feature set, plus an `e`-calibration check by action and month, is the
+cheapest discriminating test.
+
+**Cheap check already run:** in one `frej_050` draw, the oracle `e` calibration
+was close: P0 mean `e` **0.0540** vs observed **0.0542**; review **0.900** vs
+**0.909**; approve **0.0368** vs **0.0368**; month 5 **0.0596** vs **0.0598**;
+month 6 **0.0479** vs **0.0481**. `e` miscalibration is therefore not the
+obvious cause. The bias is in the weighted cost/difference at this sample size,
+or in a mechanism the action/day `e` does not capture. That is still an open
+diagnostic, not a solved one.
 
 The failure mode is:
 
@@ -91,7 +136,7 @@ decision reliability**, and the profile can be confidently wrong.
 - **Do not run the BAF-suite audit** as a success test.
 - **Do not claim** that the profile made zero false certifications in general.
   The original audit's zero is feature-set-specific and not replicated.
-- **Do not add a post-hoc threshold** just to make the five failures disappear.
+- **Do not add a post-hoc threshold** just to make the 13 failures disappear.
   A materiality or bias guard must be designed and pre-registered, then tested on
   a fresh audit.
 - The current paper's reliability claim is under revision. The restricted result
@@ -99,7 +144,7 @@ decision reliability**, and the profile can be confidently wrong.
 
 ## 6. Next design question
 
-What guard would have blocked these five releases **before** seeing the result?
+What guard would have blocked these 13 releases **before** seeing the result?
 
 Candidates:
 
@@ -110,5 +155,5 @@ Candidates:
 - a requirement that the audit-only estimate agree with the DR estimate.
 
 The next run must pre-register the guard and evaluate it on the same restricted
-feature set, with the five failures included. Tuning until the audit shows zero
+feature set, with the 13 failures included. Tuning until the audit shows zero
 is not evidence.

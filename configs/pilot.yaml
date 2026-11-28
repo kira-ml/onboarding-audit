@@ -1,3 +1,5 @@
+# LEGACY: uses protected attributes (customer_age/employment_status/income).
+# Use configs/pilot_restricted.yaml for new work.
 # Onboarding-audit pilot configuration.
 # See docs/PILOT_SPEC.md for the pre-registered protocol.
 

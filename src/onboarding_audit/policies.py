@@ -104,7 +104,7 @@ def build_policy(
     if not np.isfinite(p).all() or ((p < 0) | (p > 1)).any():
         raise ValueError(f"score {spec.score_col!r} must be finite and in [0, 1]")
 
-    actions_unconstrained, (c_app, c_rev, c_rej) = choose_actions(
+    _actions_unconstrained, (c_app, c_rev, c_rej) = choose_actions(
         p,
         base_costs,
         amount,

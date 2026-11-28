@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Status:** Canonical documentation map for v1.0.2 (2026-11-27).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Rule:** Every public number traces to a committed JSON or a cited primary
 source. Every public claim appears in [`CLAIMS.md`](CLAIMS.md). If two documents
 disagree, the precedence in §5 applies.
@@ -69,7 +69,9 @@ disagree, the precedence in §5 applies.
 | [`DATA.md`](DATA.md) | The data card: provenance, split, limitations |
 | [`DATA_SOURCES.md`](DATA_SOURCES.md) | Dataset licensing, privacy, permitted use, and go/no-go |
 | [`DATA_USE_PLAN.md`](DATA_USE_PLAN.md) | The operational compliance, security, ethics, and publication rules for BAF |
-| [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) | The negative result after removing protected attributes: 5/5 wrong A/B releases |
+| [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) | The negative result after removing protected attributes: 13/13 wrong A/B releases |
+| [`BIAS_GUARD_PROPOSAL.md`](BIAS_GUARD_PROPOSAL.md) | The post-hoc materiality guard candidate; not yet enabled |
+| [`CRITICAL_AUDIT_2026-11-28.md`](CRITICAL_AUDIT_2026-11-28.md) | The current credibility issue log and status of fixes |
 | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) | The verified benchmark rebuild: hashes, split, parameters, leakage controls |
 | [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) | Every column in the processed test frame |
 | [`SCHEMA.md`](SCHEMA.md) | The decision-log schema and validation rules |
@@ -164,6 +166,7 @@ These are outputs, not editable sources:
 | [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) | yes | Same run; audit table |
 | [`../reports/restricted_main100/pilot.json`](../reports/restricted_main100/pilot.json) | yes | `onboarding-audit pilot --config configs/pilot_restricted.yaml --scenarios main` |
 | [`../reports/reliability_audit_restricted/summary.md`](../reports/reliability_audit_restricted/summary.md) | yes | `onboarding-audit pilot --config configs/reliability_audit_restricted.yaml --reliability-boot 100` |
+| [`../reports/reliability_audit_restricted_frej100/summary.md`](../reports/reliability_audit_restricted_frej100/summary.md) | yes | Same config, `--scenarios frej_050 --reps 100`; 13/13 false certifications |
 | [`../reports/case_reliability/report.json`](../reports/case_reliability/report.json) | yes | `onboarding-audit report` on `examples/case_log.csv`, `--out reports/case_reliability` |
 | [`../reports/case_reliability/report.md`](../reports/case_reliability/report.md) | yes | Same run; grade A memo |
 | [`../reports/demo_reliability/report.json`](../reports/demo_reliability/report.json) | yes | `onboarding-audit demo --out reports/demo_reliability` |

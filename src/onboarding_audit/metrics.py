@@ -235,7 +235,7 @@ def verdict(
                 "estimator": estimator,
                 "max_abs_rel_bias": float(finite["rel_bias"].abs().max()),
                 "mean_coverage": float(finite["coverage"].mean()),
-                "n_policies": int(len(finite)),
+                "n_policies": len(finite),
             }
         )
     credible = [

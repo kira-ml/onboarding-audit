@@ -8,8 +8,8 @@
   `income`.
 - Main point estimates held (DR max bias 1.33%, coverage 92–95%, P(best) 60%;
   naive 291%/0%).
-- Reliability audit failed: 5 A/B releases, 0 correct, all in `frej_050`;
-  false certifications 5/5 (95% upper bound 45%).
+- Reliability audit failed: 13 A/B releases, 0 correct in the 100-replication
+  `frej_050` confirmation; false certifications 13/13 (95% upper bound 21%).
 - BAF-suite audit stopped (D20). No claim that the profile is safe.
 
 ## [1.1.0] — 2026-11-28
@@ -57,7 +57,7 @@ reliability of the decision, not the point estimate.
 
 ### Verification
 
-- 119 tests, 69/69 claim checks, 0 missing links, paper at 6 body pages plus
+- 119 tests, 73/73 claim checks, 0 missing links, paper at 6 body pages plus
   references; the 60-replication audit is unchanged after the grading fix.
 
 ## [1.0.2] — 2026-11-27

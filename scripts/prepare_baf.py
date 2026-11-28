@@ -128,9 +128,14 @@ def simulate_delay(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def feature_columns(
-    df: pd.DataFrame, extra_exclude: list[str] | tuple[str, ...] = ()
+    df: pd.DataFrame,
+    extra_exclude: list[str] | tuple[str, ...] = (),
+    *,
+    include_protected: bool = False,
 ) -> list[str]:
     excluded = set(FEATURE_EXCLUDE) | set(extra_exclude)
+    if not include_protected:
+        excluded |= set(PROTECTED_COLUMNS)
     return [c for c in df.columns if c not in excluded]
 
 
@@ -214,8 +219,12 @@ def score_test(
     train: pd.DataFrame,
     test: pd.DataFrame,
     extra_exclude: list[str] | tuple[str, ...] = (),
+    *,
+    include_protected: bool = False,
 ) -> pd.DataFrame:
-    features = feature_columns(train, extra_exclude)
+    features = feature_columns(
+        train, extra_exclude, include_protected=include_protected
+    )
     categorical = [c for c in CATEGORICAL_COLS if c in features]
     numeric = [c for c in features if c not in categorical]
     out = test.copy()
@@ -249,7 +258,12 @@ def main() -> int:
     parser.add_argument(
         "--exclude-protected",
         action="store_true",
-        help="Drop BAF protected attributes from the score features",
+        help=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "--include-protected",
+        action="store_true",
+        help="Legacy reproduction only: include age, employment status, and income",
     )
     args = parser.parse_args()
 
@@ -271,7 +285,9 @@ def main() -> int:
         return 2
 
     scored = score_test(
-        train, test, PROTECTED_COLUMNS if args.exclude_protected else ()
+        train,
+        test,
+        include_protected=args.include_protected,
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     scored.to_parquet(args.out, index=False)
@@ -295,7 +311,7 @@ def main() -> int:
         "test_rows": len(test),
         "fraud_rate_test": float(scored["fraud_bool"].mean()),
         "params": PARAMS,
-        "excluded_features": list(PROTECTED_COLUMNS) if args.exclude_protected else [],
+        "excluded_features": [] if args.include_protected else list(PROTECTED_COLUMNS),
         "sklearn_version": sklearn.__version__,
         "lightgbm_version": lightgbm.__version__,
         "score_columns": {

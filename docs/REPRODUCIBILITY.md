@@ -1,6 +1,6 @@
 # Reproducibility
 
-**Status:** Canonical reproduction guide for v1.0.0 (2026-11-22).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Purpose:** Let a reader rebuild the environment, the data frame, the pilot, the
 sensitivity studies, and the report from a clean checkout. If a number cannot be
 reproduced from this document, it should not be in the paper.
@@ -64,7 +64,7 @@ file from `Base.csv`:
 
 ```bash
 pip install -e ".[baf]"
-python scripts/prepare_baf.py --raw /path/to/Base.csv --verify
+python scripts/prepare_baf.py --raw /path/to/Base.csv --include-protected --verify
 ```
 
 The script:
@@ -109,7 +109,7 @@ identification gate. Not a research result.
 ### 4.3 Pilot
 
 ```bash
-onboarding-audit pilot --config configs/pilot.yaml --out reports
+onboarding-audit pilot --config configs/pilot_restricted.yaml --out reports
 ```
 
 This runs the 22 configured scenarios (1,150 replications). It writes:
@@ -174,7 +174,7 @@ parquet stays local. This is post-hoc, not a pre-registered headline.
 ### 4.5 Propensity and covariate sensitivity
 
 ```bash
-onboarding-audit sensitivity --config configs/pilot.yaml --out reports --reps 50
+onboarding-audit sensitivity --config configs/pilot_restricted.yaml --out reports --reps 50
 ```
 
 This runs the 11 sensitivity scenarios (550 replications): main, action-level

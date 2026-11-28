@@ -1,6 +1,6 @@
 # Using the Arbitrary-Log Report
 
-**Status:** Canonical report guide for v1.0.0 (2026-11-22).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 
 **Command:** `onboarding-audit report`
 **Purpose:** Evaluate a candidate onboarding policy from a decision log and a

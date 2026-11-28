@@ -50,9 +50,13 @@ def test_features_exclude_target_id_time_and_exposure():
     features = module.feature_columns(df)
     for forbidden in module.FEATURE_EXCLUDE:
         assert forbidden not in features
+    for forbidden in module.PROTECTED_COLUMNS:
+        assert forbidden not in features
     assert "fraud_bool" not in features
     assert "month" not in features
     assert "amount_proxy" not in features
+    legacy = module.feature_columns(df, include_protected=True)
+    assert "income" in legacy
 
 
 def test_train_and_test_months_are_disjoint():
@@ -66,6 +70,7 @@ def test_recorded_hash_and_row_count_are_pinned():
     module = _load()
     assert len(module.EXPECTED_SHA256) == 64
     assert module.EXPECTED_ROWS == 227_491
+
 
 def test_provenance_doc_matches_script_constants():
     module = _load()

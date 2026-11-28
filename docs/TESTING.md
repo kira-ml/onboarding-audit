@@ -1,6 +1,6 @@
 # Testing
 
-**Status:** Canonical test guide for v1.0.0 (2026-11-22).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Purpose:** Explain what the test suite protects, how to run it, and which
 failure modes are not covered. Tests are part of the research claim: a
 correction that cannot pass a known-truth identity is not evidence.

@@ -4,6 +4,7 @@ import pytest
 from onboarding_audit.config import Costs, OutcomeModel
 from onboarding_audit.estimators import (
     audit_only,
+    compare_policies,
     dr,
     effective_sample_size,
     expected_cost,
@@ -13,7 +14,6 @@ from onboarding_audit.estimators import (
     ipw_ht,
     naive,
     policy_bounds,
-    compare_policies,
 )
 
 

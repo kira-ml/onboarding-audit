@@ -1,0 +1,73 @@
+{
+  "note": "Post-hoc reliability audit; 20 reps per scenario, 100 bootstrap replicates per rep. A false certification is a wrong directional decision graded A/B. Abstention means the decision was withheld from release. `correct` is P0-correct; full-policy correctness is recorded separately in the pilot rows.",
+  "overall": {
+    "n": 100,
+    "grades": {
+      "C \u2014 collect more evidence": 87,
+      "A \u2014 decision-grade (conditional on assumptions)": 13
+    },
+    "grade_letters": {
+      "A": 13,
+      "C": 87
+    },
+    "decisions": {
+      "inconclusive": 85,
+      "keep incumbent": 14,
+      "prefer candidate": 1
+    },
+    "true_decisions": {
+      "prefer candidate": 100
+    },
+    "directional_n": 15,
+    "directional_correct_n": 1,
+    "directional_accuracy_all": 0.06666666666666667,
+    "released_n": 13,
+    "released_correct_n": 0,
+    "released_accuracy": 0.0,
+    "directional_withheld_n": 2,
+    "directional_withheld_rate": 0.13333333333333333,
+    "identified_directional_n": 15,
+    "identified_directional_correct_n": 1,
+    "identified_directional_accuracy": 0.06666666666666667,
+    "abstention_rate": 0.87,
+    "false_certification_n": 13,
+    "false_certification_rate": 1.0,
+    "false_certification_upper95": 0.20581666518655073
+  },
+  "by_scenario": {
+    "frej_050": {
+      "n": 100,
+      "grades": {
+        "C \u2014 collect more evidence": 87,
+        "A \u2014 decision-grade (conditional on assumptions)": 13
+      },
+      "grade_letters": {
+        "A": 13,
+        "C": 87
+      },
+      "decisions": {
+        "inconclusive": 85,
+        "keep incumbent": 14,
+        "prefer candidate": 1
+      },
+      "true_decisions": {
+        "prefer candidate": 100
+      },
+      "directional_n": 15,
+      "directional_correct_n": 1,
+      "directional_accuracy_all": 0.06666666666666667,
+      "released_n": 13,
+      "released_correct_n": 0,
+      "released_accuracy": 0.0,
+      "directional_withheld_n": 2,
+      "directional_withheld_rate": 0.13333333333333333,
+      "identified_directional_n": 15,
+      "identified_directional_correct_n": 1,
+      "identified_directional_accuracy": 0.06666666666666667,
+      "abstention_rate": 0.87,
+      "false_certification_n": 13,
+      "false_certification_rate": 1.0,
+      "false_certification_upper95": 0.20581666518655073
+    }
+  }
+}

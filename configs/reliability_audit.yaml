@@ -1,3 +1,4 @@
+# LEGACY: uses protected attributes. Use configs/reliability_audit_restricted.yaml.
 # Decision-reliability audit.
 # Per-replication reliability grades for the better_model vs incumbent decision.
 # Propensity is oracle in every scenario; this isolates sampling/cost stability

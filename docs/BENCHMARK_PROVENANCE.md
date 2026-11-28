@@ -10,7 +10,8 @@ frame byte-for-byte from the public raw file, and pin the hashes and versions.
 
 | Item | Value |
 |---|---|
-| Command | `python scripts/prepare_baf.py --raw Base.csv --verify` |
+| Command | `python scripts/prepare_baf.py --raw Base.csv --include-protected --verify` |
+| Default behavior | Protected attributes are excluded; `--include-protected` is legacy-only |
 | Raw input | BAF `Base.csv` |
 | Raw Kaggle version | **not recorded**; the current public release is version 2 (2023-11-29). Pin this before a public release. |
 | Data license | **CC BY-NC-SA 4.0**; see [`DATA_SOURCES.md`](DATA_SOURCES.md) |
@@ -27,6 +28,22 @@ frame byte-for-byte from the public raw file, and pin the hashes and versions.
 
 The rebuild matched the recorded hash on the first verified run. The hash covers
 the full 39-column parquet, not only the score columns.
+
+## 1.1 Restricted-feature source
+
+The restricted-feature audit used the public OpenML copy of BAF Base:
+
+| Item | Value |
+|---|---|
+| Source | `https://data.openml.org/datasets/0004/46646/dataset_46646.pq` |
+| Rows | 1,000,000 |
+| Local raw hash | `ecf04c8bd62aa808a822677987762d1d17822f95ff7d86100cc223e995944b09` |
+| Restricted output hash | `9068d785662790e91e376a5c11bb7520b80e42fff5000e202edaf1eeeafa300d` |
+| Row match | All 227,491 test rows match the original frame on label, amount, month, age, employment status, and income |
+| Excluded features | `customer_age`, `employment_status`, `income` |
+
+This pins the restricted copy, but it still does **not** prove which Kaggle
+version produced the original `Base.csv`. That remains an open release gate.
 
 ## 2. Split
 

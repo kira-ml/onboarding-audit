@@ -482,12 +482,16 @@ features preserved the main point-estimate conclusions (DR max absolute bias
 | False certifications | **5 of 5** (95% upper bound 45%) |
 | Identified directional accuracy | **1 of 8 (12%)** |
 
-The five false certifications are in `frej_050`, where the true candidate
+A 100-replication `frej_050` confirmation is stronger: **13 A, 87 C**, **13/13
+releases wrong**, false-certification upper bound **21%**, identified directional
+accuracy **1/15 (7%)**.
+
+The false certifications are in `frej_050`, where the true candidate
 advantage is about **0.53% of cost**. The estimate put the candidate about **7%
 worse**; the bootstrap, 3×3 cost stress, and full-policy bound all agreed with
 the wrong sign. This is a failure of the grade, not a coding defect. See
 [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) and
-`reports/reliability_audit_restricted/summary.md`.
+`reports/reliability_audit_restricted_frej100/summary.md`.
 
 ## 12. Verdicts
 

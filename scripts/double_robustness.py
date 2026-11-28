@@ -27,7 +27,6 @@ from sklearn.linear_model import LogisticRegression
 
 from onboarding_audit.config import Costs
 from onboarding_audit.estimators import effective_sample_size
-from onboarding_audit.policies import realized_cost
 
 COSTS = Costs(
     fraud_loss_rate=0.01,
@@ -119,7 +118,7 @@ def _estimates(phat, actions, y, observed, e, in_pop):
 def _run_arm(rng, reps, n, wrong_outcome: bool, wrong_propensity: bool):
     plug, ipw, dr = [], [], []
     for rep in range(reps):
-        x1, x2, x3, p, y, actions, e, observed = _generate(rng, n)
+        x1, x2, x3, _p, y, actions, e, observed = _generate(rng, n)
         in_pop = actions != "reject"
         design = [x1, x2, x3] if wrong_outcome else [x1, x2, x3, x1 * x2]
         X = np.column_stack(design)
@@ -150,7 +149,7 @@ def _summary(values):
 
 
 def _true_value(rng, n):
-    x1, x2, x3, p, y, actions, e, observed = _generate(rng, n)
+    _x1, _x2, _x3, _p, y, actions, _e, _observed = _generate(rng, n)
     in_pop = actions != "reject"
     fl = AMOUNT * COSTS.fraud_loss_rate
     cost = np.where(

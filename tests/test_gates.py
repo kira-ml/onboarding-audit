@@ -20,16 +20,16 @@ def _valid_inputs(n=1000, n_reject=50):
 
 def _check(**overrides):
     actions, candidate, observed, e, cost = _valid_inputs()
-    values = dict(
-        actions=actions,
-        candidate_actions=candidate,
-        observed=observed,
-        propensity=e,
-        cost=cost,
-        positivity_ok=True,
-        propensity_source="provided",
-        has_audit=True,
-    )
+    values = {
+        "actions": actions,
+        "candidate_actions": candidate,
+        "observed": observed,
+        "propensity": e,
+        "cost": cost,
+        "positivity_ok": True,
+        "propensity_source": "provided",
+        "has_audit": True,
+    }
     values.update(overrides)
     return check_identification(**values)
 

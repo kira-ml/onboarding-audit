@@ -353,6 +353,31 @@ def main() -> int:
             5.0,
         )
     )
+    restricted100 = _load(
+        ROOT / "reports" / "reliability_audit_restricted_frej100" / "summary.json"
+    )["overall"]
+    checks.append(
+        (
+            "restricted100 grade A",
+            float(restricted100["grade_letters"].get("A", 0)),
+            13.0,
+        )
+    )
+    checks.append(("restricted100 releases", float(restricted100["released_n"]), 13.0))
+    checks.append(
+        (
+            "restricted100 false certifications",
+            float(restricted100["false_certification_n"]),
+            13.0,
+        )
+    )
+    checks.append(
+        (
+            "restricted100 false-cert upper95",
+            float(restricted100["false_certification_upper95"]),
+            0.2058,
+        )
+    )
     restricted_main = _load(ROOT / "reports" / "restricted_main100" / "pilot.json")
     restricted_dr = [
         r

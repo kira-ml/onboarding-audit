@@ -503,7 +503,7 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 | Check | Command | Result |
 |---|---|---|
 | Unit tests | `pytest -q` | **119 passed** |
-| Claim checks | `python scripts/check_claims.py` | **69/69** |
+| Claim checks | `python scripts/check_claims.py` | **73/73** |
 | Link check | `python scripts/check_links.py` | **0 missing** |
 | Paper build | `tectonic paper/main.tex` | PDF written; 6 body + references; citations present |
 | Label holdout | `onboarding-audit pilot --config configs/holdout_baseline.yaml` | Naive >100%; action-weighted/DR ≤6%; ranking unstable |

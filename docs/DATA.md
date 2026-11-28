@@ -1,6 +1,6 @@
 # Data Card — BAF Account-Opening Test Window
 
-**Status:** Canonical data card for v1.0.0 (2026-11-22).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 
 ## 1. Dataset
 
@@ -54,7 +54,7 @@ file:
 
 ```bash
 pip install -e ".[baf]"
-python scripts/prepare_baf.py --raw /path/to/Base.csv --verify
+python scripts/prepare_baf.py --raw /path/to/Base.csv --include-protected --verify
 ```
 
 The script:

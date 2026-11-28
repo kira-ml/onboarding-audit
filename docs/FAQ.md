@@ -1,6 +1,6 @@
 # FAQ
 
-**Status:** Canonical question bank for v1.0.0 (2026-11-22; updated 2026-11-26).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Purpose:** Answer the questions a practitioner, a researcher, or an interviewer
 will actually ask, with links to the canonical document instead of a new claim.
 

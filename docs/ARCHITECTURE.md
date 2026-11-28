@@ -1,6 +1,6 @@
 # Architecture
 
-**Status:** Canonical code map for v1.0.0 (2026-11-22).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Purpose:** Explain how the package is organized, how data flows from a
 decision log or the BAF frame to a report, and which invariants the code
 protects. This is the document to read before changing the implementation.

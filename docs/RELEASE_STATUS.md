@@ -1,6 +1,9 @@
 # Release Status
 
 **Current tag:** `v1.1.0`, 2026-11-28.
+**`main` is ahead of the tag:** it includes the retitled paper, the data-use
+plan, and the restricted-feature negative result. The `v1.1.0` tag does not
+include those changes.
 **Previous tags:** `v1.0.2` (2026-11-27), `v1.0.1` (2026-11-26), and `v1.0.0` (2026-11-22).
 **Public-release gate:** **NOT MET.**
 **Publication decision:** published to GitHub as `v1.1.0` by owner decision on
@@ -32,7 +35,7 @@ The V1 plan and its definition of done are in [`V1/README.md`](V1/README.md).
 | Gate | Status | Evidence |
 |---|---|---|
 | Tests pass | **pass** (119 at `v1.1.0`; 101 at `v1.0.2`; 92 at `v1.0.0`) | `pytest -q` |
-| Claim checks | **pass** (69/69) | `python scripts/check_claims.py` |
+| Claim checks | **pass** (73/73) | `python scripts/check_claims.py` |
 | Link check | **pass** (0 missing) | `python scripts/check_links.py` |
 | Benchmark hash reproduced | **pass** | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) |
 | Kaggle version pin | **open** | raw SHA recorded; exact Kaggle version not yet pinned |
@@ -40,7 +43,7 @@ The V1 plan and its definition of done are in [`V1/README.md`](V1/README.md).
 | F5 recorded | **pass** (narrow fail, widened pass) | [`VALIDATION_REPORT.md`](VALIDATION_REPORT.md) §6 |
 | Identification gate | **pass** | `tests/test_gates.py` |
 | Reliability audit (original features) | **pass** (post-hoc) | 2/60 A/B released, both P0-correct, 0/2 false certifications (95% UB 78%), 9/11 directional decisions withheld (82%); [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) |
-| Restricted-feature audit | **FAIL** | 5/5 A/B releases wrong; 5/5 false certifications; BAF suite stopped (D20); [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) |
+| Restricted-feature audit | **FAIL** | 13/13 A/B releases wrong; 13/13 false certifications; BAF suite stopped (D20); [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) |
 | Reviewer packet | **ready** | [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md); no reader recorded yet |
 | Two external readers | **open** | none recorded |
 | Public release | **published as pre-release** | owner decision; external validation gate remains open |

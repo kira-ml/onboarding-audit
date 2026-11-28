@@ -2,8 +2,7 @@
 
 **For:** a fintech data science / ML research reviewer.
 **Length:** 2 pages.
-**Status:** v1.0.0 pilot; results from the pre-registered pilot, the propensity
-sensitivity, and the covariate sensitivity.
+**Status:** Current draft (2026-11-28); includes the v1.1.0 audit and the restricted-feature negative result.
 
 ---
 
@@ -95,6 +94,7 @@ one the business is asking.
 | Double robustness: DR wrong outcome / wrong `e` | **+0.14% / +0.36%**; IPW −36.7%, plug-in +5.1% |
 | Outcome-dependent + estimated `e`: audit-only | **2.58% / 82.5%**; IPW/DR fail |
 | Covariate observation: action IPW / DR | **67.52% / 21.25%** |
+| Restricted-feature audit | **13/13 A/B releases wrong**; profile not a certification |
 | Covariate observation: model IPW / DR | **1.97% / 2.48%** |
 | Covariate + 45-day delay: action / model | **64.27% / 20.27%** vs **3.35% / 3.68%** |
 | Covariate coverage (oracle / model) | **89–90% / 89.5–91.5%** (heavy tails) |

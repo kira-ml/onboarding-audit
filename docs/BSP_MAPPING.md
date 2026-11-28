@@ -1,6 +1,6 @@
 # BSP / AFASA / NPC Mapping
 
-**Status:** Canonical regulatory mapping for v1.0.0 (2026-11-22; updated 2026-11-26).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 
 **Purpose:** Show exactly which regulatory obligations the project supports, and
 which it does not. This is the "why a bank or e-wallet cares" document. It is

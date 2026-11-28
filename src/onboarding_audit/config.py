@@ -17,7 +17,7 @@ class Costs:
     residual_fraud_loss: float = 0.30
     amount_scaled: bool = True
 
-    def with_false_reject(self, value: float) -> "Costs":
+    def with_false_reject(self, value: float) -> Costs:
         return Costs(
             fraud_loss_rate=self.fraud_loss_rate,
             review_cost=self.review_cost,
@@ -40,7 +40,7 @@ class Observation:
     outcome_dependent: bool = False
     e_approve_fraud: float = 0.30
 
-    def with_overrides(self, **kwargs: Any) -> "Observation":
+    def with_overrides(self, **kwargs: Any) -> Observation:
         values = {
             "kappa_review": self.kappa_review,
             "e_approve": self.e_approve,

@@ -1,6 +1,6 @@
 # Publication Checklist
 
-**Status:** Canonical pre-release checklist for v1.0.0 (2026-11-22).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Purpose:** Prevent a public release from shipping an unsupported number, a
 privacy mistake, a broken reproduction path, or an overclaim. This is the last
 document to read before a tag, a blog post, or a paper submission.

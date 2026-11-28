@@ -50,7 +50,7 @@ def metrics(y: np.ndarray, p: np.ndarray) -> dict:
         "auc": float(roc_auc_score(y, p)),
         "average_precision": float(average_precision_score(y, p)),
         "ks": float(np.max(tpr - fpr)),
-        "n": int(len(y)),
+        "n": len(y),
         "fraud_rate": float(np.mean(y)),
     }
 
@@ -118,8 +118,8 @@ def main() -> None:
             "retrained; the logistic/HistGB models are trained on month 5 and "
             "tested on month 6. Not a production estimate."
         ),
-        "n_train_month5": int(len(train)),
-        "n_test_month6": int(len(test)),
+        "n_train_month5": len(train),
+        "n_test_month6": len(test),
         "score_metrics_month6": {
             "incumbent_p_fraud": metrics(y_test, test["p_fraud"].to_numpy()),
             "candidate_p_fraud_lgbm": metrics(y_test, test["p_fraud_lgbm"].to_numpy()),

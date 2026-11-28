@@ -50,8 +50,8 @@ full-policy fragility, and operational readiness, with an explicit A–D grade.
 > [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md).
 >
 > **Restricted-feature audit (2026-11-28):** removing the protected attributes
-> preserved the main point estimates, but the reliability audit released **5
-> A/B decisions and all 5 were wrong** in the high-false-reject-cost scenario.
+> preserved the main point estimates, but the reliability audit released **13
+> A/B decisions and all 13 were wrong** in the high-false-reject-cost scenario.
 > The profile is under revision; do not treat A/B as validated. See
 > [`docs/RESTRICTED_FEATURE_AUDIT.md`](docs/RESTRICTED_FEATURE_AUDIT.md).
 
@@ -217,12 +217,17 @@ and the project's use is non-commercial research only (see
 [`docs/DATA_USE_PLAN.md`](docs/DATA_USE_PLAN.md)). The BAF-suite expansion is on
 hold pending that plan's gates and a restricted-feature review.
 
+> **Legacy config:** `configs/pilot.yaml` reproduces the original
+> protected-feature results for the v1.1.0 record. New work must use
+> `configs/pilot_restricted.yaml`; `prepare_baf.py` now excludes protected
+> attributes by default.
+
 ```bash
 # ~19 min CPU, ~31 min wall-clock on the reference machine
-onboarding-audit pilot --config configs/pilot.yaml --out reports
+onboarding-audit pilot --config configs/pilot_restricted.yaml --out reports
 
 # ~16 min on the reference machine
-onboarding-audit sensitivity --config configs/pilot.yaml --out reports --reps 50
+onboarding-audit sensitivity --config configs/pilot_restricted.yaml --out reports --reps 50
 ```
 
 ## How it works
@@ -384,7 +389,7 @@ onboarding-audit demo --out reports/demo_reliability
 python scripts/check_claims.py
 ```
 
-Expected: **119 passed**, the demo memo, and **69/69** claim checks.
+Expected: **119 passed**, the demo memo, and **73/73** claim checks.
 
 ## Documentation
 
@@ -412,7 +417,9 @@ Expected: **119 passed**, the demo memo, and **69/69** claim checks.
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
 | [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) | BAF licensing, privacy, permitted use, and the go/no-go |
 | [`docs/DATA_USE_PLAN.md`](docs/DATA_USE_PLAN.md) | The BAF data-use, security, ethics, and publication protocol |
-| [`docs/RESTRICTED_FEATURE_AUDIT.md`](docs/RESTRICTED_FEATURE_AUDIT.md) | The restricted-feature negative result: 5/5 wrong A/B releases |
+| [`docs/RESTRICTED_FEATURE_AUDIT.md`](docs/RESTRICTED_FEATURE_AUDIT.md) | The restricted-feature negative result: 13/13 wrong A/B releases |
+| [`docs/BIAS_GUARD_PROPOSAL.md`](docs/BIAS_GUARD_PROPOSAL.md) | The post-hoc materiality guard candidate; not enabled |
+| [`docs/CRITICAL_AUDIT_2026-11-28.md`](docs/CRITICAL_AUDIT_2026-11-28.md) | The current credibility issue log and fix status |
 | [`docs/DATA_READINESS.md`](docs/DATA_READINESS.md) | Whether a real log can support the audit, and when to stop |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`docs/REPORT_USAGE.md`](docs/REPORT_USAGE.md) | How to run and read the arbitrary-log report |

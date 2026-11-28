@@ -1,6 +1,7 @@
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
-from types import SimpleNamespace
 
 from onboarding_audit.propensity import (
     estimate_from_draw,

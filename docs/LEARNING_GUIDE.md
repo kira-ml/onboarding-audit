@@ -1,6 +1,6 @@
 # Learning Guide — How to Explain and Defend Onboarding Audit
 
-**Status:** Supporting learning document for v1.0.0 (2026-11-22; updated 2026-11-26).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Purpose:** A plain-English path to understanding the flagship project, so you
 can explain its value in a fintech interview, a portfolio review, or a
 risk-committee conversation.

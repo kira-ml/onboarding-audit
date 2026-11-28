@@ -183,8 +183,8 @@ the reliability layer's behavior; they are not a bank estimate.
 ### 4.3 Restricted-feature failure
 
 Removing `customer_age`, `employment_status`, and `income` preserved the main
-point estimates but failed the release test: **5 A/B releases, 0 correct**, all
-in `frej_050`, where the true candidate advantage is only about 0.53% of cost.
+point estimates but failed the release test: **13 A/B releases, 0 correct** in the 100-replication
+`frej_050` confirmation, where the true candidate advantage is only about 0.53% of cost.
 The bootstrap, cost stress, and full-policy check all agreed with the wrong sign.
 The profile is not a certification and is under revision. See
 [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md).

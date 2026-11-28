@@ -1,6 +1,6 @@
 # Threats to Validity
 
-**Status:** Canonical validity register for v1.0.0 (2026-11-22; updated
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 2026-11-26).
 
 **Purpose:** The strongest reasons this project could be wrong, and the tests or

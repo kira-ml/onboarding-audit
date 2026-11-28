@@ -54,13 +54,13 @@ def summarize(payload: dict) -> pd.DataFrame:
             ranking[ranking["scenario"] == scenario] if not ranking.empty else ranking
         )
 
-        def max_bias(estimator: str) -> float:
+        def max_bias(estimator: str, part=part) -> float:
             return _max_abs(part.loc[part["estimator"] == estimator, "rel_bias"])
 
-        def mean_cov(estimator: str) -> float:
+        def mean_cov(estimator: str, part=part) -> float:
             return _mean(part.loc[part["estimator"] == estimator, "coverage"])
 
-        def rank_metric(estimator: str, column: str) -> float:
+        def rank_metric(estimator: str, column: str, rank=rank) -> float:
             if rank.empty:
                 return float("nan")
             return _mean(rank.loc[rank["estimator"] == estimator, column])

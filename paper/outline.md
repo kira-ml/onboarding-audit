@@ -2,8 +2,7 @@
 
 **Working title:** *Reliable Decisions or Confident Errors? Policy Evaluation for Account-Opening Fraud under Selective and Delayed Labels.*
 
-**Status:** Outline; results from the v1.0.0 pilot, propensity sensitivity, and
-covariate sensitivity.
+**Status:** Outline (2026-11-28); includes the v1.1.0 audit and the restricted-feature negative result.
 **Author:** Ken Ira Lacson Talingting.
 **Target:** Public technical report / arXiv first. ICAIF 2027 or a fintech research workshop if the results hold. Do not overpromise a venue.
 

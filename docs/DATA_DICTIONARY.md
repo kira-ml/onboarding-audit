@@ -1,6 +1,6 @@
 # Data Dictionary — `data/scored_test.parquet`
 
-**Status:** Canonical column reference for v1.0.0 (2026-11-22).
+**Status:** Current-tree document (2026-11-28; v1.1.0 tag plus post-release negative result).
 **Purpose:** Describe every column in the processed BAF test frame, its role, and
 its limitations. The file is local and gitignored; this document is the
 committed description.

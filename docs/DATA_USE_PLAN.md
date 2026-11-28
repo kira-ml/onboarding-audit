@@ -6,7 +6,7 @@ paper claim derived from them.
 **Not legal advice.** A commercial use, redistribution, or ambiguous case needs
 counsel and the dataset owner's permission.
 
-**Latest result:** the restricted-feature audit failed (5/5 wrong A/B releases);
+**Latest result:** the restricted-feature audit failed (13/13 wrong A/B releases in the 100-replication confirmation);
 the BAF-suite audit remains on hold. See
 [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md).
 
@@ -120,11 +120,14 @@ may proxy income or employment; monitor it as a potential proxy.
 
 ### 6.2 Resolution path
 
-1. Add `customer_age`, `employment_status`, and `income` to `FEATURE_EXCLUDE` in
-   `scripts/prepare_baf.py`.
-2. Rebuild `data/scored_test.parquet` and verify the new hash.
+1. Add `customer_age`, `employment_status`, and `income` to the default
+   exclusion list in `scripts/prepare_baf.py`. **Done;**
+   `--include-protected` is legacy-only.
+2. Rebuild the processed frame and verify the new hash. **Done for the
+   restricted frame; the canonical default is not yet switched.**
 3. Rerun the main pilot, the sweep, the sensitivity study, and the reliability
-   audit with the restricted feature set.
+   audit with the restricted feature set. **Partially done:** main 100-rep and
+   the audit are committed; the sweep/sensitivity are not.
 4. If the headline conclusions and reliability grades are materially unchanged,
    keep the restricted set and update the paper. If they change materially, report
    the protected-attribute dependence as a finding and narrow the claims.
