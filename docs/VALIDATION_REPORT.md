@@ -53,7 +53,7 @@ The CI workflow runs the tests, the demo, the claim check, and the link check.
 | Gate integration in the report | `tests/test_report.py` | pass |
 | 20-row demo withholds estimates | `tests/test_report.py::test_report_withholds_point_estimate_on_small_log` | pass |
 | End-to-end demo | `tests/test_demo.py` | pass |
-| Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (62/62) |
+| Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (69/69) |
 | Double robustness | `scripts/double_robustness.py`, `tests/test_double_robustness.py` | pass |
 | Temporal stability | `scripts/temporal_stability.py`, `reports/temporal_stability.json` | pass (both months) |
 | Bounds widen with the `P0` standard error | `tests/test_estimators.py` | pass |

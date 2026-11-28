@@ -64,6 +64,12 @@ FEATURE_EXCLUDE = [
     "device_fraud_count",
 ]
 
+PROTECTED_COLUMNS = [
+    "customer_age",
+    "employment_status",
+    "income",
+]
+
 SCORE_COLUMNS = {
     "logistic_regression": "p_fraud",
     "random_forest": "p_fraud_rf",
@@ -121,8 +127,11 @@ def simulate_delay(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def feature_columns(df: pd.DataFrame) -> list[str]:
-    return [c for c in df.columns if c not in FEATURE_EXCLUDE]
+def feature_columns(
+    df: pd.DataFrame, extra_exclude: list[str] | tuple[str, ...] = ()
+) -> list[str]:
+    excluded = set(FEATURE_EXCLUDE) | set(extra_exclude)
+    return [c for c in df.columns if c not in excluded]
 
 
 def build_preprocessor(algorithm: str, numeric: list[str], categorical: list[str]):
@@ -201,8 +210,12 @@ def _to_array(x):
     return x.toarray() if hasattr(x, "toarray") else x
 
 
-def score_test(train: pd.DataFrame, test: pd.DataFrame) -> pd.DataFrame:
-    features = feature_columns(train)
+def score_test(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    extra_exclude: list[str] | tuple[str, ...] = (),
+) -> pd.DataFrame:
+    features = feature_columns(train, extra_exclude)
     categorical = [c for c in CATEGORICAL_COLS if c in features]
     numeric = [c for c in features if c not in categorical]
     out = test.copy()
@@ -233,6 +246,11 @@ def main() -> int:
         action="store_true",
         help="Fail if the output SHA-256 differs from the recorded value",
     )
+    parser.add_argument(
+        "--exclude-protected",
+        action="store_true",
+        help="Drop BAF protected attributes from the score features",
+    )
     args = parser.parse_args()
 
     if not args.raw.exists():
@@ -252,7 +270,9 @@ def main() -> int:
         print("empty split; check the month column", file=sys.stderr)
         return 2
 
-    scored = score_test(train, test)
+    scored = score_test(
+        train, test, PROTECTED_COLUMNS if args.exclude_protected else ()
+    )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     scored.to_parquet(args.out, index=False)
     output_hash = sha256_file(args.out)
@@ -267,14 +287,15 @@ def main() -> int:
         "output_sha256": output_hash,
         "expected_sha256": EXPECTED_SHA256,
         "sha_match": output_hash == EXPECTED_SHA256,
-        "rows": int(len(scored)),
+        "rows": len(scored),
         "expected_rows": EXPECTED_ROWS,
         "months": sorted(int(m) for m in scored["month"].unique()),
-        "train_rows": int(len(train)),
-        "val_rows": int(len(val)),
-        "test_rows": int(len(test)),
+        "train_rows": len(train),
+        "val_rows": len(val),
+        "test_rows": len(test),
         "fraud_rate_test": float(scored["fraud_bool"].mean()),
         "params": PARAMS,
+        "excluded_features": list(PROTECTED_COLUMNS) if args.exclude_protected else [],
         "sklearn_version": sklearn.__version__,
         "lightgbm_version": lightgbm.__version__,
         "score_columns": {

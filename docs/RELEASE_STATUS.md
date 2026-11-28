@@ -32,14 +32,15 @@ The V1 plan and its definition of done are in [`V1/README.md`](V1/README.md).
 | Gate | Status | Evidence |
 |---|---|---|
 | Tests pass | **pass** (119 at `v1.1.0`; 101 at `v1.0.2`; 92 at `v1.0.0`) | `pytest -q` |
-| Claim checks | **pass** (62/62) | `python scripts/check_claims.py` |
+| Claim checks | **pass** (69/69) | `python scripts/check_claims.py` |
 | Link check | **pass** (0 missing) | `python scripts/check_links.py` |
 | Benchmark hash reproduced | **pass** | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) |
 | Kaggle version pin | **open** | raw SHA recorded; exact Kaggle version not yet pinned |
 | Observation sweep | **pass** | [`V1/EXPERIMENTS.md`](V1/EXPERIMENTS.md) |
 | F5 recorded | **pass** (narrow fail, widened pass) | [`VALIDATION_REPORT.md`](VALIDATION_REPORT.md) §6 |
 | Identification gate | **pass** | `tests/test_gates.py` |
-| Reliability audit | **pass** (post-hoc) | 2/60 A/B released, both P0-correct, 0/2 false certifications (95% UB 78%), 9/11 directional decisions withheld (82%); [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) |
+| Reliability audit (original features) | **pass** (post-hoc) | 2/60 A/B released, both P0-correct, 0/2 false certifications (95% UB 78%), 9/11 directional decisions withheld (82%); [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) |
+| Restricted-feature audit | **FAIL** | 5/5 A/B releases wrong; 5/5 false certifications; BAF suite stopped (D20); [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) |
 | Reviewer packet | **ready** | [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md); no reader recorded yet |
 | Two external readers | **open** | none recorded |
 | Public release | **published as pre-release** | owner decision; external validation gate remains open |

@@ -3,6 +3,23 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-28 — Restricted-feature audit failed
+
+**Change:** rebuilt BAF Base from the same 227,491 rows with
+`customer_age`, `employment_status`, and `income` removed from the score
+features. Main 100-rep point estimates held (DR max bias 1.33%, coverage
+92–95%, P(best) 60%; naive 291%/0%).
+
+**Failure:** the 60-replication reliability audit produced 5 A, 35 C, 20 D.
+All 5 A/B releases were wrong, all in `frej_050`; the true candidate advantage
+was ~0.53% of cost while the estimate put it ~7% worse. Bootstrap, cost stress,
+and full-policy checks all agreed with the wrong sign. False certifications:
+5/5 (95% upper bound 45%). Identified directional accuracy: 1/8.
+
+**Decision:** D20 — stop the BAF-suite audit. Do not claim the profile is safe.
+Do not tune a threshold post-hoc. Redesign a materiality/bias guard,
+pre-register it, and test it with the five failures included.
+
 ## 2026-11-28 — BAF license and privacy verification
 
 **Verified:** Kaggle metadata states the BAF dataset suite is
@@ -40,7 +57,7 @@ term the code uses; (vii) 0.94% is labeled as the maximum absolute bias (mean
 accuracy from 5/11 including gate-failed diagnostics; (ix) the audit JSON records
 `n_boot`; (x) `check_claims.py` now covers the audit, case, and demo numbers.
 
-**Verification:** 119 tests, 62/62 claim checks, 0 missing links; paper 6 body
+**Verification:** 119 tests, 69/69 claim checks, 0 missing links; paper 6 body
 pages plus references; audit counts unchanged.
 
 ## 2026-11-28 — Decision Reliability end-to-end, audit, and v1.1.0
@@ -61,7 +78,7 @@ unavailable calibration or operational-readiness dimension blocks A/B; any
 unavailable dimension forces C. A log with no rejected rows marks the structural
 dimension `not_applicable` instead of penalizing it. Added regression tests.
 
-**Verification:** 119 tests pass, 62/62 claim checks, 0 missing links, paper
+**Verification:** 119 tests pass, 69/69 claim checks, 0 missing links, paper
 compiles to 6 body pages + references. Audit numbers are unchanged after the
 grade-rule fix.
 

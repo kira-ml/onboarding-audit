@@ -765,3 +765,30 @@ the code license does not relicense the data. This note is not legal advice.
 **Review date:** 2026-12-15.
 **Kill criteria:** The license changes, the raw version cannot be pinned, or a
 commercial use is proposed without permission → stop and re-review before use.
+
+## D20 — Hold the BAF suite after the restricted-feature failure
+
+**Date:** 2026-11-28.
+**Status:** Accepted. The BAF-suite audit is stopped.
+
+**Context:** Removing `customer_age`, `employment_status`, and `income` from the
+score features preserved the main point-estimate conclusions (DR max bias 1.33%,
+coverage 92–95%, P(best) 60%), but the reliability audit failed: in
+`frej_050`, **5 of 5 A/B releases were wrong**. The true candidate advantage was
+about 0.53% of cost; the estimate put the candidate about 7% worse, and the
+bootstrap, cost stress, and full-policy check all agreed with the wrong sign.
+
+**Decision:** Do not run the BAF-suite audit as a success test. Do not claim the
+profile is safe, and do not tune a threshold until the five failures disappear.
+Redesign a materiality/bias guard, pre-register it, and test it on the restricted
+feature set with the failures included.
+
+**Why:** This is the project's central distinction: a stable, calibrated-looking
+profile can still release a confident wrong decision when the effect is small and
+the outcome model is biased.
+
+**Kill criteria:** A proposed guard is evaluated only after seeing the audit
+result; or the restricted failures are excluded; or the paper continues to claim
+zero false certifications without qualification.
+
+**Review date:** 2026-12-15.

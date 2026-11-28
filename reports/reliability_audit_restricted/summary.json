@@ -1,0 +1,137 @@
+{
+  "note": "Post-hoc reliability audit; 20 reps per scenario, 100 bootstrap replicates per rep. A false certification is a wrong directional decision graded A/B. Abstention means the decision was withheld from release. `correct` is P0-correct; full-policy correctness is recorded separately in the pilot rows.",
+  "overall": {
+    "n": 60,
+    "grades": {
+      "C \u2014 collect more evidence": 35,
+      "D \u2014 not identified": 20,
+      "A \u2014 decision-grade (conditional on assumptions)": 5
+    },
+    "grade_letters": {
+      "A": 5,
+      "C": 35,
+      "D": 20
+    },
+    "decisions": {
+      "inconclusive": 49,
+      "keep incumbent": 10,
+      "prefer candidate": 1
+    },
+    "true_decisions": {
+      "prefer candidate": 60
+    },
+    "directional_n": 11,
+    "directional_correct_n": 1,
+    "directional_accuracy_all": 0.09090909090909091,
+    "released_n": 5,
+    "released_correct_n": 0,
+    "released_accuracy": 0.0,
+    "directional_withheld_n": 6,
+    "directional_withheld_rate": 0.5454545454545454,
+    "identified_directional_n": 8,
+    "identified_directional_correct_n": 1,
+    "identified_directional_accuracy": 0.125,
+    "abstention_rate": 0.9166666666666666,
+    "false_certification_n": 5,
+    "false_certification_rate": 1.0,
+    "false_certification_upper95": 0.4507197283469412
+  },
+  "by_scenario": {
+    "e001": {
+      "n": 20,
+      "grades": {
+        "D \u2014 not identified": 20
+      },
+      "grade_letters": {
+        "D": 20
+      },
+      "decisions": {
+        "inconclusive": 17,
+        "keep incumbent": 3
+      },
+      "true_decisions": {
+        "prefer candidate": 20
+      },
+      "directional_n": 3,
+      "directional_correct_n": 0,
+      "directional_accuracy_all": 0.0,
+      "released_n": 0,
+      "released_correct_n": 0,
+      "released_accuracy": null,
+      "directional_withheld_n": 3,
+      "directional_withheld_rate": 1.0,
+      "identified_directional_n": 0,
+      "identified_directional_correct_n": 0,
+      "identified_directional_accuracy": null,
+      "abstention_rate": 1.0,
+      "false_certification_n": 0,
+      "false_certification_rate": null,
+      "false_certification_upper95": null
+    },
+    "frej_050": {
+      "n": 20,
+      "grades": {
+        "C \u2014 collect more evidence": 15,
+        "A \u2014 decision-grade (conditional on assumptions)": 5
+      },
+      "grade_letters": {
+        "A": 5,
+        "C": 15
+      },
+      "decisions": {
+        "inconclusive": 14,
+        "keep incumbent": 5,
+        "prefer candidate": 1
+      },
+      "true_decisions": {
+        "prefer candidate": 20
+      },
+      "directional_n": 6,
+      "directional_correct_n": 1,
+      "directional_accuracy_all": 0.16666666666666666,
+      "released_n": 5,
+      "released_correct_n": 0,
+      "released_accuracy": 0.0,
+      "directional_withheld_n": 1,
+      "directional_withheld_rate": 0.16666666666666666,
+      "identified_directional_n": 6,
+      "identified_directional_correct_n": 1,
+      "identified_directional_accuracy": 0.16666666666666666,
+      "abstention_rate": 0.75,
+      "false_certification_n": 5,
+      "false_certification_rate": 1.0,
+      "false_certification_upper95": 0.4507197283469412
+    },
+    "main": {
+      "n": 20,
+      "grades": {
+        "C \u2014 collect more evidence": 20
+      },
+      "grade_letters": {
+        "C": 20
+      },
+      "decisions": {
+        "inconclusive": 18,
+        "keep incumbent": 2
+      },
+      "true_decisions": {
+        "prefer candidate": 20
+      },
+      "directional_n": 2,
+      "directional_correct_n": 0,
+      "directional_accuracy_all": 0.0,
+      "released_n": 0,
+      "released_correct_n": 0,
+      "released_accuracy": null,
+      "directional_withheld_n": 2,
+      "directional_withheld_rate": 1.0,
+      "identified_directional_n": 2,
+      "identified_directional_correct_n": 0,
+      "identified_directional_accuracy": 0.0,
+      "abstention_rate": 1.0,
+      "false_certification_n": 0,
+      "false_certification_rate": null,
+      "false_certification_upper95": null
+    }
+  }
+}

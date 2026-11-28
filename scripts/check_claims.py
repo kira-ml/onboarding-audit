@@ -321,6 +321,53 @@ def main() -> int:
     checks.append(
         ("audit bootstrap replicates", float(audit_pilot["reliability_n_boot"]), 100.0)
     )
+    restricted = _load(
+        ROOT / "reports" / "reliability_audit_restricted" / "summary.json"
+    )["overall"]
+    checks.append(
+        (
+            "restricted audit grade A",
+            float(restricted["grade_letters"].get("A", 0)),
+            5.0,
+        )
+    )
+    checks.append(
+        (
+            "restricted audit grade C",
+            float(restricted["grade_letters"].get("C", 0)),
+            35.0,
+        )
+    )
+    checks.append(
+        (
+            "restricted audit grade D",
+            float(restricted["grade_letters"].get("D", 0)),
+            20.0,
+        )
+    )
+    checks.append(("restricted audit releases", float(restricted["released_n"]), 5.0))
+    checks.append(
+        (
+            "restricted audit false certifications",
+            float(restricted["false_certification_n"]),
+            5.0,
+        )
+    )
+    restricted_main = _load(ROOT / "reports" / "restricted_main100" / "pilot.json")
+    restricted_dr = [
+        r
+        for r in restricted_main["summary"]
+        if r["scenario"] == "main" and r["estimator"] == "dr"
+    ]
+    checks.append(("restricted DR max |bias|", _max_abs(restricted_dr), 0.0133))
+    restricted_rank = [
+        r
+        for r in restricted_main["ranking"]
+        if r["scenario"] == "main" and r["estimator"] == "dr"
+    ]
+    checks.append(
+        ("restricted DR P(best)", float(restricted_rank[0]["p_select_true_best"]), 0.60)
+    )
     case_report = _load(ROOT / "reports" / "case_reliability" / "report.json")["result"]
     case_rel = case_report["diagnostics"]["reliability"]
     demo_report = _load(ROOT / "reports" / "demo_reliability" / "report.json")["result"]

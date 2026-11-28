@@ -467,6 +467,28 @@ reliability profile, not a volume-maximizing decision rule. The audit is small
 and post-hoc; do not over-read the percentages. See
 `reports/reliability_audit/summary.md`.
 
+## 11.3 Restricted-feature audit (negative result)
+
+Removing `customer_age`, `employment_status`, and `income` from the score
+features preserved the main point-estimate conclusions (DR max absolute bias
+**1.33%**, coverage **92–95%**, P(best) **60%**; naive still **291%** biased and
+0% P(best)). The reliability audit did **not** survive:
+
+| Metric | Result |
+|---|---|
+| Grades | **5 A, 35 C, 20 D** |
+| A/B releases | **5 of 60** |
+| Correct A/B releases | **0 of 5** |
+| False certifications | **5 of 5** (95% upper bound 45%) |
+| Identified directional accuracy | **1 of 8 (12%)** |
+
+The five false certifications are in `frej_050`, where the true candidate
+advantage is about **0.53% of cost**. The estimate put the candidate about **7%
+worse**; the bootstrap, 3×3 cost stress, and full-policy bound all agreed with
+the wrong sign. This is a failure of the grade, not a coding defect. See
+[`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) and
+`reports/reliability_audit_restricted/summary.md`.
+
 ## 12. Verdicts
 
 | Hypothesis | Verdict | Key number |

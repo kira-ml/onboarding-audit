@@ -6,6 +6,10 @@ paper claim derived from them.
 **Not legal advice.** A commercial use, redistribution, or ambiguous case needs
 counsel and the dataset owner's permission.
 
+**Latest result:** the restricted-feature audit failed (5/5 wrong A/B releases);
+the BAF-suite audit remains on hold. See
+[`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md).
+
 ---
 
 ## 1. Decision

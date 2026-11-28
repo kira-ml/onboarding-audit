@@ -69,6 +69,7 @@ disagree, the precedence in §5 applies.
 | [`DATA.md`](DATA.md) | The data card: provenance, split, limitations |
 | [`DATA_SOURCES.md`](DATA_SOURCES.md) | Dataset licensing, privacy, permitted use, and go/no-go |
 | [`DATA_USE_PLAN.md`](DATA_USE_PLAN.md) | The operational compliance, security, ethics, and publication rules for BAF |
+| [`RESTRICTED_FEATURE_AUDIT.md`](RESTRICTED_FEATURE_AUDIT.md) | The negative result after removing protected attributes: 5/5 wrong A/B releases |
 | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) | The verified benchmark rebuild: hashes, split, parameters, leakage controls |
 | [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) | Every column in the processed test frame |
 | [`SCHEMA.md`](SCHEMA.md) | The decision-log schema and validation rules |
@@ -161,6 +162,8 @@ These are outputs, not editable sources:
 | [`../reports/reliability_audit/pilot.md`](../reports/reliability_audit/pilot.md) | yes | Same run; compact report |
 | [`../reports/reliability_audit/summary.json`](../reports/reliability_audit/summary.json) | yes | `python scripts/summarize_reliability_audit.py` |
 | [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) | yes | Same run; audit table |
+| [`../reports/restricted_main100/pilot.json`](../reports/restricted_main100/pilot.json) | yes | `onboarding-audit pilot --config configs/pilot_restricted.yaml --scenarios main` |
+| [`../reports/reliability_audit_restricted/summary.md`](../reports/reliability_audit_restricted/summary.md) | yes | `onboarding-audit pilot --config configs/reliability_audit_restricted.yaml --reliability-boot 100` |
 | [`../reports/case_reliability/report.json`](../reports/case_reliability/report.json) | yes | `onboarding-audit report` on `examples/case_log.csv`, `--out reports/case_reliability` |
 | [`../reports/case_reliability/report.md`](../reports/case_reliability/report.md) | yes | Same run; grade A memo |
 | [`../reports/demo_reliability/report.json`](../reports/demo_reliability/report.json) | yes | `onboarding-audit demo --out reports/demo_reliability` |

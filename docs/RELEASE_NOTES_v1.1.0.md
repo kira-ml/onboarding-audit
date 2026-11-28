@@ -85,7 +85,7 @@ The manuscript is refocused on Decision Reliability for Financial ML:
 ```bash
 pip install -e ".[dev,baf]"
 pytest -q                     # 119 passed
-python scripts/check_claims.py  # 62/62
+python scripts/check_claims.py  # 69/69
 python scripts/check_links.py   # 0 missing
 onboarding-audit demo --out reports/demo_reliability
 onboarding-audit pilot --config configs/reliability_audit.yaml --out reports/reliability_audit --reliability-boot 100

@@ -48,6 +48,12 @@ full-policy fragility, and operational readiness, with an explicit A–D grade.
 > [`docs/RELEASE_NOTES_v1.1.0.md`](docs/RELEASE_NOTES_v1.1.0.md),
 > [`docs/RELIABILITY.md`](docs/RELIABILITY.md), and
 > [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md).
+>
+> **Restricted-feature audit (2026-11-28):** removing the protected attributes
+> preserved the main point estimates, but the reliability audit released **5
+> A/B decisions and all 5 were wrong** in the high-false-reject-cost scenario.
+> The profile is under revision; do not treat A/B as validated. See
+> [`docs/RESTRICTED_FEATURE_AUDIT.md`](docs/RESTRICTED_FEATURE_AUDIT.md).
 
 ## Why this exists
 
@@ -378,7 +384,7 @@ onboarding-audit demo --out reports/demo_reliability
 python scripts/check_claims.py
 ```
 
-Expected: **119 passed**, the demo memo, and **62/62** claim checks.
+Expected: **119 passed**, the demo memo, and **69/69** claim checks.
 
 ## Documentation
 
@@ -406,6 +412,7 @@ Expected: **119 passed**, the demo memo, and **62/62** claim checks.
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
 | [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) | BAF licensing, privacy, permitted use, and the go/no-go |
 | [`docs/DATA_USE_PLAN.md`](docs/DATA_USE_PLAN.md) | The BAF data-use, security, ethics, and publication protocol |
+| [`docs/RESTRICTED_FEATURE_AUDIT.md`](docs/RESTRICTED_FEATURE_AUDIT.md) | The restricted-feature negative result: 5/5 wrong A/B releases |
 | [`docs/DATA_READINESS.md`](docs/DATA_READINESS.md) | Whether a real log can support the audit, and when to stop |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`docs/REPORT_USAGE.md`](docs/REPORT_USAGE.md) | How to run and read the arbitrary-log report |

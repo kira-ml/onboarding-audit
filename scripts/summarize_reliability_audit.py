@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from collections import Counter
 from pathlib import Path
@@ -67,7 +68,13 @@ def summarize(rows: list[dict]) -> dict:
 
 
 def main() -> None:
-    payload = json.loads(SRC.read_text(encoding="utf-8"))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--pilot", type=Path, default=SRC)
+    parser.add_argument("--out-json", type=Path, default=OUT_JSON)
+    parser.add_argument("--out-md", type=Path, default=OUT_MD)
+    args = parser.parse_args()
+
+    payload = json.loads(args.pilot.read_text(encoding="utf-8"))
     rows = payload.get("reliability", [])
     by_scenario = {}
     for scenario in sorted({r["scenario"] for r in rows}):
@@ -86,7 +93,7 @@ def main() -> None:
         "overall": overall,
         "by_scenario": by_scenario,
     }
-    OUT_JSON.write_text(json.dumps(out, indent=2), encoding="utf-8")
+    args.out_json.write_text(json.dumps(out, indent=2), encoding="utf-8")
 
     L = [
         "# Decision Reliability Audit",
@@ -170,9 +177,9 @@ def main() -> None:
         "confident wrong decision. The sample is 20 replications per scenario; do",
         "not over-read the percentages.",
     ]
-    OUT_MD.write_text("\n".join(L) + "\n", encoding="utf-8")
-    print(f"[reliability-audit] wrote {OUT_JSON}")
-    print(f"[reliability-audit] wrote {OUT_MD}")
+    args.out_md.write_text("\n".join(L) + "\n", encoding="utf-8")
+    print(f"[reliability-audit] wrote {args.out_json}")
+    print(f"[reliability-audit] wrote {args.out_md}")
 
 
 if __name__ == "__main__":

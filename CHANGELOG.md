@@ -2,6 +2,16 @@
 
 **Status:** Canonical version history.
 
+## [Unreleased] — restricted-feature negative result
+
+- Rebuilt the BAF scores without `customer_age`, `employment_status`, and
+  `income`.
+- Main point estimates held (DR max bias 1.33%, coverage 92–95%, P(best) 60%;
+  naive 291%/0%).
+- Reliability audit failed: 5 A/B releases, 0 correct, all in `frej_050`;
+  false certifications 5/5 (95% upper bound 45%).
+- BAF-suite audit stopped (D20). No claim that the profile is safe.
+
 ## [1.1.0] — 2026-11-28
 
 Decision Reliability for Financial ML release. The product spine is now the
@@ -47,7 +57,7 @@ reliability of the decision, not the point estimate.
 
 ### Verification
 
-- 119 tests, 62/62 claim checks, 0 missing links, paper at 6 body pages plus
+- 119 tests, 69/69 claim checks, 0 missing links, paper at 6 body pages plus
   references; the 60-replication audit is unchanged after the grading fix.
 
 ## [1.0.2] — 2026-11-27

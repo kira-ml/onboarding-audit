@@ -52,3 +52,5 @@ paper/main.blg
 paper/main.out
 paper/main.xdv
 reports/demo_strategy/
+
+data/*.provenance.json
