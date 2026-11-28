@@ -243,6 +243,9 @@ undeclared observation mechanism.
   depends on application characteristics, not only on the action.
 
 The estimated versions are diagnostics, not a substitute for a designed audit.
+Only a provided propensity is treated as calibration evidence; an action-level
+estimate from the same observed rows is an identity, so it marks the model
+calibration dimension weak and blocks an A/B release.
 If the audit flag is absent, the tool cannot separate the audit from the base
 approve-label rate. Covariate-dependent observation also produces heavy-tailed
 weights: check the ESS, max weight, and the reported propensity range before

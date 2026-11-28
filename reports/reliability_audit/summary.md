@@ -11,15 +11,16 @@ necessarily that the point estimate was inconclusive).
 
 - n = **60**
 - grades: **A 1 / B 1 / C 38 / D 20**
-- released A/B directional decisions: **2** (3%)
-- released accuracy: **100%**
+- released A/B directional decisions: **2** of **60** (3%)
+- directional decisions withheld: **9** of **11** (82%)
+- identified directional accuracy (excluding gate-failed D): **4**/**7** (57%)
+- all directional decisions, including gate-failed D: **11**, P0-correct **5** (45%)
 - false certifications (released A/B and wrong): **0**
-- withheld from release (abstention): **97%**
-- all directional decisions, including C/D not released: **11**, accuracy **45%**
+- no A/B release (not a directional-decision rate): **97%**
 
 ## By scenario
 
-| Scenario | n | Grades | Released | Released acc. | False cert. | Abstention |
+| Scenario | n | Grades | Released | Released P0 acc. | False cert. | No A/B release |
 |---|---:|---|---:|---:|---:|---:|
 | `e001` | 20 | D 20 | 0 | n/a | 0 | 100% |
 | `frej_050` | 20 | A 1 / C 19 | 1 | 100% | 0 | 95% |

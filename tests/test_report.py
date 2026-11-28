@@ -123,7 +123,7 @@ def test_report_runs_and_dr_beats_naive(tmp_path):
 
 
 def test_report_estimates_propensity_when_missing(tmp_path):
-    df, candidate, y, amount, _ = _synthetic_log(with_propensity=False)
+    df, candidate, _y, _amount, _ = _synthetic_log(with_propensity=False)
     log_path = tmp_path / "log.csv"
     cand_path = tmp_path / "candidate.csv"
     df.to_csv(log_path, index=False)
@@ -143,8 +143,28 @@ def test_report_estimates_propensity_when_missing(tmp_path):
     assert 0 < result.propensity.e_approve <= 1
 
 
+def test_report_without_labelsource_downgrades_readiness(tmp_path):
+    df, candidate, _y, _amount, _ = _synthetic_log(with_propensity=True)
+    df = df.drop(columns=["label_source"])
+    log_path = tmp_path / "log.csv"
+    cand_path = tmp_path / "candidate.csv"
+    df.to_csv(log_path, index=False)
+    candidate.to_csv(cand_path, index=False)
+
+    result = run_report(
+        log_path,
+        cand_path,
+        CONFIG,
+        tmp_path / "out",
+        capacity=0.10,
+    )
+    profile = result.diagnostics["reliability"]["profile"]
+    assert profile["dimensions"]["operational_readiness"]["status"] == "unavailable"
+    assert profile["grade"].startswith("C")
+
+
 def test_report_without_audit_has_no_audit_only_estimate(tmp_path):
-    df, candidate, y, amount, _ = _synthetic_log(with_propensity=True, audit=False)
+    df, candidate, _y, _amount, _ = _synthetic_log(with_propensity=True, audit=False)
     log_path = tmp_path / "log.csv"
     cand_path = tmp_path / "candidate.csv"
     df.to_csv(log_path, index=False)

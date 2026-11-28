@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **115 passed** in the current tree (92 at the v1.0.0 tag). The suite uses only synthetic or
+Expected: **118 passed** in the current tree (92 at the v1.0.0 tag). The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 The headline numbers are also checked directly against the committed JSON:
@@ -118,6 +118,7 @@ They protect the implementation, not the external validity of the simulation.
 |---|---|
 | `test_report_runs_and_dr_beats_naive` | The report runs end to end; DR is closer to the true `P0` value than naive on a synthetic log with known ground truth |
 | `test_report_estimates_propensity_when_missing` | Action-level estimation runs when the log has no propensity column |
+| `test_report_without_labelsource_downgrades_readiness` | Missing `label_source` makes operational readiness unavailable and the grade C |
 | `test_report_without_audit_has_no_audit_only_estimate` | No audit labels means `audit_only` is `n/a` |
 | `test_report_rejects_missing_candidate_ids` | The candidate file must cover every application |
 | `test_report_rejects_invalid_log` | The report refuses an invalid log |
@@ -138,6 +139,8 @@ They protect the implementation, not the external validity of the simulation.
 | `test_profile_weak_operational_readiness_blocks_release` | Low label count / ESS forces grade C |
 | `test_profile_structural_unavailable_blocks_release` | An unresolved full-policy direction forces grade C |
 | `test_profile_conflicting_full_policy_blocks_release` | A full-policy direction opposite to the `P0` decision forces grade C |
+| `test_profile_missing_propensity_calibration_blocks_release` | An estimated (non-provided) propensity is not calibration evidence and blocks A/B |
+| `test_profile_schema_readiness_blocks_release` | Missing schema readiness marks operational readiness unavailable and forces C |
 | `test_profile_structural_not_applicable_without_rejects` | No rejects makes the reject-margin dimension not applicable, not a failure |
 
 ### `tests/test_gates.py`

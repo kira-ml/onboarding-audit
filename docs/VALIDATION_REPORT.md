@@ -36,7 +36,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **115 passed** in the current tree (92 at the `v1.0.0` tag) |
+| Test result | **118 passed** in the current tree (92 at the `v1.0.0` tag) |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12; run 44918141562 green |
 
@@ -53,7 +53,7 @@ The CI workflow runs the tests, the demo, the claim check, and the link check.
 | Gate integration in the report | `tests/test_report.py` | pass |
 | 20-row demo withholds estimates | `tests/test_report.py::test_report_withholds_point_estimate_on_small_log` | pass |
 | End-to-end demo | `tests/test_demo.py` | pass |
-| Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (43/43) |
+| Headline numbers match the committed JSON | `scripts/check_claims.py`, `tests/test_claims.py` | pass (62/62) |
 | Double robustness | `scripts/double_robustness.py`, `tests/test_double_robustness.py` | pass |
 | Temporal stability | `scripts/temporal_stability.py`, `reports/temporal_stability.json` | pass (both months) |
 | Bounds widen with the `P0` standard error | `tests/test_estimators.py` | pass |
@@ -177,7 +177,7 @@ hash and the per-score column hashes, is in
 
 | Gate | Status |
 |---|---|
-| Tests pass | **pass** (115 in the current tree; 92 at the tag) |
+| Tests pass | **pass** (118 in the current tree; 92 at the tag) |
 | Link check | **pass** (0) |
 | Identification gate integrated and tested | **pass** |
 | Observation sweep committed | **pass** |

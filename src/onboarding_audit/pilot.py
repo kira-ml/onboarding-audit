@@ -362,7 +362,13 @@ def run_scenario(
                 positivity_ok=positivity_ok,
                 propensity_source=source,
                 has_audit=bool(draw.audit.any()),
-                observation_assumption="action",
+                observation_assumption=(
+                    "outcome"
+                    if scenario.outcome_dependent
+                    else "unknown"
+                    if getattr(scenario, "observation_mode", "action") == "covariate"
+                    else "action"
+                ),
             )
             comparison = compare_policies(
                 cost_c,
@@ -391,6 +397,10 @@ def run_scenario(
                 identification=identification,
                 seed=config.seed + rep,
                 n_boot=reliability_n_boot,
+                propensity_source=source,
+                propensity_model=(
+                    "covariate" if scenario.propensity_mode == "covariate" else "action"
+                ),
             )
             true_c = true_values[candidate.spec.name]["true_p0"]
             true_i = true_values[incumbent.spec.name]["true_p0"]
@@ -402,6 +412,28 @@ def run_scenario(
                 true_decision = "tie"
             decision = comparison.get("decision", "not identified")
             directional = decision in {"prefer candidate", "keep incumbent"}
+            true_full_c = true_values[candidate.spec.name]["true_full"]
+            true_full_i = true_values[incumbent.spec.name]["true_full"]
+            if true_full_c < true_full_i:
+                true_full_decision = "prefer candidate"
+            elif true_full_c > true_full_i:
+                true_full_decision = "keep incumbent"
+            else:
+                true_full_decision = "tie"
+            full_decision = (comparison.get("full_policy") or {}).get("decision")
+            full_directional = full_decision in {
+                "candidate cheaper",
+                "incumbent cheaper",
+                "candidate cheaper for any reject outcome",
+                "incumbent cheaper for any reject outcome",
+            }
+            full_policy_decision = (
+                "prefer candidate"
+                if str(full_decision).startswith("candidate cheaper")
+                else "keep incumbent"
+                if str(full_decision).startswith("incumbent cheaper")
+                else None
+            )
             reliability_rows.append(
                 {
                     "scenario": scenario.id,
@@ -409,6 +441,7 @@ def run_scenario(
                     "grade": rel["profile"]["grade"],
                     "decision": decision,
                     "true_decision": true_decision,
+                    "p0_correct": bool(directional and decision == true_decision),
                     "correct": bool(directional and decision == true_decision),
                     "p_candidate_better_boot": rel["bootstrap"].get(
                         "p_candidate_better_boot"
@@ -416,9 +449,12 @@ def run_scenario(
                     "same_direction_share": rel["bootstrap"].get(
                         "same_direction_share"
                     ),
+                    "n_boot": rel["bootstrap"].get("n_boot"),
+                    "propensity_source": source,
                     "cost_stress_share": rel["cost_stress"].get("same_decision_share"),
-                    "full_policy_decision": (comparison.get("full_policy") or {}).get(
-                        "decision"
+                    "full_policy_decision": full_decision,
+                    "full_policy_correct": bool(
+                        full_directional and full_policy_decision == true_full_decision
                     ),
                     "difference": comparison.get("difference"),
                 }
@@ -990,6 +1026,7 @@ def run_pilot(
         "reliability": _jsonable(
             [row for result in results for row in result.get("reliability", [])]
         ),
+        "reliability_n_boot": int(reliability_n_boot),
         "verdict": _jsonable(v),
         "runtime_seconds": time.time() - t0,
     }

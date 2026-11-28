@@ -31,14 +31,14 @@ The V1 plan and its definition of done are in [`V1/README.md`](V1/README.md).
 
 | Gate | Status | Evidence |
 |---|---|---|
-| Tests pass | **pass** (115 at `v1.1.0`; 101 at `v1.0.2`; 92 at `v1.0.0`) | `pytest -q` |
-| Claim checks | **pass** (43/43) | `python scripts/check_claims.py` |
+| Tests pass | **pass** (118 at `v1.1.0`; 101 at `v1.0.2`; 92 at `v1.0.0`) | `pytest -q` |
+| Claim checks | **pass** (62/62) | `python scripts/check_claims.py` |
 | Link check | **pass** (0 missing) | `python scripts/check_links.py` |
 | Benchmark hash reproduced | **pass** | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) |
 | Observation sweep | **pass** | [`V1/EXPERIMENTS.md`](V1/EXPERIMENTS.md) |
 | F5 recorded | **pass** (narrow fail, widened pass) | [`VALIDATION_REPORT.md`](VALIDATION_REPORT.md) §6 |
 | Identification gate | **pass** | `tests/test_gates.py` |
-| Reliability audit | **pass** (post-hoc) | 2/60 A/B released, both correct, 0 false certifications, 97% withheld from release; [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) |
+| Reliability audit | **pass** (post-hoc) | 2/60 A/B released, both P0-correct, 0 false certifications, 9/11 directional decisions withheld (82%); [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) |
 | Reviewer packet | **ready** | [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md); no reader recorded yet |
 | Two external readers | **open** | none recorded |
 | Public release | **published as pre-release** | owner decision; external validation gate remains open |
@@ -67,8 +67,8 @@ validated.
 - A/B require a directional point decision; C/D are not released; a failed gate
   is D;
 - a 60-replication reliability audit (`reports/reliability_audit/`): 2/60 A/B
-  directional decisions released, both correct, 0 false certifications, 97%
-  withheld decisions;
+  directional decisions released, both P0-correct, 0 false certifications, 9/11
+  directional decisions withheld (82%);
 - the paper is refocused on Decision Reliability for Financial ML and remains
   6 body pages plus references.
 

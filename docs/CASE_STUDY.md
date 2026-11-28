@@ -26,6 +26,7 @@ study shows why, and what the audit layer reports.
 | Review capacity | 5% (1,000 applications) |
 | Review labels | 90% resolved |
 | Approve labels | 8% post-approval reports + 1% random audit = **8.92%** |
+| Observation model | known action-level `e` (provided in the log) |
 | Incumbent score | true fraud probability + noise (sd 0.08) |
 | Candidate score | true fraud probability + noise (sd 0.003) |
 | Cost unit | normalized; fraud loss `amount * 0.02`, review cost 0.02, residual fraud 0.30, false reject 1000 |
@@ -70,18 +71,18 @@ onboarding-audit report \
 |---|---:|
 | Identification gate | **passed** |
 | Naive estimate | 0.5460 |
-| DR estimate | 0.6183 |
+| DR estimate | 0.6230 |
 | Incumbent `P0` value | 0.7042 |
-| Difference (candidate − incumbent) | **−0.0859** |
-| 95% interval | **[−0.1640, −0.0077]** |
-| P(candidate cheaper) | **0.984** |
+| Difference (candidate − incumbent) | **−0.0820** |
+| 95% interval | **[−0.1558, −0.0081]** |
+| P(candidate cheaper) | **0.985** |
 | Expected regret if candidate | **0.0002** |
-| Expected regret if incumbent | **0.0861** |
+| Expected regret if incumbent | **0.0822** |
 | Recommendation | **prefer candidate** |
 
-The DR estimate is 2.8% above the true value (0.6183 vs 0.6016) and the incumbent
+The DR estimate is 3.6% above the true value (0.6230 vs 0.6016) and the incumbent
 estimate 2.6% above (0.7042 vs 0.6865), but the **difference** is close
-(−0.0859 vs −0.0850) and the decision is correct. The naive estimate would have
+(−0.0820 vs −0.0850) and the decision is correct. The naive estimate would have
 kept the worse policy.
 
 ## 5. Why the correction works here

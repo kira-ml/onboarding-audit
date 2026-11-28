@@ -3,6 +3,30 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-28 — Reliability review corrections
+
+**Review:** independent read-only review of the reliability code, tests, paper,
+and audit artifacts. It confirmed the core counts but found claim-validity
+issues.
+
+**Fixed:** (i) an estimated action-level propensity is no longer treated as
+calibration evidence; only a provided `e` is, and the case study now supplies
+the known `e`; (ii) schema readiness is passed into the reliability profile, so
+missing `label_time`/`label_source`/`audit_flag` marks operational readiness
+unavailable; (iii) the no-reject branch now maps the actual
+`candidate cheaper`/`incumbent cheaper` full-policy decisions to
+`not_applicable`; (iv) a full-policy direction opposite the `P0` decision is a
+blocking conflict; (v) the pilot declares outcome-dependent observation as
+`outcome`, not `action`; (vi) the paper’s bootstrap formula is the uncentered
+term the code uses; (vii) 0.94% is labeled as the maximum absolute bias (mean
+0.69%); (viii) audit reporting distinguishes 9/11 directional decisions withheld
+(82%) from the 58/60 no-A/B-release rate (97%), and 4/7 identified directional
+accuracy from 5/11 including gate-failed diagnostics; (ix) the audit JSON records
+`n_boot`; (x) `check_claims.py` now covers the audit, case, and demo numbers.
+
+**Verification:** 118 tests, 62/62 claim checks, 0 missing links; paper 6 body
+pages plus references; audit counts unchanged.
+
 ## 2026-11-28 — Decision Reliability end-to-end, audit, and v1.1.0
 
 **Implemented:** the profile is now in the workflow, not only the memo:
@@ -13,15 +37,15 @@ contract and the end-to-end pipeline diagram to `RELIABILITY.md`.
 
 **Audit:** 60 replications (main, `e001`, `frej_050`), 100 bootstrap replicates
 each. Grades: 1 A, 1 B, 38 C, 20 D. Released A/B directional decisions: 2/60,
-both correct; false certifications: 0; abstention: 97%. All-directional accuracy
-including unreleased decisions: 45%.
+both P0-correct; false certifications: 0; 9/11 directional decisions withheld
+(82%). Identified directional accuracy: 4/7; 5/11 including gate-failed D.
 
 **Corrected:** the grade rule now matches the documented contract. A weak or
 unavailable calibration or operational-readiness dimension blocks A/B; any
 unavailable dimension forces C. A log with no rejected rows marks the structural
 dimension `not_applicable` instead of penalizing it. Added regression tests.
 
-**Verification:** 113 tests pass, 43/43 claim checks, 0 missing links, paper
+**Verification:** 118 tests pass, 62/62 claim checks, 0 missing links, paper
 compiles to 6 body pages + references. Audit numbers are unchanged after the
 grade-rule fix.
 

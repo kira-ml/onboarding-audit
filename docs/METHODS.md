@@ -374,7 +374,8 @@ The report aggregates six dimensions into a rule-based grade:
    uncertainty, not nuisance-model uncertainty.
 3. **Full-policy / reject margin** — the full-policy difference and break-even.
 4. **Model calibration** — Brier, log loss, and ECE for the outcome model;
-   observed/expected ratio and ECE for the propensity.
+   observed/expected ratio and ECE for a provided propensity. An action-level
+   estimate from the same observed rows is an identity, not calibration evidence.
 5. **Cost stress** — a 3×3 grid of review-cost and false-reject-cost multipliers;
    the share of cells with the same decision.
 6. **Operational readiness** — observed labels, ESS, and gate warnings.

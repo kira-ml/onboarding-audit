@@ -49,7 +49,7 @@ new policy is estimated on the subset the incumbent policy produced.
 - **The magnitude is conditional:** across the 12-cell observation-rate sweep,
   naive bias ranges **7.8–538.5%** (maximum across policies) and exceeds 5% in
   **12/12** cells; the incumbent's own bias is **1.5–218%**. DR with known
-  propensities has a mean absolute relative bias of at most **1.89%** (95% MC upper bound **4.3%**
+  propensities has a max absolute relative bias of **1.89%** (95% MC upper bound **4.3%**
   for `e>=0.05`, **9.6%** at `e=0.01`). At the lowest report probability,
   DR's P(select true best) falls to **64%**.
 - **Rank inversion:** mean **1.00** pairwise inversion for the naive estimate;
@@ -79,11 +79,11 @@ new policy is estimated on the subset the incumbent policy produced.
 - **Case study:** a 20,000-row synthetic log where the naive backtest says the
   candidate is **6.3% worse** and the truth is **12.4% better**. The candidate is
   a synthetic oracle, not a trained model; the case isolates the evaluation bias.
-  The report returns **P(candidate cheaper) = 0.984** and recommends the
+  The report returns **P(candidate cheaper) = 0.985** and recommends the
   candidate. Fully reproducible; see `CASE_STUDY.md`.
 - **Reliability audit:** 60 replications across main, low-label, and high
   false-reject-cost scenarios. Only **2/60** A/B directional decisions were
-  released; both were correct; **0 false certifications**; **97% of decisions withheld from release**.
+  released; both were P0-correct; **0 false certifications**; **9 of 11 directional decisions withheld (82%)**.
   The profile is conservative; the cost of caution is decision volume.
 - **Propensity sensitivity:** with estimated action-level `e`, DR stays within
   **1.43%** with **93.5%** coverage; IPW **2.92% / 92.0%**. Under

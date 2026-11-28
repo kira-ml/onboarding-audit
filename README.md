@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-115%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-118%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-1.1.0-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-review%20release-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
@@ -25,7 +25,7 @@ full-policy fragility, and operational readiness, with an explicit A–D grade.
 
 ---
 
-> **Status:** `v1.1.0` Decision Reliability pre-release. **115 tests pass.** The
+> **Status:** `v1.1.0` Decision Reliability pre-release. **118 tests pass.** The
 > documentation is research-ready; the revised IEEEtran draft is in
 > [`paper/main.pdf`](paper/main.pdf). This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
@@ -42,8 +42,8 @@ full-policy fragility, and operational readiness, with an explicit A–D grade.
 > Profile the product spine. `validate` reports reliability readiness; `report`
 > returns an A–D grade in the memo and JSON; `pilot --reliability-boot` records
 > per-replication grades. The 60-replication audit released only 2/60 A/B
-> directional decisions, both correct, with **0 false certifications** while
-> **97% of decisions were withheld from release**. The paper is refocused on decision reliability and
+> directional decisions, both P0-correct, with **0 false certifications**; **9 of
+> 11 directional decisions were withheld (82%)**. The paper is refocused on decision reliability and
 > remains 6 body pages plus references. See
 > [`docs/RELEASE_NOTES_v1.1.0.md`](docs/RELEASE_NOTES_v1.1.0.md),
 > [`docs/RELIABILITY.md`](docs/RELIABILITY.md), and
@@ -113,7 +113,7 @@ which is which.
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Decision reliability** | Bootstrap P(better)/stability, calibration, cost-stress stability, full-policy grade |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v1.1.0 Decision Reliability pre-release · 115 tests · external review open · not production |
+| **Status** | v1.1.0 Decision Reliability pre-release · 118 tests · external review open · not production |
 
 ## Headline results
 
@@ -127,21 +127,21 @@ Monte Carlo intervals are in [`docs/RESULTS.md`](docs/RESULTS.md).
 
 | Finding | Result | Reading |
 |---|---|---|
-| Reliability audit | 2/60 A/B decisions released, both correct; **0 false certifications**; **97% withheld from release** | safety-first profile; the cost is decision volume |
+| Reliability audit | 2/60 A/B decisions released, both P0-correct; **0 false certifications**; 9/11 directional decisions withheld (82%) | safety-first profile; the cost is decision volume |
 | Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep (max across policies) | relative bias; **12/12** cells >5% for at least one policy; incumbent **1.5–218%**, 11/12 |
 | Naive ranking | **1.00 / 0%** main; **0.00 / 100%** at `frej_050` | mean pairwise inversions / P(select true best); ranking is cost-dependent |
 | Action-weighted baseline | main **2.9% / 62%**; `frej_050` **2.4% / 58%** | max relative bias / P(select true best); the naive gap is not just an unweighted-mean artifact |
 | Label-holdout | main naive **275% / 0%** vs action-weighted **4.2% / 56%**, DR **2.8% / 52%**; `frej_050` naive **286% / 100%** vs action-weighted **6.1% / 58%**, DR **4.5% / 70%** | correction survives a disjoint label half; ranking remains noisy |
 | Model/score ablation | candidate AUC **0.883** vs incumbent **0.873**; retrained HistGB **0.877** vs logistic **0.875** | the better-model premise is supported but modest; no isolation from model class |
-| Observation-rate sweep | **12/12** cells >5% (max across policies); DR mean ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
-| Doubly robust (DR) | **0.94% / 96.0%** | mean absolute relative bias / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
+| Observation-rate sweep | **12/12** cells >5% (max across policies); DR worst cell ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
+| Doubly robust (DR) | **0.94% / 96.0%** | max absolute relative bias (mean 0.69%) / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
 | Double robustness | DR **+0.14%** (wrong outcome model), **+0.36%** (wrong propensity) | known-truth test; IPW **−36.7%** with wrong `e`, plug-in **+5.1%** with wrong outcome |
 | IPW | **1.18% / 94.5%** | max relative bias / mean coverage |
 | Audit-only at 1% | **2.98% / 84.5% / 1,271** | max bias / coverage / mean ESS |
 | Outcome-dependent labels | audit-only **−2.37% to −1.98%**; IPW **+43.9% to +368.3%**; DR **+596.4% to +1301.5%** | relative bias |
 | Reject-margin bounds | **0.009942** main; **0.203** in `frej_002`; incumbent coverage **34%**; F5 **failed** for the narrow interval (**15/88**), **passed** for the widened interval (**77/88**) | width / coverage of true full value — the narrow interval is **not** a confidence interval |
 | DR ranking at low approve-label rate | **64%** [50–76%] vs naive **0%** | P(select the true best policy), 95% Wilson interval |
-| Case study | naive **+6.3% worse**; true **−12.4% better**; report **P=0.984** | a synthetic oracle candidate; the naive backtest would keep the worse policy |
+| Case study | naive **+6.3% worse**; true **−12.4% better**; report **P=0.985** | a synthetic oracle candidate; the naive backtest would keep the worse policy |
 | Temporal stability | naive **230% / 255%**; DR **0.89% / 0.43%**; naive P(best) **0% / 0%** | month 5 vs month 6, 100 reps each |
 | Estimated action-level `e` | DR **1.43% / 93.5%**; IPW **2.92% / 92.0%** | max relative bias / mean coverage |
 | Covariate-dependent observation | action IPW **67.52%**, DR **21.25%**; covariate model **1.97% / 2.48%** (delay 0.5) and **3.35% / 3.68%** (delay 45); coverage **89–91.5%** | relative bias; coverage is reported separately |
@@ -184,7 +184,7 @@ pytest -q
 
 ```bash
 # Run the end-to-end demo (2,500-row synthetic log, no propensity column)
-onboarding-audit demo --out reports/demo
+onboarding-audit demo --out reports/demo_reliability
 
 # Validate the 20-row schema smoke log
 onboarding-audit validate --log examples/sample_log.csv
@@ -276,7 +276,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 115 tests, including negative controls
+├── tests/                 # 118 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -330,7 +330,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Decision reliability profile | **Implemented** | Bootstrap stability, calibration, cost stress, full-policy, A–D grade in memo §4.2 and JSON |
 | Reliability audit | **Implemented** | Per-replication grades, false certifications, abstention; `configs/reliability_audit.yaml` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 115 tests, including negative controls |
+| Test suite | **Implemented** | 118 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |
@@ -369,11 +369,11 @@ Then run:
 
 ```bash
 pytest -q
-onboarding-audit demo --out reports/demo
+onboarding-audit demo --out reports/demo_reliability
 python scripts/check_claims.py
 ```
 
-Expected: **115 passed**, the demo memo, and **43/43** claim checks.
+Expected: **118 passed**, the demo memo, and **62/62** claim checks.
 
 ## Documentation
 

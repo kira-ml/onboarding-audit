@@ -161,6 +161,8 @@ These are outputs, not editable sources:
 | [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) | yes | Same run; audit table |
 | [`../reports/case_reliability/report.json`](../reports/case_reliability/report.json) | yes | `onboarding-audit report` on `examples/case_log.csv`, `--out reports/case_reliability` |
 | [`../reports/case_reliability/report.md`](../reports/case_reliability/report.md) | yes | Same run; grade A memo |
+| [`../reports/demo_reliability/report.json`](../reports/demo_reliability/report.json) | yes | `onboarding-audit demo --out reports/demo_reliability` |
+| [`../reports/demo_reliability/report.md`](../reports/demo_reliability/report.md) | yes | Same run; grade C memo |
 | [`../reports/propensity_sensitivity.md`](../reports/propensity_sensitivity.md) | yes | `onboarding-audit sensitivity` |
 | `reports/pilot_rows.parquet` | no | `onboarding-audit pilot` |
 | `reports/sample_report/` | no | `onboarding-audit report` |

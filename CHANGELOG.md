@@ -18,7 +18,7 @@ reliability of the decision, not the point estimate.
   per-replication grades.
 - Reliability audit (`configs/reliability_audit.yaml`,
   `reports/reliability_audit/summary.*`): 2/60 A/B decisions released, both
-  correct, 0 false certifications, 97% of decisions withheld from release.
+  P0-correct, 0 false certifications, 9 of 11 directional decisions withheld (82%).
 - Label-holdout baseline (`configs/holdout_baseline.yaml`,
   `reports/holdout_baseline/`): the correction survives a disjoint label half;
   the ranking remains unstable.
@@ -36,12 +36,18 @@ reliability of the decision, not the point estimate.
   a full-policy direction that conflicts with the `P0` decision is a blocking
   conflict, not a pass. A log with no rejected rows marks the structural
   dimension `not_applicable`.
+- Propensity calibration is counted only for a provided `e`; an action-level
+  estimate from the same observed rows is an identity. The case study now
+  supplies its known observation probabilities.
 - Reliability readiness in `validate` no longer requires a propensity column
   (it can be estimated) and no longer reports a fake missing feature name.
+- The audit reports both the no-A/B-release rate (58/60) and the directional
+  decisions withheld (9/11), with P0-correct accuracy; the JSON records
+  `n_boot`.
 
 ### Verification
 
-- 115 tests, 43/43 claim checks, 0 missing links, paper at 6 body pages plus
+- 118 tests, 62/62 claim checks, 0 missing links, paper at 6 body pages plus
   references; the 60-replication audit is unchanged after the grading fix.
 
 ## [1.0.2] — 2026-11-27
@@ -155,7 +161,8 @@ published with the findings that changed the claims.
 
 - IPW under estimated action-level `e` is **2.92%**, not 11.19%; the old result
   was a propensity bug. DR is **1.43%**.
-- DR's **0.94%** and **≤1.89%** are means; the 95% MC upper bound on |bias| is
+- DR's **0.94%** and **?1.89%** are maximum absolute relative biases
+  (main mean **0.69%**); the 95% MC upper bound on |bias| is
   **3.8%** (main) and **4.3–9.6%** (sweep).
 - "12/12 cells >5%" is the maximum across policies; the incumbent is **11/12**.
 - The bounds are **0.009942** in the main scenario and **0.203** in `frej_002`.

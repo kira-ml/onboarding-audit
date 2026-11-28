@@ -71,10 +71,10 @@ pilot output or a cited primary source does not appear in the paper.
 | The report includes an observational segment diagnostic | **Measured** (mechanism) | `tests/test_report.py`; memo §3.1; small cells suppressed | Descriptive only; rejected outcomes are unobserved; it is not a fairness certification |
 | The report returns a decision reliability profile with an A–D grade | **Measured** (mechanism) | `src/onboarding_audit/reliability.py`; `tests/test_reliability.py`; memo §4.2 | Decision aid, not a certification; nuisance models are fixed in the bootstrap |
 | The profile measures bootstrap decision stability, calibration, and cost-stress stability | **Measured** (mechanism) | `reliability.py`; `calibration_metrics`; `cost_stress`; `bootstrap_decision` | The bootstrap is evaluation-sample only; calibration is observed-label only; the cost grid is local |
-| The reliability profile made zero false certifications in the 60-replication audit | **Measured** (post-hoc) | 2/60 A/B directional decisions released, both correct; 0 false certifications; 97% withheld from release (`reports/reliability_audit/summary.json`) | 20 reps per scenario; a different threshold or population |
-| The profile is conservative, not volume-maximizing | **Measured** (post-hoc) | 38 C, 20 D, 2 A/B in 60 reps; all-directional accuracy 45% including unreleased decisions | A less conservative threshold or a larger audit |
+| The reliability profile made zero false certifications in the 60-replication audit | **Measured** (post-hoc) | 2/60 A/B directional decisions released, both P0-correct; 0 false certifications; 9/11 directional decisions withheld (82%); identified directional accuracy 4/7 (57%) (`reports/reliability_audit/summary.json`) | 20 reps per scenario; a different threshold or population |
+| The profile is conservative, not volume-maximizing | **Measured** (post-hoc) | 38 C, 20 D, 2 A/B in 60 reps; identified directional accuracy 4/7, 5/11 including gate-failed diagnostics | A less conservative threshold or a larger audit |
 | The report bounds the full-policy candidate-vs-incumbent difference and reports a reject-margin break-even | **Measured** (mechanism) | `full_policy_difference`; `tests/test_estimators.py`; memo §4.1 | The break-even assumes a common fraud rate among rejected rows; the sharp bound still needs the `P0` estimate and its interval |
-| The naive ranking flips in the committed case study | **Measured** (known truth) | Naive candidate **+6.3% worse**; true candidate **−12.4% better**; report P(better) **0.984** (`examples/case_truth.json`, `tests/test_case_study.py`) | A different cost matrix or observation rate |
+| The naive ranking flips in the committed case study | **Measured** (known truth) | Naive candidate **+6.3% worse**; true candidate **−12.4% better**; report P(better) **0.985** (`reports/case_reliability/report.json`, `tests/test_case_study.py`) | A different cost matrix or observation rate |
 | The pilot generalizes to a Philippine production system | **Not claimed** | Public synthetic data; simulation | A bank partner and real logs |
 | A random approval/rejection arm is acceptable | **Not claimed** | `AUDIT_DESIGN.md` | Legal/risk review |
 | The audit is a universal bias fix | **Limitation / non-finding** | In the main scenario with a 5% approved-label base rate, the audit's marginal RMSE gain is modest; it is the only approximately unbiased estimator under outcome-dependent labels, but its coverage is 80-86%, below nominal | A lower base label rate or a different audit design |
@@ -93,7 +93,7 @@ pilot output or a cited primary source does not appear in the paper.
    better model**: the naive ranking puts the incumbent ahead of the better
    model, while the true ranking reverses it.
 3. **The correction works on the identified population.** DR has a mean bias of
-   at most 0.94% in the main scenario (95% MC upper bound 3.8%) with 96%
+   max 0.94% in the main scenario (mean 0.69%) (95% MC upper bound 3.8%) with 96%
    coverage; IPW is within 1.18% with 95% coverage. In the observation-rate
    sweep, DR's mean bias is at most **1.89%** (95% MC upper bound 4.3% for
    `e>=0.05`, 9.6% at `e=0.01`), but its P(select true best) falls to **64%**

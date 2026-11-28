@@ -24,6 +24,8 @@ def summarize(rows: list[dict]) -> dict:
     released = [r for r in directional if str(r["grade"]).startswith(("A", "B"))]
     released_correct = [r for r in released if r["correct"]]
     false_cert = [r for r in released if not r["correct"]]
+    identified = [r for r in directional if not str(r["grade"]).startswith("D")]
+    identified_correct = [r for r in identified if r["correct"]]
     return {
         "n": len(rows),
         "grades": dict(grades),
@@ -41,6 +43,17 @@ def summarize(rows: list[dict]) -> dict:
         "released_correct_n": len(released_correct),
         "released_accuracy": (
             len(released_correct) / len(released) if released else None
+        ),
+        "directional_withheld_n": len(directional) - len(released),
+        "directional_withheld_rate": (
+            (len(directional) - len(released)) / len(directional)
+            if directional
+            else None
+        ),
+        "identified_directional_n": len(identified),
+        "identified_directional_correct_n": len(identified_correct),
+        "identified_directional_accuracy": (
+            len(identified_correct) / len(identified) if identified else None
         ),
         "abstention_rate": 1.0 - len(released) / len(rows) if rows else None,
         "false_certification_n": len(false_cert),
@@ -64,7 +77,8 @@ def main() -> None:
             "Post-hoc reliability audit; 20 reps per scenario, 100 bootstrap "
             "replicates per rep. A false certification is a wrong directional "
             "decision graded A/B. Abstention means the decision was withheld "
-            "from release."
+            "from release. `correct` is P0-correct; full-policy correctness is "
+            "recorded separately in the pilot rows."
         ),
         "overall": overall,
         "by_scenario": by_scenario,
@@ -89,29 +103,43 @@ def main() -> None:
         + "**",
         (
             f"- released A/B directional decisions: **{overall['released_n']}** "
-            f"({overall['released_n'] / max(overall['n'], 1):.0%})"
+            f"of **{overall['n']}** ({overall['released_n'] / max(overall['n'], 1):.0%})"
         ),
         (
-            f"- released accuracy: **{overall['released_accuracy']:.0%}**"
-            if overall["released_accuracy"] is not None
-            else "- released accuracy: n/a"
+            f"- directional decisions withheld: **{overall['directional_withheld_n']}** "
+            f"of **{overall['directional_n']}** "
+            f"({overall['directional_withheld_rate']:.0%})"
+            if overall["directional_withheld_rate"] is not None
+            else "- directional decisions withheld: n/a"
+        ),
+        (
+            "- identified directional accuracy (excluding gate-failed D): "
+            f"**{overall['identified_directional_correct_n']}**/"
+            f"**{overall['identified_directional_n']}** "
+            f"({overall['identified_directional_accuracy']:.0%})"
+            if overall["identified_directional_accuracy"] is not None
+            else "- identified directional accuracy: n/a"
+        ),
+        (
+            "- all directional decisions, including gate-failed D: "
+            f"**{overall['directional_n']}**, P0-correct "
+            f"**{overall['directional_correct_n']}** "
+            f"({overall['directional_accuracy_all']:.0%})"
+            if overall["directional_accuracy_all"] is not None
+            else f"- all directional decisions: **{overall['directional_n']}**"
         ),
         (
             "- false certifications (released A/B and wrong): "
             f"**{overall['false_certification_n']}**"
         ),
-        f"- withheld from release (abstention): **{overall['abstention_rate']:.0%}**",
         (
-            "- all directional decisions, including C/D not released: "
-            f"**{overall['directional_n']}**, accuracy "
-            f"**{overall['directional_accuracy_all']:.0%}**"
-            if overall["directional_accuracy_all"] is not None
-            else f"- all directional decisions: **{overall['directional_n']}**"
+            "- no A/B release (not a directional-decision rate): "
+            f"**{overall['abstention_rate']:.0%}**"
         ),
         "",
         "## By scenario",
         "",
-        "| Scenario | n | Grades | Released | Released acc. | False cert. | Abstention |",
+        "| Scenario | n | Grades | Released | Released P0 acc. | False cert. | No A/B release |",
         "|---|---:|---|---:|---:|---:|---:|",
     ]
     for name, s in by_scenario.items():

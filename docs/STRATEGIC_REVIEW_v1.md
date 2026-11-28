@@ -81,7 +81,7 @@ The problem is not quality. The problem is **strategic fit and evidence tier**.
 | **Product-decision fit** | The headline promise is "catch more fraud without rejecting more good customers"; the identified estimand excludes rejects; the memo's recommendation is `P0`-conditional | **Yes** | The core value proposition; trust with a risk committee | Full-policy difference bounds + break-even (implemented); make it the default reading |
 | **Scientific novelty** | Standard DR/IPW/bounds; the paper admits "not a new estimator"; evidence is a simulation on one synthetic dataset | **Yes for publication** | A main-conference paper; peer-reviewed credibility | Re-center on decision reliability, not bias magnitude; target a workshop/technical report first |
 | **Fairness / inclusion evidence** | Schema has `segment`/`region`; the pilot does not evaluate fairness; the promise is inclusion-sensitive | **Yes for a PH fintech flagship** | A regulator/risk-committee question the tool cannot answer | Minimal segment diagnostic or an explicit narrowing of the claim |
-| **Engineering quality** | 115 tests in the current tree, CI, hash, claim checks | No | Nothing material | Do not add more tests for their own sake |
+| **Engineering quality** | 118 tests in the current tree, CI, hash, claim checks | No | Nothing material | Do not add more tests for their own sake |
 | **Documentation volume** | 40+ docs, canonical map, claim ledger | No (but consistency is binding) | Reviewer trust when docs contradict | Fix drift; do not add more docs without a reader |
 | **Time / attention** | 10–12 h/week cap; GPA, applications, health | **Yes** (personal) | Scope | Stop adding methods; spend the next block on external review |
 

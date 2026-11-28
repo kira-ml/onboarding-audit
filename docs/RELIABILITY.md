@@ -67,7 +67,7 @@ The report returns a `reliability` object in `report.json` and a
 | **Identification** | Can the log support a `P0` point estimate? | Gate: positivity, labels, ESS, max weight, cost support, observation declaration, propensity calibration |
 | **Statistical stability** | Would the decision survive a resample of the evaluation rows? | Paired row bootstrap of DR influence terms: `P(candidate cheaper)`, same-direction share, 95% interval, regret |
 | **Full-policy / reject margin** | Does the direction survive the unlogged rejected rows? | Full-policy difference bound and break-even; `depends` is a caveat, `P0 inconclusive` is unavailable |
-| **Model calibration** | Are the outcome and observation models trustworthy at the decision boundary? | Brier, log loss, ECE for the outcome model; observed/expected ratio and ECE for the propensity |
+| **Model calibration** | Are the outcome and observation models trustworthy at the decision boundary? | Brier, log loss, ECE for the outcome model; observed/expected ratio and ECE for a **provided** propensity. An action-level propensity estimated from the same observed rows is an identity and is not counted as calibration evidence. |
 | **Cost stress** | Does the decision survive plausible cost changes? | 3×3 grid of review-cost and false-reject-cost multipliers; share of cells with the same decision |
 | **Operational readiness** | Is the log large and clean enough to act on? | Observed labels, ESS, gate warnings |
 
@@ -158,8 +158,8 @@ On the BAF simulation:
 
 | Case | Grade | Why |
 |---|---|---|
-| `examples/case_log.csv` (synthetic candidate clearly better; report in `reports/case_reliability/`) | **A** | bootstrap P(candidate cheaper)=0.998; full-policy robust; ECE 0.018; 9/9 cost cells; 2,496 labels |
-| `onboarding-audit demo` (near-tie, 267 labels) | **C** | bootstrap P=0.934; full-policy `P0 inconclusive`; ECE 0.094; 6/9 cost cells; operational readiness moderate |
+| `examples/case_log.csv` (synthetic candidate clearly better, provided `e`; report in `reports/case_reliability/`) | **A** | bootstrap P(candidate cheaper)=0.998; full-policy robust; ECE 0.019; 9/9 cost cells; 2,496 labels |
+| `reports/demo_reliability/` (near-tie, 267 labels) | **C** | bootstrap P=0.934; full-policy `P0 inconclusive`; outcome ECE 0.094; propensity calibration unavailable; 6/9 cost cells; operational readiness moderate |
 
 The grade is not always A. It can separate a clear decision from a near-tie
 with the same code path. That is the point of the profile.
@@ -168,10 +168,10 @@ with the same code path. That is the point of the profile.
 
 The per-replication audit (`reports/reliability_audit/`, 20 reps per scenario,
 100 bootstrap replicates) released only **2 of 60** A/B directional decisions;
-both were correct, with **zero false certifications** and **97% of decisions
-withheld from release**. Main: 1 B, 19 C. Lowest label rate: 20 D. High
-false-reject cost: 1 A, 19 C. The all-directional accuracy including unreleased
-C/D decisions was 45%, which is why the profile does not release them. The
+both were P0-correct, with **zero false certifications** and **9 of 11
+directional decisions withheld (82%)**. Main: 1 B, 19 C. Lowest label rate: 20 D.
+High false-reject cost: 1 A, 19 C. Identified directional accuracy was 4/7
+(57%), or 5/11 (45%) if the gate-failed D diagnostics are included. The
 profile is deliberately conservative; the cost of caution is decision volume,
 not a confident wrong decision. The audit is small, post-hoc, and uses the
 oracle action-level observation model, so it is a sampling/cost stability check,
@@ -203,7 +203,8 @@ the reliability layer's behavior; they are not a bank estimate.
   is a future extension.
 - The outcome calibration is measured on observed labels only; under
   outcome-dependent observation it is biased.
-- The propensity calibration is only as good as the provided/estimated `e`.
+- Only a provided propensity is calibration-checked; an action-level estimate
+  from the same observed rows is an identity and is not counted.
 - The cost grid is a local stress test, not the institution's cost accounting.
 - The operational dimension is a readiness screen, not a data-quality audit.
 - The grade thresholds are conventions; they are documented and should be
@@ -217,7 +218,7 @@ the reliability layer's behavior; they are not a bank estimate.
 
 ```bash
 pytest -q tests/test_reliability.py tests/test_report.py
-onboarding-audit demo --out reports/demo
+onboarding-audit demo --out reports/demo_reliability
 ```
 
 The memo §4.2 and `report.json` `diagnostics.reliability` contain the profile.

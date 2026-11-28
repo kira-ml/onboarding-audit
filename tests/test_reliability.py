@@ -189,10 +189,29 @@ def test_profile_structural_not_applicable_without_rejects():
     )
     inputs["comparison"] = {
         "decision": "prefer candidate",
-        "full_policy": {"decision": "P0 inconclusive"},
+        "full_policy": {"decision": "candidate cheaper"},
     }
     profile = build_reliability_profile(**inputs)
     assert profile["grade"].startswith("A")
     assert (
         profile["dimensions"]["structural_reject_margin"]["status"] == "not_applicable"
     )
+
+
+def test_profile_missing_propensity_calibration_blocks_release():
+    inputs = _strong_inputs()
+    inputs["prop_calibration"] = {
+        "available": False,
+        "reason": "propensity is estimated; not calibration evidence",
+    }
+    profile = build_reliability_profile(**inputs)
+    assert profile["grade"].startswith("C")
+    assert profile["dimensions"]["model_calibration"]["status"] == "weak"
+
+
+def test_profile_schema_readiness_blocks_release():
+    inputs = _strong_inputs()
+    inputs["readiness"] = {"operational_readiness": False}
+    profile = build_reliability_profile(**inputs)
+    assert profile["grade"].startswith("C")
+    assert profile["dimensions"]["operational_readiness"]["status"] == "unavailable"

@@ -36,7 +36,7 @@ deferred, or refused?”
 60 replications (main, low-label, high false-reject-cost), 100 bootstrap
 replicates each:
 
-| Scenario | n | Grades | Released | Released accuracy | False cert. | Withheld |
+| Scenario | n | Grades | Released | Released P0 acc. | False cert. | No A/B release |
 |---|---:|---|---:|---:|---:|---:|
 | main | 20 | 1 B, 19 C | 1 | 100% | 0 | 95% |
 | `e001` | 20 | 20 D | 0 | n/a | 0 | 100% |
@@ -66,8 +66,8 @@ The manuscript is refocused on Decision Reliability for Financial ML:
   ranking remains unstable.
 - Model/score ablation: candidate AUC 0.8829 vs 0.8733; retrained HistGB 0.8773
   vs logistic 0.8754; the better-model premise is modest.
-- Reliability audit: 2/60 A/B decisions released, both correct; 0 false
-  certifications; 97% of decisions withheld from release.
+- Reliability audit: 2/60 A/B decisions released, both P0-correct; 0 false
+  certifications; 9 of 11 directional decisions withheld (82%).
 
 ## 3. What this release does not fix
 
@@ -83,10 +83,10 @@ The manuscript is refocused on Decision Reliability for Financial ML:
 
 ```bash
 pip install -e ".[dev,baf]"
-pytest -q                     # 115 passed
-python scripts/check_claims.py  # 43/43
+pytest -q                     # 118 passed
+python scripts/check_claims.py  # 62/62
 python scripts/check_links.py   # 0 missing
-onboarding-audit demo --out reports/demo
+onboarding-audit demo --out reports/demo_reliability
 onboarding-audit pilot --config configs/reliability_audit.yaml --out reports/reliability_audit --reliability-boot 100
 python scripts/summarize_reliability_audit.py
 ```

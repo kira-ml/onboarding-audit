@@ -13,24 +13,25 @@ production estimate, not a Philippine bank, not a causal deployment effect.
 
 ## 1. Headline
 
-1. **Point accuracy is not decision reliability.** DR has a mean absolute relative bias
-   of **0.94%** and **96.0%** coverage, yet it selects the true best policy only
+1. **Point accuracy is not decision reliability.** DR has a max absolute relative bias
+   of **0.94%** (mean **0.69%**) and **96.0%** coverage, yet it selects the true best policy only
    **72%** of the time. At the lowest approve-label rate it is **64%**; at a high
    false-reject cost the naive rule ranks first **100%** while DR is **58%**;
    under a label-holdout split DR is **52%**. The point estimate and the decision
    are different objects.
 2. **The reliability profile is decision-grade and conservative.** Across a
    60-replication audit, only **2/60** A/B directional decisions were released;
-   both were correct, with **0 false certifications** and **97% of decisions withheld
-   from release**. A clear case is grade **A**; the near-tie demo is grade **C**. The
-   profile refuses close calls rather than issuing a confident wrong decision.
+   both were P0-correct, with **0 false certifications** and **9 of 11
+   directional decisions withheld (82%)**. A clear case is grade **A**; the
+   near-tie demo is grade **C**. The profile refuses close calls rather than
+   issuing a confident wrong decision.
 3. **Naive evaluation is materially biased, but the magnitude is conditional.**
    Relative bias **+111.6% to +278.5%** in the main pilot; across the 12-cell
    observation-rate sweep, the maximum across policies is **+7.8% to +538.5%**
    (12/12 cells above 5%). The incumbent's own bias is **1.5–218%**, above 5% in
    11/12 cells. The direction is robust; the magnitude depends on the
    pre-resolution report probability and the review rate.
-4. **DR recovers the identified `P0` value.** Mean |relative bias| **0.94%**,
+4. **DR recovers the identified `P0` value.** Max |relative bias| **0.94%** (mean **0.69%**),
    mean 95% coverage **96.0%**; IPW **1.18% / 94.5%**. The 95% Monte Carlo upper
    bound on the mean |bias| is **3.8%** in the main scenario, not 0.94%. The
    corrected ranking is better but not perfect (DR mean inversions **0.29**,
@@ -129,8 +130,8 @@ realized rate.
 
 **Read:** the maximum naive bias across policies exceeds 5% in **12/12** cells,
 but the range is **7.8% to 538.5%**; the incumbent's own bias is **1.5–218%**,
-above 5% in 11/12. DR with known propensities has a mean bias of at most
-**1.89%**, a 95% Monte Carlo upper bound of **4.3%** for `e>=0.05` (**9.6%** at
+above 5% in 11/12. DR with known propensities has a worst-cell absolute
+relative bias of **1.89%**, a 95% Monte Carlo upper bound of **4.3%** for `e>=0.05` (**9.6%** at
 `e=0.01`), and coverage of **84.5-96.0%**. At the lowest report probability,
 DR's P(select true best) is **64%**, so the correction is accurate but the
 ranking is not guaranteed. The sweep supports the premise and rejects a
@@ -436,8 +437,8 @@ Two contrasting examples:
 
 | Case | Grade | Evidence |
 |---|---|---|
-| `examples/case_log.csv` (synthetic candidate clearly better) | **A** | bootstrap P(candidate cheaper)=0.998; full-policy robust; ECE 0.018; 9/9 cost cells; 2,496 labels |
-| `onboarding-audit demo` (near-tie, 267 labels) | **C** | bootstrap P=0.934; full-policy `P0 inconclusive`; ECE 0.094; 6/9 cost cells; operational readiness moderate |
+| `examples/case_log.csv` (synthetic candidate clearly better, provided `e`) | **A** | bootstrap P(candidate cheaper)=0.998; full-policy robust; ECE 0.019; 9/9 cost cells; 2,496 labels |
+| `reports/demo_reliability/` (near-tie, 267 labels) | **C** | bootstrap P=0.934; full-policy `P0 inconclusive`; outcome ECE 0.094; propensity calibration unavailable; 6/9 cost cells; operational readiness moderate |
 
 **Read:** the grade is a decision aid, not a certification. It separates a clear
 decision from a near-tie with the same code path. The bootstrap fixes the
@@ -450,7 +451,7 @@ The per-replication audit uses 20 replications per scenario and 100 bootstrap
 replicates per replication (`reports/reliability_audit/`). A decision is
 **released** only when the grade is A/B and the point decision is directional.
 
-| Scenario | n | Grades | Released | Released accuracy | False certifications | Abstention |
+| Scenario | n | Grades | Released | Released P0 accuracy | False certifications | No A/B release |
 |---|---:|---|---:|---:|---:|---:|
 | main | 20 | 1 B, 19 C | 1 | 100% | 0 | 95% |
 | `e001` | 20 | 20 D | 0 | n/a | 0 | 100% |
@@ -458,12 +459,13 @@ replicates per replication (`reports/reliability_audit/`). A decision is
 | **Overall** | **60** | 1 A, 1 B, 38 C, 20 D | **2** | **100%** | **0** | **97%** |
 
 **Read:** the profile is conservative. It released only 2 of 60 decisions, both
-correct, and made no false certifications. The cost is a 97% withheld-decision rate:
-most close calls are grade C/D, not released. The all-directional accuracy
-(including unreleased C/D decisions) is 45%, which is why releasing them would
-be unsafe. This is a safety-first reliability profile, not a volume-maximizing
-decision rule. The audit is small and post-hoc; do not over-read the
-percentages. See `reports/reliability_audit/summary.md`.
+P0-correct, and made no false certifications. The no-A/B-release rate is 97%;
+among the 11 directional decisions, 9 were withheld (82%), and 4 of 7
+identified directional decisions were P0-correct (57%). Including the four
+gate-failed D diagnostics, 5 of 11 were P0-correct (45%). This is a safety-first
+reliability profile, not a volume-maximizing decision rule. The audit is small
+and post-hoc; do not over-read the percentages. See
+`reports/reliability_audit/summary.md`.
 
 ## 12. Verdicts
 
@@ -482,7 +484,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 
 ## 13. Negative controls
 
-`pytest -q`: **115 passed** in the current tree (92 at the v1.0.0 tag), including:
+`pytest -q`: **118 passed** in the current tree (92 at the v1.0.0 tag), including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);

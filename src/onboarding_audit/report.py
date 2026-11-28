@@ -138,10 +138,20 @@ def estimate_propensities(
         provided_all = bool(column.notna().all())
         if provided_all:
             e = column.to_numpy(dtype=float)
+            e_diag = np.ones(len(df), dtype=bool)
         else:
             e[observed] = column.loc[observed].to_numpy(dtype=float)
-        e_review = float(e[review].mean()) if review.any() else 0.0
-        e_approve = float(e[approve].mean()) if approve.any() else 0.0
+            e_diag = observed
+        e_review = (
+            float(e[review & e_diag].mean())
+            if (review & e_diag).any()
+            else float("nan")
+        )
+        e_approve = (
+            float(e[approve & e_diag].mean())
+            if (approve & e_diag).any()
+            else float("nan")
+        )
         source = "provided"
     elif propensity_model == "covariate":
         X, names = _features(df, list(feature_cols or []), amount_col)
@@ -344,6 +354,7 @@ def evaluate_report(
     seed: int | None = None,
     observation_assumption: str = "unknown",
     reliability_n_boot: int = 500,
+    readiness: dict | None = None,
 ) -> tuple[dict, dict, dict, dict, dict, IdentificationReport]:
     """Return estimates, diagnostics, bounds, audit recommendation."""
     y = df["label"].fillna(0).astype(int).to_numpy()
@@ -645,6 +656,9 @@ def evaluate_report(
         identification=identification,
         seed=int(seed if seed is not None else config.seed),
         n_boot=int(reliability_n_boot),
+        propensity_source=propensity.source,
+        propensity_model=str(propensity.details.get("propensity_model", "action")),
+        readiness=readiness,
     )
     return estimates, diagnostics, bounds, audit_rec, comparison, identification
 
@@ -941,10 +955,16 @@ def write_memo(
             "is impossible under the stated `e`."
         )
     else:
-        L.append(
-            "- **Propensity calibration:** not computable (the provided `e` does "
-            "not cover every `P0` row)."
-        )
+        if d.get("propensity_source") != "provided":
+            L.append(
+                "- **Propensity calibration:** not computable from an estimated "
+                "propensity; provide `e` or an audit-labeled sample."
+            )
+        else:
+            L.append(
+                "- **Propensity calibration:** not computable (the provided `e` does "
+                "not cover every `P0` row)."
+            )
     if d.get("propensity_model") == "covariate":
         L.append(
             f"- **Propensity model:** per-action logistic P(observed | action, X); "
@@ -1410,6 +1430,7 @@ def run_report(
         seed=seed,
         observation_assumption=observation_assumption,
         reliability_n_boot=reliability_n_boot,
+        readiness=report.reliability_readiness,
     )
 
     out_dir.mkdir(parents=True, exist_ok=True)

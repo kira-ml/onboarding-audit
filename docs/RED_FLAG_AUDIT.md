@@ -502,14 +502,14 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 
 | Check | Command | Result |
 |---|---|---|
-| Unit tests | `pytest -q` | **115 passed** |
-| Claim checks | `python scripts/check_claims.py` | **43/43** |
+| Unit tests | `pytest -q` | **118 passed** |
+| Claim checks | `python scripts/check_claims.py` | **62/62** |
 | Link check | `python scripts/check_links.py` | **0 missing** |
 | Paper build | `tectonic paper/main.tex` | PDF written; 6 body + references; citations present |
 | Label holdout | `onboarding-audit pilot --config configs/holdout_baseline.yaml` | Naive >100%; action-weighted/DR ≤6%; ranking unstable |
 | Model ablation | `python scripts/model_ablation.py` | Candidate AUC 0.8829 vs 0.8733; HistGB 0.8773 vs logistic 0.8754 |
 | Reliability profile | `tests/test_reliability.py`, `tests/test_report.py` | Bootstrap/calibration/cost-stress tests pass; case A, demo C |
-| Reliability audit | `python scripts/summarize_reliability_audit.py` | 2/60 A/B released, both correct; 0 false certifications; 97% withheld from release |
+| Reliability audit | `python scripts/summarize_reliability_audit.py` | 2/60 A/B released, both P0-correct; 0 false certifications; 9/11 directional decisions withheld (82%) |
 | False claim removed | `grep "No peer-reviewed"` on current docs | Only the audit log/review quote it |
 | 2026 citations | PDF text search | OSCAR/Beyond Holdout/DOiT/Kuroki/Bhola/Hong present |
 | Release | GitHub | `main` + `v1.1.0` pre-release |

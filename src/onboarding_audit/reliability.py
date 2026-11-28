@@ -53,6 +53,8 @@ def bootstrap_decision(
     uncertainty, not propensity/outcome model uncertainty. It is a decision
     stability diagnostic, not a confidence guarantee.
     """
+    if n_boot < 1:
+        return {"available": False, "reason": "n_boot must be at least 1"}
     observed = np.asarray(observed, dtype=bool)
     in_pop = np.asarray(in_pop, dtype=bool)
     if phat is None or not np.isfinite(np.asarray(phat, dtype=float)).all():
@@ -79,15 +81,14 @@ def bootstrap_decision(
         boot[b] = float(d[idx].mean())
 
     p_better = float(np.mean(boot < 0.0))
+    p_worse = float(np.mean(boot > 0.0))
     if p_better >= 0.95:
         decision = "prefer candidate"
-    elif p_better <= 0.05:
+    elif p_worse >= 0.95:
         decision = "keep incumbent"
     else:
         decision = "inconclusive"
-    same_direction = (
-        p_better if point < 0 else (1.0 - p_better) if point > 0 else float("nan")
-    )
+    same_direction = p_better if point < 0 else p_worse if point > 0 else float("nan")
     return {
         "available": True,
         "method": "paired row bootstrap of DR influence terms; nuisance fixed",
@@ -96,6 +97,7 @@ def bootstrap_decision(
         "seed": int(seed),
         "point_difference": point,
         "p_candidate_better_boot": p_better,
+        "p_candidate_worse_boot": p_worse,
         "decision_boot": decision,
         "same_direction_share": same_direction,
         "ci_low": _quantile(boot, 0.025),
@@ -267,6 +269,7 @@ def build_reliability_profile(
     calibration: dict,
     prop_calibration: dict,
     stress: dict,
+    readiness: dict | None = None,
 ) -> dict:
     """Combine the dimensions into an explicit decision grade.
 
@@ -317,7 +320,17 @@ def build_reliability_profile(
         if full_text.startswith("incumbent cheaper")
         else None
     )
-    if full_direction and point_decision in {"prefer candidate", "keep incumbent"}:
+    if n_rejected == 0 and full_text in {
+        "candidate cheaper",
+        "incumbent cheaper",
+        "inconclusive",
+        "candidate cheaper for any reject outcome",
+        "incumbent cheaper for any reject outcome",
+        "P0 inconclusive",
+    }:
+        structural = "not_applicable"
+        structural_evidence = "no logging-rejected rows; P0 is the full population"
+    elif full_direction and point_decision in {"prefer candidate", "keep incumbent"}:
         if full_direction != point_decision:
             structural = "unavailable"
             structural_evidence = "full-policy direction conflicts with the P0 decision"
@@ -327,9 +340,6 @@ def build_reliability_profile(
     elif full_text == "depends on the reject margin":
         structural = "caveat"
         structural_evidence = "full-policy direction depends on the reject margin"
-    elif full_text == "P0 inconclusive" and n_rejected == 0:
-        structural = "not_applicable"
-        structural_evidence = "no logging-rejected rows; P0 is the full population"
     elif full_text == "P0 inconclusive":
         structural = "unavailable"
         structural_evidence = "P0 interval includes zero"
@@ -362,13 +372,13 @@ def build_reliability_profile(
         model_evidence += f"; propensity O/E={ratio:.2f}"
     else:
         model_statuses.append("unavailable")
-    if "weak" in model_statuses:
+        model_evidence += (
+            "; propensity calibration unavailable: "
+            f"{prop_calibration.get('reason', 'not provided')}"
+        )
+    if "weak" in model_statuses or "unavailable" in model_statuses:
         model_status = "weak"
     elif "moderate" in model_statuses:
-        model_status = "moderate"
-    elif all(status == "unavailable" for status in model_statuses):
-        model_status = "unavailable"
-    elif "unavailable" in model_statuses:
         model_status = "moderate"
     else:
         model_status = "strong"
@@ -386,34 +396,37 @@ def build_reliability_profile(
             "unavailable", str(stress.get("reason", "cost stress unavailable"))
         )
 
-    metrics = identification.metrics
-    observed_n = int(metrics.get("n_observed", 0))
-    ess = float(metrics.get("ess", 0.0))
-    warnings = len(identification.warnings)
-    if observed_n >= 500 and ess >= 500 and warnings <= 1:
-        op_status = "strong"
-    elif observed_n >= 100 and ess >= 100 and warnings <= 3:
-        op_status = "moderate"
+    if readiness is not None and not readiness.get("operational_readiness", True):
+        op_status = "unavailable"
+        op_evidence = "schema readiness is missing label_time/label_source/audit_flag"
     else:
-        op_status = "weak"
-    dimensions["operational_readiness"] = _dimension(
-        op_status,
-        f"labels={observed_n:,}; ESS={ess:.0f}; gate warnings={warnings}",
-    )
+        metrics = identification.metrics
+        observed_n = int(metrics.get("n_observed", 0))
+        ess = float(metrics.get("ess", 0.0))
+        warnings = len(identification.warnings)
+        if observed_n >= 500 and ess >= 500 and warnings <= 1:
+            op_status = "strong"
+        elif observed_n >= 100 and ess >= 100 and warnings <= 3:
+            op_status = "moderate"
+        else:
+            op_status = "weak"
+        op_evidence = f"labels={observed_n:,}; ESS={ess:.0f}; gate warnings={warnings}"
+    dimensions["operational_readiness"] = _dimension(op_status, op_evidence)
 
     if not identification.passed:
         grade = "D — not identified"
         reasons.append("identification gate failed")
-    elif comparison.get("decision") not in {"prefer candidate", "keep incumbent"}:
-        grade = "C — collect more evidence"
-        reasons.append("point decision is inconclusive")
     else:
         blocked = [
             k
             for k, d in dimensions.items()
             if d["status"] in {"weak", "unavailable", "fail"}
         ]
-        if blocked:
+        if comparison.get("decision") not in {"prefer candidate", "keep incumbent"}:
+            grade = "C — collect more evidence"
+            reasons.append("point decision is inconclusive")
+            reasons.extend(f"{k}: {dimensions[k]['status']}" for k in blocked)
+        elif blocked:
             grade = "C — collect more evidence"
             reasons.extend(f"{k}: {dimensions[k]['status']}" for k in blocked)
         elif dimensions["structural_reject_margin"]["status"] == "caveat" or any(
@@ -458,6 +471,9 @@ def build_reliability(
     identification,
     seed: int = 0,
     n_boot: int = 500,
+    propensity_source: str = "unknown",
+    propensity_model: str = "action",
+    readiness: dict | None = None,
 ) -> dict:
     """Build the full decision-reliability payload for the report."""
     if not identification.passed or not np.isfinite(
@@ -470,6 +486,7 @@ def build_reliability(
             calibration={"available": False, "reason": "decision not identified"},
             prop_calibration={"available": False, "reason": "decision not identified"},
             stress={"available": False, "reason": "decision not identified"},
+            readiness=readiness,
         )
         return {
             "bootstrap": {"available": False, "reason": "decision not identified"},
@@ -498,6 +515,14 @@ def build_reliability(
     )
     calibration = calibration_metrics(y, phat, observed)
     prop_cal = propensity_calibration(propensity, observed, in_pop)
+    if propensity_source != "provided":
+        prop_cal = {
+            "available": False,
+            "reason": (
+                f"propensity is {propensity_source} ({propensity_model}); "
+                "observed/expected is an in-sample identity, not calibration"
+            ),
+        }
     stress = cost_stress(
         y,
         actions,
@@ -517,6 +542,7 @@ def build_reliability(
         calibration=calibration,
         prop_calibration=prop_cal,
         stress=stress,
+        readiness=readiness,
     )
     return _clean(
         {

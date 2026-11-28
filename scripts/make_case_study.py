@@ -1,8 +1,8 @@
 """Generate the reproducible case study: a better candidate that looks worse.
 
 The log is synthetic and small enough to commit. The incumbent reviews the top
-2% of its score; the candidate reviews the top 2% of a less noisy score. Approved
-applications are labeled at 3%, reviewed applications at 90%, so the naive
+5% of its score; the candidate reviews the top 5% of a less noisy score. Approved
+applications are labeled at 8%, reviewed applications at 90%, so the naive
 labeled mean is dominated by review rows. The candidate's review set is enriched
 in fraud, so its naive mean is *higher* even though its true cost is lower.
 
@@ -87,6 +87,7 @@ def main() -> None:
             "label": np.where(observed, y, np.nan),
             "label_time": label_time,
             "label_source": label_source,
+            "propensity": np.where(review, 0.90, 1.0 - (1.0 - 0.01) * (1.0 - 0.08)),
             "customer_age": rng.integers(18, 70, N),
             "credit_risk_score": rng.normal(100, 20, N),
         }

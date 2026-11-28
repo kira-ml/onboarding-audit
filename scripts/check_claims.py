@@ -285,6 +285,89 @@ def main() -> int:
             )
         )
 
+    # Reliability audit.
+    audit = _load(ROOT / "reports" / "reliability_audit" / "summary.json")["overall"]
+    checks.append(("audit replications", float(audit["n"]), 60.0))
+    checks.append(("audit grade A", float(audit["grade_letters"].get("A", 0)), 1.0))
+    checks.append(("audit grade B", float(audit["grade_letters"].get("B", 0)), 1.0))
+    checks.append(("audit grade C", float(audit["grade_letters"].get("C", 0)), 38.0))
+    checks.append(("audit grade D", float(audit["grade_letters"].get("D", 0)), 20.0))
+    checks.append(("audit released", float(audit["released_n"]), 2.0))
+    checks.append(
+        ("audit false certifications", float(audit["false_certification_n"]), 0.0)
+    )
+    checks.append(("audit directional", float(audit["directional_n"]), 11.0))
+    checks.append(
+        ("audit directional withheld", float(audit["directional_withheld_n"]), 9.0)
+    )
+    checks.append(
+        (
+            "audit identified directional accuracy",
+            float(audit["identified_directional_accuracy"]),
+            4.0 / 7.0,
+        )
+    )
+    checks.append(
+        (
+            "audit all directional accuracy",
+            float(audit["directional_accuracy_all"]),
+            5.0 / 11.0,
+        )
+    )
+    checks.append(
+        ("audit no-A/B release", float(audit["abstention_rate"]), 58.0 / 60.0)
+    )
+    audit_pilot = _load(ROOT / "reports" / "reliability_audit" / "pilot.json")
+    checks.append(
+        ("audit bootstrap replicates", float(audit_pilot["reliability_n_boot"]), 100.0)
+    )
+    case_report = _load(ROOT / "reports" / "case_reliability" / "report.json")["result"]
+    case_rel = case_report["diagnostics"]["reliability"]
+    demo_report = _load(ROOT / "reports" / "demo_reliability" / "report.json")["result"]
+    demo_rel = demo_report["diagnostics"]["reliability"]
+    checks.append(
+        (
+            "case grade A",
+            1.0 if str(case_rel["profile"]["grade"]).startswith("A") else 0.0,
+            1.0,
+        )
+    )
+    checks.append(
+        (
+            "case bootstrap P(better)",
+            float(case_rel["bootstrap"]["p_candidate_better_boot"]),
+            0.998,
+        )
+    )
+    checks.append(
+        (
+            "case cost-stress cells same",
+            float(case_rel["cost_stress"]["same_decision_share"]),
+            1.0,
+        )
+    )
+    checks.append(
+        (
+            "demo grade C",
+            1.0 if str(demo_rel["profile"]["grade"]).startswith("C") else 0.0,
+            1.0,
+        )
+    )
+    checks.append(
+        (
+            "demo bootstrap P(better)",
+            float(demo_rel["bootstrap"]["p_candidate_better_boot"]),
+            0.934,
+        )
+    )
+    checks.append(
+        (
+            "demo cost-stress share",
+            float(demo_rel["cost_stress"]["same_decision_share"]),
+            6.0 / 9.0,
+        )
+    )
+
     # Case study.
     case = _load(ROOT / "examples" / "case_truth.json")
     checks.append(
