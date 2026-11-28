@@ -1,13 +1,12 @@
 # Paper Workspace
 
-**Status:** Initial IEEEtran draft, updated v1.0.2 (2026-11-27). The manuscript is
-`main.tex`; `main.pdf` is the compiled two-column rendering. The canonical
-content remains the research documentation; the paper is a derived artifact.
+**Status:** IEEEtran draft, updated 2026-11-28 (v1.1.0 plus the restricted-feature
+negative result). The manuscript is `main.tex`; `main.pdf` is the compiled
+two-column rendering. The canonical content remains the research documentation;
+the paper is a derived artifact.
 
-> **Build status (2026-11-26):** `main.tex` has a post-tag methods addition (the
-> full-policy difference bound and break-even). The committed `main.pdf` has
-> **not** been rebuilt in the current environment; rebuild it before circulating
-> or submitting. The LaTeX toolchain is not available here.
+> **Build status (2026-11-28):** `main.pdf` was rebuilt with Tectonic: 7 pages
+> total, 6 body pages plus references.
 
 **Purpose:** Keep the paper-specific material separate from the canonical
 research documentation, without duplicating the claims, methods, or results.

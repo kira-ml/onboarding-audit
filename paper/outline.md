@@ -1,6 +1,6 @@
 # Paper Outline — Who Gets Onboarded?
 
-**Working title:** *Who Gets Onboarded? Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels.*
+**Working title:** *Reliable Decisions or Confident Errors? Policy Evaluation for Account-Opening Fraud under Selective and Delayed Labels.*
 
 **Status:** Outline; results from the v1.0.0 pilot, propensity sensitivity, and
 covariate sensitivity.

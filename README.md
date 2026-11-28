@@ -2,7 +2,7 @@
 
 # Onboarding Audit
 
-**Decision reliability for account-opening fraud policy evaluation under selective and delayed labels.**
+**Reliable decisions or confident errors? Account-opening fraud policy evaluation under selective and delayed labels.**
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
@@ -468,7 +468,7 @@ If you use this project, cite the software via [`CITATION.cff`](CITATION.cff):
 ```bibtex
 @software{Talingting_Onboarding_Audit_2026,
   author  = {Talingting, Ken Ira Lacson},
-  title   = {Onboarding Audit: Decision Reliability for Account-Opening Fraud Policy Evaluation under Selective and Delayed Labels},
+  title   = {Onboarding Audit: Reliable Decisions or Confident Errors? Policy Evaluation for Account-Opening Fraud under Selective and Delayed Labels},
   version = {1.1.0},
   year    = {2026},
   license = {MIT},
