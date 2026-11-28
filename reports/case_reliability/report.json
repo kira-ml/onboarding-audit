@@ -1,0 +1,393 @@
+{
+  "result": {
+    "n": 20000,
+    "p0_n": 19999,
+    "rejected_n": 1,
+    "observed_n": 2496,
+    "action_counts": {
+      "approve": 18999,
+      "review": 1000,
+      "reject": 1
+    },
+    "candidate_action_counts": {
+      "approve": 19000,
+      "review": 1000,
+      "reject": 0
+    },
+    "identification": {
+      "passed": true,
+      "reasons": [],
+      "warnings": [],
+      "metrics": {
+        "n": 20000.0,
+        "n_p0": 19999.0,
+        "n_rejected": 1.0,
+        "n_observed": 2496.0,
+        "ess": 1763.0476773606088,
+        "max_weight": 11.881801125703564,
+        "e_min": 0.08416232433285963,
+        "e_max": 0.897,
+        "candidate_outside_p0": 1.0,
+        "candidate_outside_p0_share": 5e-05,
+        "cost_min": 0.0,
+        "min_observed_action": 897.0,
+        "calibration_ratio": null,
+        "calibration_flagged": 0.0
+      },
+      "observation_assumption": "action"
+    },
+    "estimates": {
+      "naive": {
+        "value": 0.5459539275594708,
+        "se": 0.07013262293583256,
+        "n_used": 2496,
+        "ess": 2496.0,
+        "max_weight": 1.0,
+        "target": "P0"
+      },
+      "ipw_ht": {
+        "value": 0.6210304810918498,
+        "se": 0.08854203077361716,
+        "n_used": 2496,
+        "ess": 1763.0476773606088,
+        "max_weight": 11.881801125703564,
+        "target": "P0"
+      },
+      "ipw_hajek": {
+        "value": 0.6210304810918498,
+        "se": 0.09139884860974455,
+        "n_used": 2496,
+        "ess": 1763.0476773606088,
+        "max_weight": 11.881801125703564,
+        "target": "P0"
+      },
+      "dr": {
+        "value": 0.6182642837647848,
+        "se": 0.09083277181065244,
+        "n_used": 2496,
+        "ess": 1763.0476773606088,
+        "max_weight": 11.881801125703564,
+        "target": "P0"
+      },
+      "audit_only": {
+        "value": 0.8487179433968638,
+        "se": 0.2874709992785466,
+        "n_used": 176,
+        "ess": 176.0,
+        "max_weight": 1.0,
+        "target": "approved"
+      }
+    },
+    "diagnostics": {
+      "n": 20000,
+      "p0_n": 19999,
+      "rejected_n": 1,
+      "observed_n": 2496,
+      "observed_fraction": 0.1248,
+      "action_counts": {
+        "approve": 18999,
+        "review": 1000,
+        "reject": 1
+      },
+      "candidate_action_counts": {
+        "approve": 19000,
+        "review": 1000,
+        "reject": 0
+      },
+      "candidate_review_outside_p0": 1,
+      "candidate_approve_outside_p0": 0,
+      "review_fraud_rate_observed": 0.2987736900780379,
+      "approved_fraud_rate_observed": 0.03814884302689181,
+      "propensity_source": "estimated",
+      "propensity_model": "action",
+      "propensity_features": [
+        "score",
+        "customer_age",
+        "credit_risk_score"
+      ],
+      "positivity_ok": true,
+      "e_review": 0.897,
+      "e_approve": 0.08416232433285963,
+      "audit_rate_among_approved": 0.009263645455023948,
+      "calibration_ratio": null,
+      "expected_observed": null,
+      "actual_observed": null,
+      "e_min_observed": 0.08416232433285963,
+      "e_max_observed": 0.897,
+      "frac_observed_e_lt_001": 0.0,
+      "ess_ipw": 1763.0476773606088,
+      "max_weight_ipw": 11.881801125703564,
+      "audit_only_method": "post_stratified_by_followup",
+      "feature_names": [
+        "score",
+        "customer_age",
+        "credit_risk_score",
+        "log1p_amount"
+      ],
+      "weight_p50": 11.881801125703564,
+      "weight_p99": 11.881801125703564,
+      "weight_max": 11.881801125703564,
+      "label_source_counts": {
+        "none": 17504,
+        "post_approval_report": 1423,
+        "review": 897,
+        "audit": 176
+      },
+      "approve_observed_rate_by_amount_quintile": [
+        0.08189331329827197,
+        0.08602697887503181,
+        0.09557291666666666,
+        0.08027027027027027,
+        0.07633587786259542
+      ],
+      "review_observed_rate_by_amount_quintile": [
+        0.8571428571428571,
+        0.9154929577464789,
+        0.875,
+        0.8795986622073578,
+        0.9136069114470843
+      ],
+      "label_delay_days": {
+        "median": 44.0,
+        "p90": 57.0,
+        "n": 2496
+      },
+      "reliability": {
+        "bootstrap": {
+          "available": true,
+          "method": "paired row bootstrap of DR influence terms; nuisance fixed",
+          "n_boot": 500,
+          "n_pop": 19999,
+          "seed": 20261121,
+          "point_difference": -0.08585869285006974,
+          "p_candidate_better_boot": 0.998,
+          "decision_boot": "prefer candidate",
+          "same_direction_share": 0.998,
+          "ci_low": -0.17219566022463462,
+          "ci_high": -0.01971027565464894,
+          "p05": -0.15758465850078168,
+          "p95": -0.029371369375217542,
+          "regret_candidate": 1.3027095198960684e-05,
+          "regret_incumbent": 0.08719227864755454,
+          "regret_p95_candidate": 0.0,
+          "regret_p95_incumbent": 0.15758465850078168
+        },
+        "calibration": {
+          "available": true,
+          "n": 2496,
+          "brier": 0.08014598596931688,
+          "log_loss": 0.27509728133419614,
+          "ece": 0.01806487175274094,
+          "n_bins": 10
+        },
+        "propensity_calibration": {
+          "available": true,
+          "n": 19999,
+          "observed_expected_ratio": 1.0,
+          "ece": 0.0,
+          "mean_predicted": 0.1248062403120156,
+          "observed_rate": 0.1248062403120156,
+          "n_bins": 1
+        },
+        "cost_stress": {
+          "available": true,
+          "base_decision": "prefer candidate",
+          "n_cells": 9,
+          "same_decision_share": 1.0,
+          "stable_at_80pct": true,
+          "cells": [
+            {
+              "false_reject_multiplier": 0.5,
+              "review_multiplier": 0.5,
+              "decision": "prefer candidate",
+              "difference": -0.08585819282506857,
+              "p_candidate_better": 0.9843247129496574
+            },
+            {
+              "false_reject_multiplier": 0.5,
+              "review_multiplier": 1.0,
+              "decision": "prefer candidate",
+              "difference": -0.08585869285006975,
+              "p_candidate_better": 0.9843282475866163
+            },
+            {
+              "false_reject_multiplier": 0.5,
+              "review_multiplier": 2.0,
+              "decision": "prefer candidate",
+              "difference": -0.08585969290007234,
+              "p_candidate_better": 0.9843352929510775
+            },
+            {
+              "false_reject_multiplier": 1.0,
+              "review_multiplier": 0.5,
+              "decision": "prefer candidate",
+              "difference": -0.08585819282506857,
+              "p_candidate_better": 0.9843247129496574
+            },
+            {
+              "false_reject_multiplier": 1.0,
+              "review_multiplier": 1.0,
+              "decision": "prefer candidate",
+              "difference": -0.08585869285006975,
+              "p_candidate_better": 0.9843282475866163
+            },
+            {
+              "false_reject_multiplier": 1.0,
+              "review_multiplier": 2.0,
+              "decision": "prefer candidate",
+              "difference": -0.08585969290007234,
+              "p_candidate_better": 0.9843352929510775
+            },
+            {
+              "false_reject_multiplier": 2.0,
+              "review_multiplier": 0.5,
+              "decision": "prefer candidate",
+              "difference": -0.08585819282506857,
+              "p_candidate_better": 0.9843247129496574
+            },
+            {
+              "false_reject_multiplier": 2.0,
+              "review_multiplier": 1.0,
+              "decision": "prefer candidate",
+              "difference": -0.08585869285006975,
+              "p_candidate_better": 0.9843282475866163
+            },
+            {
+              "false_reject_multiplier": 2.0,
+              "review_multiplier": 2.0,
+              "decision": "prefer candidate",
+              "difference": -0.08585969290007234,
+              "p_candidate_better": 0.9843352929510775
+            }
+          ]
+        },
+        "profile": {
+          "grade": "A \u2014 decision-grade (conditional on assumptions)",
+          "dimensions": {
+            "identification": {
+              "status": "strong",
+              "evidence": "P0 identification gate passed"
+            },
+            "statistical_stability": {
+              "status": "strong",
+              "evidence": "bootstrap P(candidate cheaper)=0.998; same-direction share=0.998"
+            },
+            "structural_reject_margin": {
+              "status": "strong",
+              "evidence": "candidate cheaper for any reject outcome"
+            },
+            "model_calibration": {
+              "status": "strong",
+              "evidence": "outcome ECE=0.018, Brier=0.080; propensity O/E=1.00"
+            },
+            "cost_stress": {
+              "status": "strong",
+              "evidence": "9/9 cost cells same decision"
+            },
+            "operational_readiness": {
+              "status": "strong",
+              "evidence": "labels=2,496; ESS=1763; gate warnings=0"
+            }
+          },
+          "reasons": [
+            "all reliability dimensions strong"
+          ],
+          "note": "A decision aid, not a certification. The observation model, cost matrix, and audit design remain assumptions."
+        }
+      }
+    },
+    "bounds": {
+      "lower": 0.6182343705505966,
+      "upper": 0.6182493705505966,
+      "width": 1.4999999999987246e-05,
+      "lower_unconditional": 0.44021103941335527,
+      "upper_unconditional": 0.7962727016878379,
+      "width_unconditional": 0.35606166227448266,
+      "n_rejected": 1,
+      "v_pop": 0.6182642837647848
+    },
+    "audit": {
+      "design": "random post-hoc verification of approved applications; shadow scoring; not random approvals/rejections",
+      "current_audit_count": 176,
+      "current_audit_share_of_approved": 0.009263645455023948,
+      "approved_fraud_rate_observed": 0.03814884302689181,
+      "approved_n": 18999,
+      "fraud_rate_targets": {
+        "rel_20pct": {
+          "target_relative_se": 0.2,
+          "labels_needed": 631,
+          "additional_labels": 455,
+          "additional_review_cost": 9.1
+        },
+        "rel_10pct": {
+          "target_relative_se": 0.1,
+          "labels_needed": 2522,
+          "additional_labels": 2346,
+          "additional_review_cost": 46.92
+        }
+      },
+      "policy_value_target_5pct": {
+        "labels_needed": 12847,
+        "additional_labels": 12671,
+        "additional_review_cost": 253.42000000000002
+      }
+    },
+    "comparison": {
+      "candidate_value": 0.6182642837647848,
+      "incumbent_value": 0.7041229766148546,
+      "difference": -0.08585869285006975,
+      "difference_se": 0.03988448106772742,
+      "difference_ci_low": -0.16403227574281548,
+      "difference_ci_high": -0.007685109957324007,
+      "p_candidate_better": 0.9843282475866163,
+      "regret_candidate": 0.00022279380989241961,
+      "regret_incumbent": 0.08608148665996217,
+      "decision": "prefer candidate",
+      "n_pop": 19999,
+      "n_observed": 2496,
+      "max_weight": 11.881801125703564,
+      "power": {
+        "delta_5pct": {
+          "delta": 0.03520614883074273,
+          "labels_needed": 25144,
+          "additional_labels": 22648
+        },
+        "delta_10pct": {
+          "delta": 0.07041229766148546,
+          "labels_needed": 6286,
+          "additional_labels": 3790
+        }
+      },
+      "full_policy": {
+        "p0_difference": -0.08585869285006975,
+        "p0_difference_se": 0.03988448106772742,
+        "p0_share": 0.99995,
+        "reject_share": 5e-05,
+        "n_rejected": 1,
+        "reject_difference_if_legit": -999.98,
+        "reject_difference_if_fraud": 0.32,
+        "reject_min_mean": -999.98,
+        "reject_max_mean": 0.32,
+        "full_difference_lower": -0.21402307412902832,
+        "full_difference_upper": -0.007668725701826141,
+        "breakeven_reject_fraud_rate": null,
+        "breakeven_low": null,
+        "breakeven_high": null,
+        "decision": "candidate cheaper for any reject outcome",
+        "basis": "the sharp bounds exclude zero; no reject-margin assumption is needed"
+      }
+    }
+  },
+  "inputs": {
+    "log": "examples\\case_log.csv",
+    "candidate": "examples\\case_candidate.csv",
+    "config": "configs\\case_study.yaml",
+    "capacity": 0.05,
+    "observation_assumption": "action",
+    "features": [
+      "score",
+      "customer_age",
+      "credit_risk_score"
+    ]
+  }
+}

@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-import numpy as np
 import pandas as pd
 
 REQUIRED = ["application_id", "decision_time", "action", "score", "amount"]
@@ -50,6 +49,8 @@ class SchemaReport:
     warnings: list[str] = field(default_factory=list)
     estimator_readiness: dict[str, bool] = field(default_factory=dict)
     missing_by_estimator: dict[str, list[str]] = field(default_factory=dict)
+    reliability_readiness: dict[str, bool] = field(default_factory=dict)
+    reliability_missing: dict[str, list[str]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -59,6 +60,8 @@ class SchemaReport:
             "warnings": self.warnings,
             "estimator_readiness": self.estimator_readiness,
             "missing_by_estimator": self.missing_by_estimator,
+            "reliability_readiness": self.reliability_readiness,
+            "reliability_missing": self.reliability_missing,
         }
 
 
@@ -178,6 +181,31 @@ def validate_log(df: pd.DataFrame) -> SchemaReport:
     check("audit_only", ["audit_flag", "label", "label_time"])
     check("bounds", ["action", "amount", "label"])
 
+    reliability: dict[str, bool] = {}
+    reliability_missing: dict[str, list[str]] = {}
+
+    def rel_check(name: str, cols: list[str]) -> None:
+        miss = [c for c in cols if c not in df.columns]
+        reliability[name] = len(miss) == 0
+        reliability_missing[name] = miss
+
+    rel_check(
+        "identification",
+        ["application_id", "decision_time", "action", "score", "amount", "label"],
+    )
+    stability_missing = [c for c in ("action", "label") if c not in df.columns]
+    reliability["statistical_stability"] = not stability_missing
+    reliability_missing["statistical_stability"] = stability_missing
+    feature_ok = any(c in df.columns for c in FEATURE_HINTS)
+    calibration_missing = [] if "label" in df.columns else ["label"]
+    if not feature_ok:
+        calibration_missing.append("pre-decision feature")
+    reliability["calibration"] = not calibration_missing
+    reliability_missing["calibration"] = calibration_missing
+    rel_check("structural_reject_margin", ["action", "amount", "score"])
+    rel_check("operational_readiness", ["label_time", "label_source", "audit_flag"])
+    rel_check("segment_diagnostic", ["segment"])
+
     return SchemaReport(
         ok=len(errors) == 0,
         n_rows=len(df),
@@ -185,4 +213,6 @@ def validate_log(df: pd.DataFrame) -> SchemaReport:
         warnings=warnings,
         estimator_readiness=readiness,
         missing_by_estimator=missing_by,
+        reliability_readiness=reliability,
+        reliability_missing=reliability_missing,
     )

@@ -9,14 +9,14 @@ observed labels, and the reject margin is bounded.
 from __future__ import annotations
 
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-from .config import Costs, OutcomeModel, PilotConfig, load_config
+from .config import Costs, PilotConfig, load_config
 from .estimators import (
     Estimate,
     compare_policies,
@@ -31,6 +31,7 @@ from .estimators import (
 from .gates import IdentificationReport, check_identification
 from .policies import apply_capacity, choose_actions, realized_cost
 from .propensity import fit_covariate_propensity
+from .reliability import build_reliability
 from .schema import validate_log
 
 TARGET_P0 = "P0"
@@ -342,6 +343,7 @@ def evaluate_report(
     feature_cols: list[str] | tuple[str, ...],
     seed: int | None = None,
     observation_assumption: str = "unknown",
+    reliability_n_boot: int = 500,
 ) -> tuple[dict, dict, dict, dict, dict, IdentificationReport]:
     """Return estimates, diagnostics, bounds, audit recommendation."""
     y = df["label"].fillna(0).astype(int).to_numpy()
@@ -388,6 +390,7 @@ def evaluate_report(
     add("ipw_ht", ipw_ht(cost, observed, e, in_pop), TARGET_P0)
     add("ipw_hajek", ipw_hajek(cost, observed, e, in_pop), TARGET_P0)
 
+    phat = None
     X, names = _features(df, feature_cols, "amount")
     if X is not None:
         phat = fit_outcome_model(
@@ -493,7 +496,7 @@ def evaluate_report(
     }
 
     diagnostics = {
-        "n": int(len(df)),
+        "n": len(df),
         "p0_n": int(in_pop.sum()),
         "rejected_n": int(rejected.sum()),
         "observed_n": int(observed.sum()),
@@ -576,7 +579,7 @@ def evaluate_report(
             diagnostics["label_delay_days"] = {
                 "median": float(delay.median()),
                 "p90": float(delay.quantile(0.9)),
-                "n": int(len(delay)),
+                "n": len(delay),
             }
     if "segment" in df.columns:
         seg_values = df["segment"].astype("string").fillna("unknown")
@@ -626,6 +629,22 @@ def evaluate_report(
         config.costs,
         estimates,
         identified=identification.passed,
+    )
+    diagnostics["reliability"] = build_reliability(
+        y=y,
+        cost=cost,
+        actions=actions,
+        candidate_actions=candidate_actions,
+        amount=amount,
+        observed=observed,
+        propensity=e,
+        in_pop=in_pop,
+        phat=phat,
+        costs=config.costs,
+        comparison=comparison,
+        identification=identification,
+        seed=int(seed if seed is not None else config.seed),
+        n_boot=int(reliability_n_boot),
     )
     return estimates, diagnostics, bounds, audit_rec, comparison, identification
 
@@ -732,6 +751,18 @@ def write_memo(
         f"- **Candidate actions on logging-rejected rows:** {outside:,} "
         f"({outside_share:.1%}) — outside the `P0` estimate"
     )
+    profile = result.diagnostics.get("reliability", {}).get("profile", {})
+    if profile:
+        grade = str(profile.get("grade", "not available"))
+        if grade.startswith(("A", "B")):
+            release = "release for review/pilot; not production"
+        elif grade.startswith("C"):
+            release = "defer; collect more evidence"
+        elif grade.startswith("D"):
+            release = "refuse; not identified"
+        else:
+            release = "not available"
+        L.append(f"- **Decision reliability:** **{grade}** — **{release}**")
     assumption_label = {
         "action": "action-dependent (declared)",
         "outcome": "outcome-dependent (declared)",
@@ -833,6 +864,10 @@ def write_memo(
             L.append(
                 f"| **Full-policy decision (including rejects)** | **{full['decision']}** |"
             )
+        rel = result.diagnostics.get("reliability", {})
+        profile = rel.get("profile", {})
+        if profile:
+            L.append(f"| **Decision reliability grade** | **{profile['grade']}** |")
         L.append("")
         if full:
             full_decision = str(full.get("decision", "not identified"))
@@ -1133,6 +1168,67 @@ def write_memo(
                 "assumption about the rejected fraud rate; the break-even adds a "
                 "common-rate assumption for interpretation."
             )
+    rel = result.diagnostics.get("reliability", {})
+    profile = rel.get("profile", {})
+    if profile:
+        L.append("")
+        L.append("### 4.2 Decision reliability profile")
+        L.append("")
+        L.append(
+            "The point estimate is not the product. This profile separates the "
+            "dimensions that determine whether the decision is reliable."
+        )
+        L.append("")
+        L.append("| Dimension | Status | Evidence |")
+        L.append("|---|---|---|")
+        labels = {
+            "identification": "Identification",
+            "statistical_stability": "Statistical stability",
+            "structural_reject_margin": "Full-policy / reject margin",
+            "model_calibration": "Model calibration",
+            "cost_stress": "Cost stress",
+            "operational_readiness": "Operational readiness",
+        }
+        for key, label in labels.items():
+            dim = profile.get("dimensions", {}).get(key)
+            if not dim:
+                continue
+            L.append(f"| {label} | **{dim['status']}** | {dim['evidence']} |")
+        L.append("")
+        L.append(f"**Overall grade:** **{profile['grade']}**")
+        L.append("")
+        grade = str(profile.get("grade", ""))
+        if grade.startswith("A"):
+            reading = (
+                "The P0 decision is stable across the measured dimensions. The "
+                "observation model, cost matrix, and audit design remain "
+                "assumptions."
+            )
+        elif grade.startswith("B"):
+            reading = (
+                "The P0 decision is credible but has at least one caveat. Read "
+                "the dimensions before acting; the full-policy reject margin is "
+                "usually the binding caveat."
+            )
+        elif grade.startswith("C"):
+            reading = (
+                "Do not treat this as a decision-grade P0 recommendation. "
+                "Collect more evidence: labels, an audit, a cost agreement, or a "
+                "tighter observation model."
+            )
+        else:
+            reading = "The log does not support a decision-grade estimate."
+        L.append(reading)
+        if profile.get("reasons"):
+            L.append("")
+            L.append("**Why this grade:**")
+            for reason in profile["reasons"]:
+                L.append(f"- {reason}")
+        L.append("")
+        L.append(
+            "_This profile is a decision aid, not a certification. It measures "
+            "stability under the stated assumptions; it does not prove them._"
+        )
     L.append("")
     L.append("## 5. Audit recommendation")
     L.append("")
@@ -1214,6 +1310,11 @@ def write_memo(
             "| Segment diagnostic is a fairness certification | **Not claimed** | "
             "descriptive only; see §3.1 |"
         )
+    if profile:
+        L.append(
+            "| Decision reliability profile is a certification | **Not claimed** | "
+            "decision aid; see §4.2 |"
+        )
     L.append(
         "| The candidate is better in production | **Not claimed** | no head-to-head experiment; this is a value estimate |"
     )
@@ -1262,6 +1363,7 @@ def run_report(
     propensity_features: list[str] | tuple[str, ...] | None = None,
     observation_assumption: str = "unknown",
     seed: int | None = None,
+    reliability_n_boot: int = 500,
 ) -> ReportResult:
     log_path = Path(log_path)
     candidate_path = Path(candidate_path)
@@ -1307,6 +1409,7 @@ def run_report(
         feature_cols=features,
         seed=seed,
         observation_assumption=observation_assumption,
+        reliability_n_boot=reliability_n_boot,
     )
 
     out_dir.mkdir(parents=True, exist_ok=True)

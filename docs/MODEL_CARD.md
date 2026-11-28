@@ -25,7 +25,7 @@ production endpoint, no real-time path, and no authority to change a decision.
 |---|---|
 | Primary use | Post-hoc evaluation of a candidate onboarding policy before a controlled pilot |
 | Users | Model risk, internal audit, data science, and a credit/fraud policy owner |
-| Decision supported | Whether a candidate policy is worth a controlled pilot, and what the evidence does and does not support |
+| Decision supported | Whether a candidate policy is worth a controlled pilot, and whether the decision is reliable enough to release, defer, or refuse |
 | Output | `report.md` (memo), `report.json` (machine-readable), gate status |
 | Frequency | Per candidate policy and per log snapshot |
 | Human role | A named analyst runs it; a named reviewer signs the memo |
@@ -104,8 +104,8 @@ A candidate score file with `application_id` and `score`.
 
 | Output | Contents |
 |---|---|
-| `report.md` | Memo: gate status, estimates or refusal, candidate-vs-incumbent comparison, diagnostics, observational segment table, bounds, decision guidance |
-| `report.json` | The same result, machine-readable, including the comparison and the diagnostic estimates when the gate fails |
+| `report.md` | Memo: gate status, estimates or refusal, candidate-vs-incumbent comparison, diagnostics, observational segment table, bounds, decision reliability profile, decision guidance |
+| `report.json` | The same result, machine-readable, including the comparison, the decision reliability profile, and the diagnostic estimates when the gate fails |
 | Gate | Pass/fail with reasons and warnings |
 
 When the gate fails, the memo says **“Not identified”**, withholds the point
@@ -136,6 +136,7 @@ public synthetic data**, not a production estimate.
 | DR with a wrong outcome model but correct `e` | **+0.14%** | `reports/double_robustness.json` |
 | DR with a wrong `e` but correct outcome model | **+0.36%** | `reports/double_robustness.json` |
 | Temporal stability, month 5 / month 6 | naive **230% / 255%**; DR **0.89% / 0.43%**; naive P(best) **0% / 0%** | `reports/temporal_stability.json` |
+| Decision reliability audit (20 reps/scenario) | **2/60** A/B directional decisions released, both correct; **0** false certifications; **97%** withheld from release | `reports/reliability_audit/summary.json` |
 | Covariate propensity model under covariate-dependent observation | DR **2.48% / 89.5%**; IPW **1.97% / 91.5%** | `reports/propensity_sensitivity.json` |
 
 ### 7.3 Where it fails
@@ -170,7 +171,11 @@ intervals**, not confidence intervals.
 7. **The segment diagnostic is not a fairness certification.** It is
    descriptive, small cells are suppressed, and rejected applicants have no
    outcome. A full fairness audit of the rejected margin is not implemented.
-8. **Single maintainer.** Bus factor 1.
+8. **The reliability grade is a decision aid, not a certification.** The
+   bootstrap fixes the nuisance models; the calibration is measured on observed
+   labels; the cost grid is a local stress test. A grade of A does not prove the
+   observation model, cost matrix, or audit design.
+9. **Single maintainer.** Bus factor 1.
 
 ## 9. Ethical and privacy considerations
 

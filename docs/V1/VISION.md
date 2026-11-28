@@ -55,7 +55,7 @@ these facts.
 
 The current v1.0.0 is a strong **Level 1 reproducible research artifact**:
 
-- 101 tests in the current tree (92 at v1.0.0), a schema, an audit design, a
+- 115 tests in the current tree (92 at v1.0.0), a schema, an audit design, a
   report/memo, 22 configured scenarios,
   and 11 sensitivity scenarios.
 - A public repository at `https://github.com/kira-ml/onboarding-audit`.

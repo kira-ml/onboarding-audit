@@ -220,7 +220,7 @@ reject margin is not point-identified from logs alone.
 
 ### 6.7 Negative controls
 
-`pytest -q`: 101 tests pass in the current tree (92 at the v1.0.0 tag), including full-observation identity, full-audit
+`pytest -q`: 115 tests pass in the current tree (92 at the v1.0.0 tag), including full-observation identity, full-audit
 identity, propensity recovery, bounds validity, capacity, no leakage, schema
 validation, the arbitrary-log report's known-ground-truth check, and the
 propensity/covariate helpers.

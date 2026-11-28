@@ -43,6 +43,11 @@ The full schema, including the BSP 1213 / 1170 fields, is in
 onboarding-audit validate --log data/decisions.parquet
 ```
 
+The validator reports both estimator readiness and **reliability readiness**:
+identification, statistical stability, calibration, structural reject margin,
+operational readiness, and the segment diagnostic. A `no` means the log cannot
+support that dimension; the report will mark it unavailable or grade down.
+
 ## 2. Candidate score file
 
 One row per application in the log:
@@ -167,6 +172,23 @@ point estimate; collecting more `P0` labels is the fix, not more reject labels.
 If the identification gate fails, §4.1 is **diagnostic only** and does not print
 a decision. If there are no logging-rejected rows, the full population equals
 `P0` and the section says so.
+
+### Decision reliability profile
+
+The memo’s §4.2 grades the decision across six dimensions: identification,
+bootstrap stability, full-policy/reject margin, model calibration, cost stress,
+and operational readiness. The grade is **A–D**:
+
+- **A:** all measured dimensions strong and a directional point decision;
+  assumptions still apply.
+- **B:** credible with one moderate dimension or a full-policy caveat.
+- **C:** any weak or unavailable dimension, or an inconclusive point decision;
+  collect more evidence (labels, audit, cost agreement) and do not act on the
+  `P0` recommendation alone.
+- **D:** the gate failed; no point estimate.
+
+The profile is a decision aid, not a certification. It does not replace the
+observation-model review, the cost matrix, or the audit design.
 
 ### Identification gate
 

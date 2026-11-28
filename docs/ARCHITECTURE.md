@@ -20,6 +20,8 @@ src/onboarding_audit/
   estimators.py   Naive, IPW-HT, IPW-Hajek, DR, audit-only, bounds,
                   full-policy difference/break-even
   metrics.py      Bias, RMSE, coverage, ESS, ranking, bounds summaries, verdict
+  reliability.py  Bootstrap decision stability, calibration, cost stress,
+                  A-D decision reliability profile
   pilot.py        Scenario runner, pilot report writer, CLI entry point
   sensitivity.py  Propensity/covariate sensitivity runner and report
   report.py       Arbitrary-log validation, evaluation, memo, JSON
@@ -62,6 +64,9 @@ for each replication:
 metrics.summarize / ranking_metrics / bounds_summary / verdict
         |
         v
+optional: reliability.build_reliability (per-rep profile)
+        |
+        v
 reports/pilot.json + reports/pilot.md
 ```
 
@@ -82,7 +87,12 @@ report.evaluate_report
     naive/IPW/DR/audit-only, diagnostics, bounds, audit recommendation
         |
         v
+reliability.build_reliability
+    bootstrap stability, calibration, cost stress, A-D profile
+        |
+        v
 report.write_memo + report.json
+    memo §4.2 + diagnostics.reliability
 ```
 
 ### 2.3 Sensitivity path
@@ -189,6 +199,17 @@ The policy's decision cost may differ from the evaluation cost through
 - `write_markdown` can re-render the Markdown from the committed JSON without
   rerunning the study, so the prose and table stay in sync.
 
+### `reliability.py`
+
+- `bootstrap_decision`: paired row bootstrap of the DR influence terms;
+  `P(candidate cheaper)`, same-direction share, CI, regret.
+- `calibration_metrics`: Brier, log loss, ECE for the outcome model.
+- `propensity_calibration`: observed/expected ratio and ECE.
+- `cost_stress`: 3×3 review/false-reject cost grid; same-decision share.
+- `build_reliability_profile`: A–D grade from identification, statistical,
+  structural, calibration, cost-stress, and operational dimensions.
+- The profile is a decision aid; nuisance models are fixed in the bootstrap.
+
 ### `report.py`
 
 - `validate_log` via `schema.py`.
@@ -229,9 +250,16 @@ The policy's decision cost may differ from the evaluation cost through
    it does not pretend to be a confidence interval. `full_policy_difference`
    bounds the candidate-vs-incumbent difference directly and labels the
    break-even as a sensitivity, not an estimate.
-7. **Reject rows have `e=0`.** The propensity model and estimators exclude them
+7. **A/B require a directional, non-conflicting decision.**
+   `build_reliability_profile` assigns C to an inconclusive point decision, a
+   weak or unavailable dimension, or a full-policy direction that conflicts with
+   the `P0` choice, even if the bootstrap is strong; A/B are the only released
+   grades. A failed gate is D.
+8. **The profile is explicit, not a score.** Every reliability dimension is
+   reported; a missing dimension is `unavailable`, not silently strong.
+9. **Reject rows have `e=0`.** The propensity model and estimators exclude them
    from `P0`; they enter only the bounds.
-8. **One source of truth for numbers.** Public numbers trace to
+10. **One source of truth for numbers.** Public numbers trace to
    `reports/pilot.json`, `reports/propensity_sensitivity.json`, or a cited
    primary source, and appear in `docs/CLAIMS.md`.
 
@@ -281,6 +309,7 @@ The policy's decision cost may differ from the evaluation cost through
 | `test_schema.py` | Required fields, action/flag consistency, invalid logs |
 | `test_report.py` | Known-truth report, missing propensity, no audit, missing IDs, covariate model |
 | `test_gates.py` | Positivity, overlap/ESS, sample size, cost support, candidate outside P0 |
+| `test_reliability.py` | Bootstrap winner, calibration, cost stability, gate-failure grade |
 | `test_demo.py` | End-to-end demo: gate passes, memo “Measured,” DR closer than naive |
 | `test_propensity.py` | Action-level estimate, noise, covariate recovery, reject zeros |
 | `test_sensitivity.py` | Markdown rendering from the committed JSON; no invented numbers |

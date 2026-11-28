@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **101 passed** in the current tree (92 at the v1.0.0 tag). The suite uses only synthetic or
+Expected: **115 passed** in the current tree (92 at the v1.0.0 tag). The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 The headline numbers are also checked directly against the committed JSON:
@@ -109,6 +109,8 @@ They protect the implementation, not the external validity of the simulation.
 - `reviewed=1` requires `action=review`.
 - `audit_flag=1` requires `action=approve`.
 - A missing label breaks the naive estimator.
+- A missing propensity does not block statistical-stability readiness (it can be estimated).
+- Missing known pre-decision features block calibration readiness.
 
 ### `tests/test_report.py`
 
@@ -121,6 +123,22 @@ They protect the implementation, not the external validity of the simulation.
 | `test_report_rejects_invalid_log` | The report refuses an invalid log |
 | `test_covariate_propensity_model_varies_within_action` | The covariate model recovers a known within-action gradient |
 | `test_report_covariate_propensity_model_runs` | The covariate report path writes the memo and exposes the model |
+
+### `tests/test_reliability.py`
+
+| Test | What it proves |
+|---|---|
+| `test_bootstrap_decision_clear_winner` | A dominant candidate yields $P=1$, stability 1, and a degenerate interval |
+| `test_calibration_metrics_perfect` | Perfect predictions give Brier/ECE near zero |
+| `test_calibration_metrics_missing_model` | A missing outcome model returns unavailable, not a crash |
+| `test_cost_stress_stable_when_candidate_dominates` | A dominant candidate keeps the same decision across the 3×3 cost grid |
+| `test_profile_gate_failure_is_grade_d` | A failed gate produces grade D, never a point estimate |
+| `test_profile_all_strong_is_grade_a` | All dimensions strong and a directional decision produce grade A |
+| `test_profile_weak_calibration_blocks_release` | A weak calibration dimension forces grade C |
+| `test_profile_weak_operational_readiness_blocks_release` | Low label count / ESS forces grade C |
+| `test_profile_structural_unavailable_blocks_release` | An unresolved full-policy direction forces grade C |
+| `test_profile_conflicting_full_policy_blocks_release` | A full-policy direction opposite to the `P0` decision forces grade C |
+| `test_profile_structural_not_applicable_without_rejects` | No rejects makes the reject-margin dimension not applicable, not a failure |
 
 ### `tests/test_gates.py`
 

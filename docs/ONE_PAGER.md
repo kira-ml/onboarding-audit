@@ -1,11 +1,11 @@
 # One-Pager — For a Fintech Research Reviewer
 
-**Project:** Onboarding Audit — audit-ready evaluation of account-opening fraud
-policies under selective and delayed labels.
+**Project:** Onboarding Audit — **Decision Reliability for Financial ML**:
+account-opening fraud policy evaluation under selective and delayed labels.
 **Author:** Ken Ira Lacson Talingting.
-**Status:** v1.0.0 review release; external review pending. Results from the
-pre-registered pilot, the observation-rate sweep, the propensity sensitivity, and
-the covariate sensitivity.
+**Status:** v1.1.0 Decision Reliability pre-release; external review pending.
+Results from the pre-registered pilot, the observation-rate sweep, the propensity
+sensitivity, the covariate sensitivity, and the reliability audit.
 
 ---
 
@@ -19,9 +19,9 @@ new policy is estimated on the subset the incumbent policy produced.
 
 ## The question
 
-> When the onboarding policy chooses its own labels, how biased is the naive
-> policy-value estimate — and which estimator, bound, or audit design makes the
-> estimate defensible?
+> When the onboarding policy chooses its own labels, would the policy decision
+> survive sampling, calibration, cost, and reject-margin uncertainty — and should
+> it be released, deferred, or refused?
 
 ## The approach
 
@@ -36,6 +36,9 @@ new policy is estimated on the subset the incumbent policy produced.
   labels, false-reject cost.
 - **Negative controls:** full observation, full audit, permutation, capacity,
   no leakage.
+- **Decision reliability:** identification gate, bootstrap decision stability,
+  outcome/propensity calibration, 3×3 cost stress, full-policy break-even, and
+  an A–D grade. A/B are released; C/D are deferred or refused.
 
 ## The pilot result
 
@@ -46,7 +49,7 @@ new policy is estimated on the subset the incumbent policy produced.
 - **The magnitude is conditional:** across the 12-cell observation-rate sweep,
   naive bias ranges **7.8–538.5%** (maximum across policies) and exceeds 5% in
   **12/12** cells; the incumbent's own bias is **1.5–218%**. DR with known
-  propensities has a mean bias of at most **1.89%** (95% MC upper bound **4.3%**
+  propensities has a mean absolute relative bias of at most **1.89%** (95% MC upper bound **4.3%**
   for `e>=0.05`, **9.6%** at `e=0.01`). At the lowest report probability,
   DR's P(select true best) falls to **64%**.
 - **Rank inversion:** mean **1.00** pairwise inversion for the naive estimate;
@@ -78,6 +81,10 @@ new policy is estimated on the subset the incumbent policy produced.
   a synthetic oracle, not a trained model; the case isolates the evaluation bias.
   The report returns **P(candidate cheaper) = 0.984** and recommends the
   candidate. Fully reproducible; see `CASE_STUDY.md`.
+- **Reliability audit:** 60 replications across main, low-label, and high
+  false-reject-cost scenarios. Only **2/60** A/B directional decisions were
+  released; both were correct; **0 false certifications**; **97% of decisions withheld from release**.
+  The profile is conservative; the cost of caution is decision volume.
 - **Propensity sensitivity:** with estimated action-level `e`, DR stays within
   **1.43%** with **93.5%** coverage; IPW **2.92% / 92.0%**. Under
   outcome-dependent labels with estimated `e`, only audit-only is honest
@@ -136,6 +143,8 @@ project supplies the missing measurement layer.
   approximation, and heavy-tailed weights can undercover the interval.
 - The audit design requires legal/risk review.
 - The reject margin is bounded, not point-identified.
+- The A–D reliability grade is a decision aid, not a certification; the
+  observation model and cost matrix remain assumptions.
 
 ## Reproduce
 

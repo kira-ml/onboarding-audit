@@ -44,7 +44,7 @@ python -c "import onboarding_audit; print(onboarding_audit.__version__)"
 pytest -q
 ```
 
-Expected: the version string and **101 passed** in the current tree (92 at the v1.0.0 tag).
+Expected: the version string and **115 passed** in the current tree (92 at the v1.0.0 tag).
 
 ## 3. Data
 
@@ -158,6 +158,18 @@ python scripts/model_ablation.py
 This reports AUC/AP/KS for the incumbent and candidate scores on month 6 and a
 same-feature logistic/HistGB ablation trained on month 5. It writes
 `reports/model_ablation.json` and `.md`.
+
+### 4.4.4 Decision reliability audit (post-hoc)
+
+```bash
+onboarding-audit pilot --config configs/reliability_audit.yaml --out reports/reliability_audit --reliability-boot 100
+python scripts/summarize_reliability_audit.py
+```
+
+This runs main, `e001`, and `frej_050` (20 reps each) with per-replication
+reliability grades. It writes `reports/reliability_audit/pilot.json`,
+`pilot.md`, and the summarized `summary.json`/`summary.md`; the row-level
+parquet stays local. This is post-hoc, not a pre-registered headline.
 
 ### 4.5 Propensity and covariate sensitivity
 

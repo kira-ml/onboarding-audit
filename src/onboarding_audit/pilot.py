@@ -13,11 +13,12 @@ import numpy as np
 import pandas as pd
 
 from . import __version__
-from .config import Costs, PilotConfig, PolicySpec, Scenario, load_config
+from .config import PilotConfig, PolicySpec, Scenario, load_config
 from .data import EvalData, load_eval_data
 from .estimators import (
     action_weighted,
     audit_only,
+    compare_policies,
     dr,
     fit_outcome_model,
     ipw_hajek,
@@ -25,6 +26,7 @@ from .estimators import (
     naive,
     policy_bounds,
 )
+from .gates import check_identification
 from .metrics import bounds_summary, ranking_metrics, summarize, verdict
 from .observation import build_observation_model, draw_observation
 from .policies import build_policy, realized_cost
@@ -33,6 +35,7 @@ from .propensity import (
     fit_covariate_propensity,
     noisy_copy,
 )
+from .reliability import build_reliability
 
 
 def build_policy_set(config: PilotConfig, scenario: Scenario) -> list[PolicySpec]:
@@ -42,7 +45,7 @@ def build_policy_set(config: PilotConfig, scenario: Scenario) -> list[PolicySpec
         name = policy.name
         if policy.name == "better_model" and scenario.candidate_capacity is not None:
             capacity = scenario.candidate_capacity
-            name = f"better_model_{int(round(capacity * 100))}pct"
+            name = f"better_model_{round(capacity * 100)}pct"
         decision_frej = (
             policy.decision_false_reject_cost
             if policy.decision_false_reject_cost is not None
@@ -99,6 +102,8 @@ def run_scenario(
     data: EvalData,
     config: PilotConfig,
     scenario_index: int,
+    *,
+    reliability_n_boot: int = 0,
 ) -> dict:
     base_costs = config.costs.with_false_reject(scenario.false_reject_cost)
     specs = build_policy_set(config, scenario)
@@ -157,6 +162,7 @@ def run_scenario(
 
     rng = np.random.default_rng(config.seed)
     rows: list[dict] = []
+    reliability_rows: list[dict] = []
     obs_frac = 0.0
     audit_count = 0
     source_counts = {"review": 0, "audit": 0, "post_approval_report": 0}
@@ -334,6 +340,90 @@ def run_scenario(
             )
             rows.append(row)
 
+        if reliability_n_boot > 0 and len(policies) >= 2:
+            incumbent = policies[0]
+            candidate = policies[1]
+            cost_c = costs_by_policy[candidate.spec.name]
+            cost_i = costs_by_policy[incumbent.spec.name]
+            positivity_ok = bool((e_est[in_pop] > 0).all()) if in_pop.any() else False
+            source = (
+                "provided"
+                if scenario.propensity_mode == "oracle"
+                else "estimated_covariate"
+                if scenario.propensity_mode == "covariate"
+                else "estimated"
+            )
+            identification = check_identification(
+                actions=logging.actions,
+                candidate_actions=candidate.actions,
+                observed=draw.observed,
+                propensity=e_est,
+                cost=cost_c,
+                positivity_ok=positivity_ok,
+                propensity_source=source,
+                has_audit=bool(draw.audit.any()),
+                observation_assumption="action",
+            )
+            comparison = compare_policies(
+                cost_c,
+                candidate.actions,
+                cost_i,
+                incumbent.actions,
+                data.amount,
+                draw.observed,
+                e_est,
+                in_pop,
+                phat,
+                base_costs,
+            )
+            rel = build_reliability(
+                y=data.y,
+                cost=cost_c,
+                actions=logging.actions,
+                candidate_actions=candidate.actions,
+                amount=data.amount,
+                observed=draw.observed,
+                propensity=e_est,
+                in_pop=in_pop,
+                phat=phat,
+                costs=base_costs,
+                comparison=comparison,
+                identification=identification,
+                seed=config.seed + rep,
+                n_boot=reliability_n_boot,
+            )
+            true_c = true_values[candidate.spec.name]["true_p0"]
+            true_i = true_values[incumbent.spec.name]["true_p0"]
+            if true_c < true_i:
+                true_decision = "prefer candidate"
+            elif true_c > true_i:
+                true_decision = "keep incumbent"
+            else:
+                true_decision = "tie"
+            decision = comparison.get("decision", "not identified")
+            directional = decision in {"prefer candidate", "keep incumbent"}
+            reliability_rows.append(
+                {
+                    "scenario": scenario.id,
+                    "rep": rep,
+                    "grade": rel["profile"]["grade"],
+                    "decision": decision,
+                    "true_decision": true_decision,
+                    "correct": bool(directional and decision == true_decision),
+                    "p_candidate_better_boot": rel["bootstrap"].get(
+                        "p_candidate_better_boot"
+                    ),
+                    "same_direction_share": rel["bootstrap"].get(
+                        "same_direction_share"
+                    ),
+                    "cost_stress_share": rel["cost_stress"].get("same_decision_share"),
+                    "full_policy_decision": (comparison.get("full_policy") or {}).get(
+                        "decision"
+                    ),
+                    "difference": comparison.get("difference"),
+                }
+            )
+
         if scenario.reps >= 10 and (rep + 1) % max(1, scenario.reps // 10) == 0:
             print(f"[{scenario.id}] {rep + 1}/{scenario.reps} replications")
 
@@ -359,7 +449,7 @@ def run_scenario(
         "mean_audit_count": audit_count / scenario.reps,
         "mean_label_sources": {k: v / scenario.reps for k, v in source_counts.items()},
     }
-    return {"meta": meta, "rows": rows}
+    return {"meta": meta, "rows": rows, "reliability": reliability_rows}
 
 
 def _jsonable(value):
@@ -791,6 +881,27 @@ def write_report(payload: dict, path: Path) -> None:
         "The full-observation, full-audit, label-permutation, capacity, and no-leakage checks are in `tests/`. Run `pytest -q`."
     )
     L.append("")
+    reliability_rows = payload.get("reliability", [])
+    if reliability_rows:
+        grades = {}
+        for row in reliability_rows:
+            grades[row["grade"]] = grades.get(row["grade"], 0) + 1
+        released = [
+            row
+            for row in reliability_rows
+            if row["decision"] in {"prefer candidate", "keep incumbent"}
+            and str(row["grade"]).startswith(("A", "B"))
+        ]
+        false_cert = [row for row in released if not row["correct"]]
+        L.append("## Decision reliability audit")
+        L.append("")
+        L.append(f"- Replications: **{len(reliability_rows)}**")
+        L.append(f"- Grades: **{grades}**")
+        L.append(
+            f"- Released A/B directional decisions: **{len(released)}**; "
+            f"false certifications: **{len(false_cert)}**"
+        )
+        L.append("")
     L.append("## Limitations")
     L.append("")
     L.append(
@@ -813,6 +924,7 @@ def run_pilot(
     *,
     scenario_filter: list[str] | None = None,
     reps_override: int | None = None,
+    reliability_n_boot: int = 0,
 ) -> dict:
     t0 = time.time()
     data = load_eval_data(
@@ -835,7 +947,15 @@ def run_pilot(
     results = []
     for idx, scenario in enumerate(scenarios):
         print(f"[pilot] scenario {scenario.id} ({scenario.reps} reps)")
-        results.append(run_scenario(scenario, data, config, idx))
+        results.append(
+            run_scenario(
+                scenario,
+                data,
+                config,
+                idx,
+                reliability_n_boot=reliability_n_boot,
+            )
+        )
 
     rows = pd.DataFrame([row for r in results for row in r["rows"]])
     summary = summarize(rows)
@@ -867,6 +987,9 @@ def run_pilot(
         "summary": _jsonable(summary.to_dict(orient="records")),
         "ranking": _jsonable(ranking.to_dict(orient="records")),
         "bounds": _jsonable(bounds.to_dict(orient="records")),
+        "reliability": _jsonable(
+            [row for result in results for row in result.get("reliability", [])]
+        ),
         "verdict": _jsonable(v),
         "runtime_seconds": time.time() - t0,
     }
@@ -891,6 +1014,12 @@ def main() -> None:
     parser.add_argument(
         "--reps", default=None, type=int, help="override reps for a smoke test"
     )
+    parser.add_argument(
+        "--reliability-boot",
+        default=0,
+        type=int,
+        help="bootstrap replicates for the per-replication reliability audit (0=off)",
+    )
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -904,6 +1033,7 @@ def main() -> None:
         args.out,
         scenario_filter=scenario_filter,
         reps_override=args.reps,
+        reliability_n_boot=args.reliability_boot,
     )
 
 

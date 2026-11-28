@@ -3,6 +3,48 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-28 — Decision Reliability end-to-end, audit, and v1.1.0
+
+**Implemented:** the profile is now in the workflow, not only the memo:
+`validate` reports reliability readiness, `report --reliability-boot` prints the
+grade and writes memo §4.2 plus `diagnostics.reliability`, and
+`pilot --reliability-boot` records per-replication grades. Added the threshold
+contract and the end-to-end pipeline diagram to `RELIABILITY.md`.
+
+**Audit:** 60 replications (main, `e001`, `frej_050`), 100 bootstrap replicates
+each. Grades: 1 A, 1 B, 38 C, 20 D. Released A/B directional decisions: 2/60,
+both correct; false certifications: 0; abstention: 97%. All-directional accuracy
+including unreleased decisions: 45%.
+
+**Corrected:** the grade rule now matches the documented contract. A weak or
+unavailable calibration or operational-readiness dimension blocks A/B; any
+unavailable dimension forces C. A log with no rejected rows marks the structural
+dimension `not_applicable` instead of penalizing it. Added regression tests.
+
+**Verification:** 113 tests pass, 43/43 claim checks, 0 missing links, paper
+compiles to 6 body pages + references. Audit numbers are unchanged after the
+grade-rule fix.
+
+**Release:** `v1.1.0` pre-release by owner decision; the two-reader public gate
+is still open. See D18.
+
+## 2026-11-28 — Decision Reliability Profile
+
+**Added:** `src/onboarding_audit/reliability.py` with paired bootstrap decision
+stability, outcome/propensity calibration, 3×3 cost-stress stability, and an
+A–D reliability grade. Integrated into `report.py` (memo §4.2 and JSON
+`diagnostics.reliability`), README positioning, methods, report usage, model
+card, architecture, claims, and decision log.
+
+**Why:** the specialization is Decision Reliability for Financial ML; the
+product should lead with the reliability of the decision, not a point estimate.
+The profile unifies the existing gate, full-policy check, calibration, cost
+sensitivity, and operational readiness.
+
+**Evidence:** `tests/test_reliability.py` covers bootstrap, calibration, cost
+stability, and gate-failure grading; `tests/test_report.py` asserts the profile
+is in the memo and JSON. No new estimators/scenarios.
+
 ## 2026-11-27 — Next actions executed (technical)
 
 **Freeze:** method set frozen; no new estimators except the test-only holdout
@@ -75,7 +117,7 @@ candidate-vs-incumbent difference over the unobserved reject margin and reports
 the break-even rejected-fraud rate. The memo labels the recommendation
 `P0`-conditional, adds §4.1, and warns when the `P0` recommendation does not
 survive the reject margin. Nine new tests (full-policy, action-weighted,
-segment diagnostic); **101 passed**.
+segment diagnostic); **106 passed**.
 
 **Integrity fixes:** the vendor-review claim is downgraded from Measured to
 Limitation; BSP 1213 is qualified as an FMS circular; the validation report's

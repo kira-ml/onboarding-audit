@@ -1,7 +1,7 @@
 # Methods
 
-**Status:** Canonical methods reference for v1.0.0 (2026-11-22; updated
-2026-11-26).
+**Status:** Canonical methods reference for v1.1.0 (2026-11-22; updated
+2026-11-28).
 **Purpose:** State the estimand, identification assumptions, estimators,
 simulation design, and metrics in one place. The pre-registered protocol is
 [`PILOT_SPEC.md`](PILOT_SPEC.md); the measured findings are in
@@ -362,6 +362,29 @@ E[DR] = V  if  e_hat = e  or  mu_hat = E[cost | X, action].
 `docs/RESULTS.md` §10 tests this directly on a semi-synthetic outcome with a
 known interaction. The test is a mechanism check, not a proof: it uses one
 data-generating process and one misspecification.
+
+### 6.11 Decision reliability profile
+
+The report aggregates six dimensions into a rule-based grade:
+
+1. **Identification** — the existing gate.
+2. **Statistical stability** — a paired row bootstrap of the DR influence terms
+   over `P0` rows: `P(candidate cheaper)`, same-direction share, 95% interval,
+   and regret. Nuisance models are fixed; this measures evaluation-sample
+   uncertainty, not nuisance-model uncertainty.
+3. **Full-policy / reject margin** — the full-policy difference and break-even.
+4. **Model calibration** — Brier, log loss, and ECE for the outcome model;
+   observed/expected ratio and ECE for the propensity.
+5. **Cost stress** — a 3×3 grid of review-cost and false-reject-cost multipliers;
+   the share of cells with the same decision.
+6. **Operational readiness** — observed labels, ESS, and gate warnings.
+
+Grades: **A** = all measured dimensions strong and a directional point
+decision; **B** = credible with one moderate dimension or a full-policy caveat;
+**C** = any weak or unavailable dimension, or an inconclusive point decision;
+**D** = gate failed. The grade is a decision aid, not a certification. The
+thresholds are conventions and are documented in
+[`RELIABILITY.md`](RELIABILITY.md).
 
 ## 7. Metrics
 

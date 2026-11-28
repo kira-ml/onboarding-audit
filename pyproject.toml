@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "onboarding-audit"
-version = "1.0.2"
-description = "Audit-ready evaluation of account-opening fraud policies under selective and delayed labels"
+version = "1.1.0"
+description = "Decision reliability for account-opening fraud policy evaluation under selective and delayed labels"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -17,6 +17,8 @@ keywords = [
   "account-opening",
   "selective-labels",
   "off-policy-evaluation",
+  "decision-reliability",
+  "calibration",
   "fintech",
   "model-risk",
 ]

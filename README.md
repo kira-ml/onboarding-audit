@@ -2,17 +2,22 @@
 
 # Onboarding Audit
 
-**Audit-ready evaluation of account-opening fraud policies under selective and delayed labels.**
+**Decision reliability for account-opening fraud policy evaluation under selective and delayed labels.**
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-101%20passed-2ea44f?style=flat-square)](tests/)
-[![Version](https://img.shields.io/badge/version-1.0.2-6f42c1?style=flat-square)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-115%20passed-2ea44f?style=flat-square)](tests/)
+[![Version](https://img.shields.io/badge/version-1.1.0-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-review%20release-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
-*A measurement layer for the question every onboarding team asks:*
-**if we change the policy, will it catch more fraud without rejecting more good customers?**
+*A decision-reliability layer for the question every onboarding team asks:*
+**if we change the policy, will it catch more fraud without rejecting more good customers — and is the decision stable enough to trust?**
+
+**Specialization: Decision Reliability for Financial ML.** The point estimate is
+not the product. The report returns a **Decision Reliability Profile** covering
+identification, bootstrap decision stability, model calibration, cost stress,
+full-policy fragility, and operational readiness, with an explicit A–D grade.
 
 [The problem](#the-problem) · [Headline results](#headline-results) · [Quickstart](#quickstart) · [Research design](#research-design) · [Documentation](#documentation) · [Roadmap](#roadmap)
 
@@ -20,8 +25,8 @@
 
 ---
 
-> **Status:** `v1.0.2` corrective pre-release. **101 tests pass.** The documentation is
-> research-ready; an initial IEEEtran draft is in
+> **Status:** `v1.1.0` Decision Reliability pre-release. **115 tests pass.** The
+> documentation is research-ready; the revised IEEEtran draft is in
 > [`paper/main.pdf`](paper/main.pdf). This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
 > deployment, and **not** a causal claim. **“Audit-ready” means the memo exposes
@@ -29,18 +34,19 @@
 > certification.**
 >
 > **Public-release gate:** the two external readers required by the V1
-> definition of done are still open. `v1.0.2` is a corrective pre-release
-> **by owner decision**; the gate is not met, so this is not an externally
-> validated release. See [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md).
+> definition of done are still open. `v1.1.0` is a pre-release **by owner
+> decision**; the gate is not met, so this is not an externally validated
+> release. See [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md).
 >
-> **v1.0.2 corrective pre-release:** fixes the false 2026 research-gap claim,
-> adds OSCAR / Beyond Holdout Error / DOiT citations, repositions the paper,
-> and adds the data-readiness and red-flag audit. The bias claim is
-> conditional on an observation-rate sweep; F5 is recorded (the narrow interval
-> fails, the widened interval passes); the report has an identification gate; and
-> the benchmark pipeline reproduces the recorded hash. See
-> [`docs/RELEASE_NOTES_v1.0.2.md`](docs/RELEASE_NOTES_v1.0.2.md),
-> [`docs/V1/README.md`](docs/V1/README.md), and
+> **v1.1.0 Decision Reliability pre-release:** makes the Decision Reliability
+> Profile the product spine. `validate` reports reliability readiness; `report`
+> returns an A–D grade in the memo and JSON; `pilot --reliability-boot` records
+> per-replication grades. The 60-replication audit released only 2/60 A/B
+> directional decisions, both correct, with **0 false certifications** while
+> **97% of decisions were withheld from release**. The paper is refocused on decision reliability and
+> remains 6 body pages plus references. See
+> [`docs/RELEASE_NOTES_v1.1.0.md`](docs/RELEASE_NOTES_v1.1.0.md),
+> [`docs/RELIABILITY.md`](docs/RELIABILITY.md), and
 > [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md).
 
 ## Why this exists
@@ -105,8 +111,9 @@ which is which.
 | **Propensity modes** | Oracle, action-level estimated, noisy, covariate |
 | **Benchmark** | BAF account-opening test window: 227,491 applications, 1.2576% fraud |
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
+| **Decision reliability** | Bootstrap P(better)/stability, calibration, cost-stress stability, full-policy grade |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v1.0.2 corrective pre-release · 101 tests · external review open · not production |
+| **Status** | v1.1.0 Decision Reliability pre-release · 115 tests · external review open · not production |
 
 ## Headline results
 
@@ -120,13 +127,14 @@ Monte Carlo intervals are in [`docs/RESULTS.md`](docs/RESULTS.md).
 
 | Finding | Result | Reading |
 |---|---|---|
+| Reliability audit | 2/60 A/B decisions released, both correct; **0 false certifications**; **97% withheld from release** | safety-first profile; the cost is decision volume |
 | Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep (max across policies) | relative bias; **12/12** cells >5% for at least one policy; incumbent **1.5–218%**, 11/12 |
 | Naive ranking | **1.00 / 0%** main; **0.00 / 100%** at `frej_050` | mean pairwise inversions / P(select true best); ranking is cost-dependent |
 | Action-weighted baseline | main **2.9% / 62%**; `frej_050` **2.4% / 58%** | max relative bias / P(select true best); the naive gap is not just an unweighted-mean artifact |
 | Label-holdout | main naive **275% / 0%** vs action-weighted **4.2% / 56%**, DR **2.8% / 52%**; `frej_050` naive **286% / 100%** vs action-weighted **6.1% / 58%**, DR **4.5% / 70%** | correction survives a disjoint label half; ranking remains noisy |
 | Model/score ablation | candidate AUC **0.883** vs incumbent **0.873**; retrained HistGB **0.877** vs logistic **0.875** | the better-model premise is supported but modest; no isolation from model class |
 | Observation-rate sweep | **12/12** cells >5% (max across policies); DR mean ≤1.89% (known `e`) | 12 cells, 50 reps; magnitude conditional |
-| Doubly robust (DR) | **0.94% / 96.0%** | mean relative bias / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
+| Doubly robust (DR) | **0.94% / 96.0%** | mean absolute relative bias / mean coverage; 95% MC upper bound on \|bias\| **3.8%** |
 | Double robustness | DR **+0.14%** (wrong outcome model), **+0.36%** (wrong propensity) | known-truth test; IPW **−36.7%** with wrong `e`, plug-in **+5.1%** with wrong outcome |
 | IPW | **1.18% / 94.5%** | max relative bias / mean coverage |
 | Audit-only at 1% | **2.98% / 84.5% / 1,271** | max bias / coverage / mean ESS |
@@ -153,10 +161,11 @@ Monte Carlo intervals are in [`docs/RESULTS.md`](docs/RESULTS.md).
 |---|---|---|
 | `onboarding-audit validate` | Check a decision log against the schema and report estimator readiness | Console / JSON diagnostics |
 | `onboarding-audit demo` | Run the end-to-end report on the synthetic demo log | `report.md` + `report.json` |
-| `onboarding-audit report` | Evaluate a candidate policy and compare it with the incumbent | `report.md` + `report.json` |
+| `onboarding-audit report` | Evaluate a candidate policy, compare it with the incumbent, and grade decision reliability | `report.md` + `report.json` with reliability profile |
 | Case study | Run the reproducible case where the naive ranking flips | [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) |
 | `onboarding-audit pilot` | Run the full configured BAF benchmark (22 scenarios) | `pilot.md` + `pilot.json` |
 | `onboarding-audit sensitivity` | Run the 11 propensity and covariate sensitivity scenarios | `propensity_sensitivity.md` + `.json` |
+| Reliability audit | Run `pilot --config configs/reliability_audit.yaml --reliability-boot 100` | `reports/reliability_audit/` grades, false-certification, abstention |
 
 ## Quickstart
 
@@ -213,7 +222,7 @@ onboarding-audit sensitivity --config configs/pilot.yaml --out reports --reps 50
 | **1. Log** | Record the decision, observation, and label fields the evaluation needs | [`docs/SCHEMA.md`](docs/SCHEMA.md) |
 | **2. Estimate** | Build capacity-constrained policies; estimate `P0` with naive, IPW, DR, or bounds; estimate the approved population with audit-only | `src/onboarding_audit/estimators.py` |
 | **3. Audit** | Design a defensible post-hoc verification sample and shadow scoring | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) |
-| **4. Decide** | Write a memo that separates measured, assumed, and unverifiable claims | `src/onboarding_audit/report.py` |
+| **4. Decide** | Grade decision reliability, then write a memo that separates measured, assumed, and unverifiable claims | `src/onboarding_audit/reliability.py`, `src/onboarding_audit/report.py` |
 
 The core design choice is the **estimand split**:
 
@@ -227,6 +236,24 @@ The report also computes the **full-policy difference** between the candidate an
 the incumbent over the reject margin, and a **break-even rejected-fraud rate**.
 If a directional `P0` recommendation does not survive the reject margin, the memo
 flags it instead of presenting it as a full-policy decision.
+
+### Why this is decision reliability
+
+A point estimate and an interval are not a decision. The report adds:
+
+- **Decision-level bootstrap:** would the same decision survive a resample of
+  applications? `P(candidate cheaper)`, same-direction share, regret.
+- **Calibration at the decision boundary:** Brier/ECE for the outcome model,
+  observed/expected and ECE for the propensity.
+- **Cost-stress stability:** the decision is re-evaluated over a 3×3 cost grid.
+- **Structural reliability:** the unlogged reject margin is a separate dimension,
+  not a footnote.
+- **Operational readiness:** labels, ESS, gate warnings, and label maturity.
+- **An explicit A–D grade:** A/B are decision-grade with stated caveats; C means
+  collect more evidence; D means not identified.
+
+The grade is a decision aid, not a certification. See
+[`docs/RELIABILITY.md`](docs/RELIABILITY.md).
 
 ## Project structure
 
@@ -243,12 +270,13 @@ onboarding-audit/
 │   ├── pilot.py           # scenario runner + pilot report
 │   ├── sensitivity.py     # propensity/covariate sensitivity
 │   ├── report.py          # arbitrary-log report + memo
+│   ├── reliability.py     # bootstrap, calibration, cost stress, A–D profile
 │   ├── schema.py          # decision-log validation
 │   └── cli.py             # pilot / report / sensitivity / validate
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 101 tests, including negative controls
+├── tests/                 # 115 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -299,8 +327,10 @@ discipline, not a new estimator. The closest work is mapped in
 | Observation-rate sweep | **Implemented** | 12 cells, 600 replications; see `reports/obs_sweep/` |
 | Propensity/covariate sensitivity | **Implemented** | 11 scenarios, 550 replications |
 | Arbitrary-log report + memo | **Implemented** | `report` command with `--propensity-model covariate` |
+| Decision reliability profile | **Implemented** | Bootstrap stability, calibration, cost stress, full-policy, A–D grade in memo §4.2 and JSON |
+| Reliability audit | **Implemented** | Per-replication grades, false certifications, abstention; `configs/reliability_audit.yaml` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 101 tests, including negative controls |
+| Test suite | **Implemented** | 115 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |
@@ -328,10 +358,11 @@ discipline, not a new estimator. The closest work is mapped in
 A 10-minute path:
 
 1. [`docs/ONE_PAGER.md`](docs/ONE_PAGER.md) — the claim in one page.
-2. [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) — the decision the tool changes.
-3. [`docs/RESULTS.md`](docs/RESULTS.md) §10 — the double-robustness test.
-4. [`docs/CLAIMS.md`](docs/CLAIMS.md) — every number with its evidence and status.
-5. [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) — the adversarial audit, including
+2. [`docs/RELIABILITY.md`](docs/RELIABILITY.md) — the Decision Reliability Profile.
+3. [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) — the decision the tool changes.
+4. [`docs/RESULTS.md`](docs/RESULTS.md) §10 — the double-robustness test.
+5. [`docs/CLAIMS.md`](docs/CLAIMS.md) — every number with its evidence and status.
+6. [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) — the adversarial audit, including
    the findings that changed the claims.
 
 Then run:
@@ -342,7 +373,7 @@ onboarding-audit demo --out reports/demo
 python scripts/check_claims.py
 ```
 
-Expected: **101 passed**, the demo memo, and **43/43** claim checks.
+Expected: **115 passed**, the demo memo, and **43/43** claim checks.
 
 ## Documentation
 
@@ -350,14 +381,16 @@ Expected: **101 passed**, the demo memo, and **43/43** claim checks.
 |---|---|
 | [`docs/PROBLEM.md`](docs/PROBLEM.md) | The evidence-backed problem brief and the Philippine context |
 | [`docs/METHODS.md`](docs/METHODS.md) | Estimand, identification, estimators, simulation, metrics |
+| [`docs/RELIABILITY.md`](docs/RELIABILITY.md) | The Decision Reliability Profile: dimensions, grade rules, evidence, limits |
 | [`docs/TECHNICAL_NOTE.md`](docs/TECHNICAL_NOTE.md) | The identification argument, influence functions, bounds proof, and evidence tiers |
 | [`docs/RESULTS.md`](docs/RESULTS.md) | Consolidated measured findings and H1–H6 verdicts |
 | [`docs/CLAIMS.md`](docs/CLAIMS.md) | The claim ledger: what may be said, with evidence |
 | [`docs/THREATS.md`](docs/THREATS.md) | The strongest counter-case and mitigations |
+| [`docs/RELEASE_NOTES_v1.1.0.md`](docs/RELEASE_NOTES_v1.1.0.md) | The current Decision Reliability pre-release notes |
 | [`docs/RELEASE_NOTES_v1.0.2.md`](docs/RELEASE_NOTES_v1.0.2.md) | The v1.0.2 corrective pre-release notes |
 | [`docs/RELEASE_NOTES_v1.0.1.md`](docs/RELEASE_NOTES_v1.0.1.md) | The v1.0.1 review-update notes (superseded for the 2026 claim/paper) |
 | [`docs/RELEASE_NOTES_v1.0.0.md`](docs/RELEASE_NOTES_v1.0.0.md) | The historical v1.0.0 review-release notes |
-| [`paper/main.pdf`](paper/main.pdf) | The initial IEEEtran two-column draft |
+| [`paper/main.pdf`](paper/main.pdf) | The revised IEEEtran two-column draft |
 | [`docs/AUDIT_REPORT.md`](docs/AUDIT_REPORT.md) | The adversarial red-team audit and verdict |
 | [`docs/STRATEGIC_REVIEW_v1.md`](docs/STRATEGIC_REVIEW_v1.md) | The V1 strategic review: constraint table, pre-mortem, falsification ledger, findings |
 | [`docs/EXTERNAL_CREDIBILITY_REVIEW.md`](docs/EXTERNAL_CREDIBILITY_REVIEW.md) | The pre-review fintech data-scientist critique |
@@ -390,7 +423,8 @@ Research notes: [`paper/README.md`](paper/README.md).
 | **v1.0.0 — Review release** | Tagged 2026-11-22 | Estimators, gate, bounds, sweep, case study, docs |
 | **v1.0.1 — Decision-reliability update** | Tagged 2026-11-26 | Full-policy difference/break-even, action-weighted baseline, segment diagnostic, reviewer packet |
 | **v1.0.2 — Corrective pre-release** | Tagged 2026-11-27 | Corrected 2026 research-gap claim, added closest-work citations, repositioned paper, data-readiness and red-flag audit |
-| **v1.1 — Research + external review** | Next | Paper, second dataset, bootstrap intervals, two external readers |
+| **v1.1.0 — Decision Reliability pre-release** | Tagged 2026-11-28 | Reliability profile, readiness, audit, refocused paper |
+| **v1.1 — Research + external review** | Next | Paper review, second dataset, two external readers |
 | **Public 1.0** | Later | After the external-review gate; arXiv, application package |
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the review dates and out-of-scope
@@ -420,8 +454,8 @@ If you use this project, cite the software via [`CITATION.cff`](CITATION.cff):
 ```bibtex
 @software{Talingting_Onboarding_Audit_2026,
   author  = {Talingting, Ken Ira Lacson},
-  title   = {Onboarding Audit: Audit-Ready Evaluation of Account-Opening Fraud Policies under Selective and Delayed Labels},
-  version = {1.0.2},
+  title   = {Onboarding Audit: Decision Reliability for Account-Opening Fraud Policy Evaluation under Selective and Delayed Labels},
+  version = {1.1.0},
   year    = {2026},
   license = {MIT},
   url     = {https://github.com/kira-ml/onboarding-audit}

@@ -54,7 +54,7 @@ document to read before a tag, a blog post, or a paper submission.
 
 ## 3. Code and tests
 
-- [ ] `pytest -q` passes (101 tests in the current tree; 92 at the v1.0.0 tag).
+- [ ] `pytest -q` passes (115 tests in the current tree; 92 at the v1.0.0 tag).
 - [ ] The version in `pyproject.toml`, `src/onboarding_audit/__init__.py`, and
       `CITATION.cff` agree.
 - [ ] `CHANGELOG.md` has an entry for the release.

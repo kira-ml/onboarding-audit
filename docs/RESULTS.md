@@ -1,10 +1,10 @@
 # Results
 
-**Status:** Canonical results summary for v1.0.0 (2026-11-22; updated
-2026-11-26).
-**Source of truth:** `reports/pilot.json` and
-`reports/propensity_sensitivity.json`. The prose here interprets those files; it
-does not replace them.
+**Status:** Canonical results summary for v1.1.0 (2026-11-28).
+**Source of truth:** `reports/pilot.json`,
+`reports/propensity_sensitivity.json`, and
+`reports/reliability_audit/summary.json`. The prose here interprets those files;
+it does not replace them.
 
 **Scope:** simulation on the public BAF account-opening test window. Not a
 production estimate, not a Philippine bank, not a causal deployment effect.
@@ -13,36 +13,41 @@ production estimate, not a Philippine bank, not a causal deployment effect.
 
 ## 1. Headline
 
-1. **Naive evaluation is materially biased, but the magnitude is conditional.**
+1. **Point accuracy is not decision reliability.** DR has a mean absolute relative bias
+   of **0.94%** and **96.0%** coverage, yet it selects the true best policy only
+   **72%** of the time. At the lowest approve-label rate it is **64%**; at a high
+   false-reject cost the naive rule ranks first **100%** while DR is **58%**;
+   under a label-holdout split DR is **52%**. The point estimate and the decision
+   are different objects.
+2. **The reliability profile is decision-grade and conservative.** Across a
+   60-replication audit, only **2/60** A/B directional decisions were released;
+   both were correct, with **0 false certifications** and **97% of decisions withheld
+   from release**. A clear case is grade **A**; the near-tie demo is grade **C**. The
+   profile refuses close calls rather than issuing a confident wrong decision.
+3. **Naive evaluation is materially biased, but the magnitude is conditional.**
    Relative bias **+111.6% to +278.5%** in the main pilot; across the 12-cell
    observation-rate sweep, the maximum across policies is **+7.8% to +538.5%**
    (12/12 cells above 5%). The incumbent's own bias is **1.5–218%**, above 5% in
    11/12 cells. The direction is robust; the magnitude depends on the
-   pre-resolution report probability and the review rate. It overstates cost and
-   reverses the better-model/incumbent ranking.
-2. **DR recovers the identified `P0` value.** Mean |relative bias| **0.94%**,
+   pre-resolution report probability and the review rate.
+4. **DR recovers the identified `P0` value.** Mean |relative bias| **0.94%**,
    mean 95% coverage **96.0%**; IPW **1.18% / 94.5%**. The 95% Monte Carlo upper
    bound on the mean |bias| is **3.8%** in the main scenario, not 0.94%. The
    corrected ranking is better but not perfect (DR mean inversions **0.29**,
    P(select true best) **72%**).
-3. **The audit is not a universal fix.** At a 5% pre-resolution report
+5. **The audit is not a universal fix.** At a 5% pre-resolution report
    probability (3.06% realized), the marginal RMSE gain is modest; the audit is
    the only approximately unbiased option under outcome-dependent labels.
-4. **The reject margin is not point-identified.** The main-scenario interval is
+6. **The reject margin is not point-identified.** The main-scenario interval is
    **0.009942**; with a low false-reject cost (`frej_002`) it is **0.203**, 20×
    wider. The incumbent's narrow interval covers the true full value in **34%**
    of replications. The narrow interval is not a confidence interval; the
-   widened interval is, but it is ~4× wider. The pre-registered F5 gate
-   **failed** for the narrow interval (15/88 cells at ≥90%) and **passes** for
-   the widened interval (99–100% in the main scenario).
-5. **Both DR and IPW survive estimated action-level propensities; DR is
-   better under noise.** DR **1.43% / 93.5%**; IPW **2.92% / 92.0%**. The earlier
-   "IPW 11.19%" was an `e_approve` bug, corrected on 2026-11-21.
-6. **Under covariate-dependent observation, action-level weighting fails.**
+   widened interval is, but it is ~4× wider. F5 **failed** for the narrow
+   interval (15/88) and **passes** for the widened interval (77/88).
+7. **Under covariate-dependent observation, action-level weighting fails.**
    Action-level IPW is **67.52%** biased; action-level DR is **21.25%** biased.
    A fitted per-action covariate propensity model recovers the oracle
-   (**1.97% / 91.5%** IPW, **2.48% / 89.5%** DR). This is the newest result and
-   the reason the report supports `--propensity-model covariate`.
+   (**1.97% / 91.5%** IPW, **2.48% / 89.5%** DR).
 
 ## 2. Pilot: naive bias and rank flips
 
@@ -419,6 +424,47 @@ external validity.
 Artifact: `reports/temporal_stability.json`; script:
 `scripts/temporal_stability.py`.
 
+## 11.1 Decision reliability profile (mechanism)
+
+The report now returns a **Decision Reliability Profile**: identification,
+bootstrap decision stability, full-policy/reject-margin status, outcome/propensity
+calibration, 3×3 cost-stress stability, and operational readiness, graded A–D.
+This is a mechanism, not a new headline; the component metrics are tested in
+`tests/test_reliability.py` and the report path.
+
+Two contrasting examples:
+
+| Case | Grade | Evidence |
+|---|---|---|
+| `examples/case_log.csv` (synthetic candidate clearly better) | **A** | bootstrap P(candidate cheaper)=0.998; full-policy robust; ECE 0.018; 9/9 cost cells; 2,496 labels |
+| `onboarding-audit demo` (near-tie, 267 labels) | **C** | bootstrap P=0.934; full-policy `P0 inconclusive`; ECE 0.094; 6/9 cost cells; operational readiness moderate |
+
+**Read:** the grade is a decision aid, not a certification. It separates a clear
+decision from a near-tie with the same code path. The bootstrap fixes the
+nuisance models, so it does not capture model-selection uncertainty. See
+[`RELIABILITY.md`](RELIABILITY.md) and memo §4.2.
+
+## 11.2 Decision reliability audit (post-hoc)
+
+The per-replication audit uses 20 replications per scenario and 100 bootstrap
+replicates per replication (`reports/reliability_audit/`). A decision is
+**released** only when the grade is A/B and the point decision is directional.
+
+| Scenario | n | Grades | Released | Released accuracy | False certifications | Abstention |
+|---|---:|---|---:|---:|---:|---:|
+| main | 20 | 1 B, 19 C | 1 | 100% | 0 | 95% |
+| `e001` | 20 | 20 D | 0 | n/a | 0 | 100% |
+| `frej_050` | 20 | 1 A, 19 C | 1 | 100% | 0 | 95% |
+| **Overall** | **60** | 1 A, 1 B, 38 C, 20 D | **2** | **100%** | **0** | **97%** |
+
+**Read:** the profile is conservative. It released only 2 of 60 decisions, both
+correct, and made no false certifications. The cost is a 97% withheld-decision rate:
+most close calls are grade C/D, not released. The all-directional accuracy
+(including unreleased C/D decisions) is 45%, which is why releasing them would
+be unsafe. This is a safety-first reliability profile, not a volume-maximizing
+decision rule. The audit is small and post-hoc; do not over-read the
+percentages. See `reports/reliability_audit/summary.md`.
+
 ## 12. Verdicts
 
 | Hypothesis | Verdict | Key number |
@@ -436,7 +482,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 
 ## 13. Negative controls
 
-`pytest -q`: **101 passed** in the current tree (92 at the v1.0.0 tag), including:
+`pytest -q`: **115 passed** in the current tree (92 at the v1.0.0 tag), including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);

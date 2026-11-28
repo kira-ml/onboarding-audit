@@ -29,6 +29,29 @@ def test_valid_log_passes():
     assert report.estimator_readiness["naive"]
     assert report.estimator_readiness["ipw"]
     assert report.estimator_readiness["audit_only"]
+    assert report.reliability_readiness["identification"]
+    assert report.reliability_readiness["statistical_stability"]
+    assert "reliability_readiness" in report.to_dict()
+
+
+def test_missing_label_time_breaks_operational_readiness():
+    df = _valid_frame().drop(columns=["label_time"])
+    report = validate_log(df)
+    assert not report.ok  # label present requires label_time
+    assert not report.reliability_readiness["operational_readiness"]
+
+
+def test_missing_propensity_does_not_block_stability():
+    df = _valid_frame().drop(columns=["propensity"])
+    report = validate_log(df)
+    assert report.reliability_readiness["statistical_stability"]
+
+
+def test_missing_features_blocks_calibration_readiness():
+    df = _valid_frame().drop(columns=["customer_age"])
+    report = validate_log(df)
+    assert not report.reliability_readiness["calibration"]
+    assert "pre-decision feature" in report.reliability_missing["calibration"]
 
 
 def test_missing_required_column_fails():

@@ -1,0 +1,119 @@
+{
+  "note": "Post-hoc reliability audit; 20 reps per scenario, 100 bootstrap replicates per rep. A false certification is a wrong directional decision graded A/B. Abstention means the decision was withheld from release.",
+  "overall": {
+    "n": 60,
+    "grades": {
+      "C \u2014 collect more evidence": 38,
+      "B \u2014 decision-grade with caveats": 1,
+      "D \u2014 not identified": 20,
+      "A \u2014 decision-grade (conditional on assumptions)": 1
+    },
+    "grade_letters": {
+      "A": 1,
+      "B": 1,
+      "C": 38,
+      "D": 20
+    },
+    "decisions": {
+      "inconclusive": 49,
+      "keep incumbent": 9,
+      "prefer candidate": 2
+    },
+    "true_decisions": {
+      "prefer candidate": 40,
+      "keep incumbent": 20
+    },
+    "directional_n": 11,
+    "directional_correct_n": 5,
+    "directional_accuracy_all": 0.45454545454545453,
+    "released_n": 2,
+    "released_correct_n": 2,
+    "released_accuracy": 1.0,
+    "abstention_rate": 0.9666666666666667,
+    "false_certification_n": 0,
+    "false_certification_rate": 0.0
+  },
+  "by_scenario": {
+    "e001": {
+      "n": 20,
+      "grades": {
+        "D \u2014 not identified": 20
+      },
+      "grade_letters": {
+        "D": 20
+      },
+      "decisions": {
+        "inconclusive": 16,
+        "prefer candidate": 1,
+        "keep incumbent": 3
+      },
+      "true_decisions": {
+        "prefer candidate": 20
+      },
+      "directional_n": 4,
+      "directional_correct_n": 1,
+      "directional_accuracy_all": 0.25,
+      "released_n": 0,
+      "released_correct_n": 0,
+      "released_accuracy": null,
+      "abstention_rate": 1.0,
+      "false_certification_n": 0,
+      "false_certification_rate": null
+    },
+    "frej_050": {
+      "n": 20,
+      "grades": {
+        "C \u2014 collect more evidence": 19,
+        "A \u2014 decision-grade (conditional on assumptions)": 1
+      },
+      "grade_letters": {
+        "A": 1,
+        "C": 19
+      },
+      "decisions": {
+        "inconclusive": 17,
+        "keep incumbent": 3
+      },
+      "true_decisions": {
+        "keep incumbent": 20
+      },
+      "directional_n": 3,
+      "directional_correct_n": 3,
+      "directional_accuracy_all": 1.0,
+      "released_n": 1,
+      "released_correct_n": 1,
+      "released_accuracy": 1.0,
+      "abstention_rate": 0.95,
+      "false_certification_n": 0,
+      "false_certification_rate": 0.0
+    },
+    "main": {
+      "n": 20,
+      "grades": {
+        "C \u2014 collect more evidence": 19,
+        "B \u2014 decision-grade with caveats": 1
+      },
+      "grade_letters": {
+        "B": 1,
+        "C": 19
+      },
+      "decisions": {
+        "inconclusive": 16,
+        "keep incumbent": 3,
+        "prefer candidate": 1
+      },
+      "true_decisions": {
+        "prefer candidate": 20
+      },
+      "directional_n": 4,
+      "directional_correct_n": 1,
+      "directional_accuracy_all": 0.25,
+      "released_n": 1,
+      "released_correct_n": 1,
+      "released_accuracy": 1.0,
+      "abstention_rate": 0.95,
+      "false_certification_n": 0,
+      "false_certification_rate": 0.0
+    }
+  }
+}

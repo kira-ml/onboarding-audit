@@ -39,6 +39,12 @@ def cmd_validate(args: argparse.Namespace) -> int:
         missing = report.missing_by_estimator.get(name, [])
         status = "yes" if ok else f"no (missing: {missing})"
         print(f"  {name:<12} {status}")
+    if report.reliability_readiness:
+        print("\nReliability readiness:")
+        for name, ok in report.reliability_readiness.items():
+            missing = report.reliability_missing.get(name, [])
+            status = "yes" if ok else f"no (missing: {missing})"
+            print(f"  {name:<24} {status}")
     if args.json:
         print(json.dumps(report.to_dict(), indent=2))
     return 0 if report.ok else 1
@@ -56,6 +62,7 @@ def cmd_pilot(args: argparse.Namespace) -> int:
         args.out,
         scenario_filter=scenario_filter,
         reps_override=args.reps,
+        reliability_n_boot=args.reliability_boot,
     )
     return 0
 
@@ -83,6 +90,7 @@ def cmd_report(args: argparse.Namespace) -> int:
         propensity_model=args.propensity_model,
         propensity_features=propensity_features,
         observation_assumption=args.observation_assumption,
+        reliability_n_boot=args.reliability_boot,
     )
     print(
         f"Applications: {result.n:,}; P0: {result.p0_n:,}; observed: {result.observed_n:,}"
@@ -91,6 +99,9 @@ def cmd_report(args: argparse.Namespace) -> int:
         f"Propensity source: {result.propensity.source}; positivity: {result.propensity.positivity_ok}"
     )
     print(f"Identification: {'passed' if result.identification.passed else 'FAILED'}")
+    profile = result.diagnostics.get("reliability", {}).get("profile", {})
+    if profile:
+        print(f"Decision reliability: {profile.get('grade', 'not available')}")
     if not result.identification.passed:
         for reason in result.identification.reasons:
             print(f"  - {reason}")
@@ -129,6 +140,9 @@ def cmd_demo(args: argparse.Namespace) -> int:
         f"observed: {result.observed_n:,}"
     )
     print(f"Identification: {'passed' if result.identification.passed else 'FAILED'}")
+    profile = result.diagnostics.get("reliability", {}).get("profile", {})
+    if profile:
+        print(f"Decision reliability: {profile.get('grade', 'not available')}")
     if result.identification.passed:
         print(
             f"DR: {result.estimates['dr']['value']:.6f}; "
@@ -156,6 +170,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     p_pilot.add_argument(
         "--reps", default=None, type=int, help="override reps for a smoke test"
+    )
+    p_pilot.add_argument(
+        "--reliability-boot",
+        default=0,
+        type=int,
+        help="bootstrap replicates for the per-replication reliability audit (0=off)",
     )
     p_pilot.set_defaults(func=cmd_pilot)
 
@@ -187,6 +207,12 @@ def main(argv: list[str] | None = None) -> int:
         "--propensity-features",
         default=None,
         help="comma-separated numeric features for the covariate propensity model",
+    )
+    p_report.add_argument(
+        "--reliability-boot",
+        default=500,
+        type=int,
+        help="bootstrap replicates for the decision reliability profile (default 500)",
     )
     p_report.add_argument(
         "--observation-assumption",

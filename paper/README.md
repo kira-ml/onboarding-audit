@@ -21,8 +21,8 @@ research documentation, without duplicating the claims, methods, or results.
 | [`main.tex`](main.tex) | The IEEEtran conference manuscript | The claim ledger |
 | [`references.bib`](references.bib) | The verified bibliography | A literature review |
 | [`main.pdf`](main.pdf) | The compiled two-column draft (7 pages total: 6 body + references) | A submission-ready camera copy |
-| [`make_figures.py`](make_figures.py) | Regenerates the three figures from committed JSON | A result |
-| [`figures/`](figures/) | The vector figures used by the paper | Source data |
+| [`make_figures.py`](make_figures.py) | Regenerates the optional figures from committed JSON | A result |
+| [`figures/`](figures/) | Optional vector figure sources; the current 6-page draft uses Table I only | Source data |
 | [`brief.md`](brief.md) | A 2-page research brief for a reviewer | The paper |
 | [`outline.md`](outline.md) | An IMRaD skeleton with measured numbers | A draft |
 
@@ -43,17 +43,17 @@ tectonic main.tex
 latexmk -pdf main.tex
 ```
 
-Overleaf: upload `main.tex`, `references.bib`, and `figures/`; the compiler is
-pdfLaTeX or XeLaTeX.
+Overleaf: upload `main.tex` and `references.bib`; add `figures/` only if you
+restore the optional figures. The compiler is pdfLaTeX or XeLaTeX.
 
-To regenerate the figures:
+To regenerate the optional figures:
 
 ```bash
 python paper/make_figures.py
 ```
 
 The draft is **7 pages total: 6 pages of body plus a references page**, after
-the full-policy and 2026-related-work additions. IEEE conference limits vary by
+the decision-reliability revision. IEEE conference limits vary by
 venue; confirm whether references count toward the limit. If the target is a
 strict 6-page paper including references, trim; otherwise the body fits.
 
@@ -94,6 +94,8 @@ Do not start from a blank page. Start from these documents, in this order:
   and the case study.
 - The negative results: outcome-dependent labels, the F5 bounds failure, and the
   ranking gap.
+- The Decision Reliability Profile and the reliability audit (grades, false
+  certifications, abstention).
 
 ## 5. Before submission
 

@@ -13,7 +13,7 @@ disagree, the precedence in §5 applies.
 |---|---|
 | **A reviewer with 20 minutes** | [`../README.md`](../README.md) → [`PROBLEM.md`](PROBLEM.md) → [`RESULTS.md`](RESULTS.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) → [`MODEL_CARD.md`](MODEL_CARD.md) |
 | **A fintech practitioner** | [`PROBLEM.md`](PROBLEM.md) → [`SCHEMA.md`](SCHEMA.md) → [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md) → [`REPORT_USAGE.md`](REPORT_USAGE.md) → [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) → [`BSP_MAPPING.md`](BSP_MAPPING.md) |
-| **A model-risk reviewer** | [`MODEL_CARD.md`](MODEL_CARD.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) → [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) → [`REPORT_USAGE.md`](REPORT_USAGE.md) |
+| **A model-risk reviewer** | [`MODEL_CARD.md`](MODEL_CARD.md) → [`RELIABILITY.md`](RELIABILITY.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) → [`PILOT_PROTOCOL.md`](PILOT_PROTOCOL.md) → [`REPORT_USAGE.md`](REPORT_USAGE.md) |
 | **A researcher / paper writer** | [`PROBLEM.md`](PROBLEM.md) → [`METHODS.md`](METHODS.md) → [`PILOT_SPEC.md`](PILOT_SPEC.md) → [`RESULTS.md`](RESULTS.md) → [`CLAIMS.md`](CLAIMS.md) → [`THREATS.md`](THREATS.md) → [`RELATED_WORK.md`](RELATED_WORK.md) → [`REFERENCES.md`](REFERENCES.md) → [`../paper/README.md`](../paper/README.md) |
 | **An engineer / contributor** | [`ARCHITECTURE.md`](ARCHITECTURE.md) → [`TESTING.md`](TESTING.md) → [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) → [`../CONTRIBUTING.md`](../CONTRIBUTING.md) |
 | **Preparing an interview** | [`ONE_PAGER.md`](ONE_PAGER.md) → [`COMMUNICATION.md`](COMMUNICATION.md) → [`FAQ.md`](FAQ.md) → [`GLOSSARY.md`](GLOSSARY.md) |
@@ -38,6 +38,7 @@ disagree, the precedence in §5 applies.
 | Document | Purpose |
 |---|---|
 | [`METHODS.md`](METHODS.md) | Estimand, identification, estimators, simulation, metrics |
+| [`RELIABILITY.md`](RELIABILITY.md) | Decision Reliability Profile: dimensions, grading, evidence, limits |
 | [`TECHNICAL_NOTE.md`](TECHNICAL_NOTE.md) | The identification argument, influence functions, bounds proof, and evidence tiers |
 | [`PILOT_SPEC.md`](PILOT_SPEC.md) | The pre-registered protocol, scenarios, negative controls, and addenda |
 | [`RESULTS.md`](RESULTS.md) | The consolidated measured findings and verdicts |
@@ -98,7 +99,8 @@ disagree, the precedence in §5 applies.
 | [`DECISION_MEMO_2026-11.md`](DECISION_MEMO_2026-11.md) | The Nov–Dec 2026 strategic decision: options, expected value, tail risk, recommendation |
 | [`ONE_PAGER.md`](ONE_PAGER.md) | The one-page reviewer brief |
 | [`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) | The pre-release claim, data, code, and docs checklist |
-| [`RELEASE_NOTES_v1.0.2.md`](RELEASE_NOTES_v1.0.2.md) | The current corrective pre-release: what changed, how to verify |
+| [`RELEASE_NOTES_v1.1.0.md`](RELEASE_NOTES_v1.1.0.md) | The current Decision Reliability pre-release: profile, audit, refocused paper |
+| [`RELEASE_NOTES_v1.0.2.md`](RELEASE_NOTES_v1.0.2.md) | The v1.0.2 corrective pre-release: what changed, how to verify |
 | [`RELEASE_NOTES_v1.0.1.md`](RELEASE_NOTES_v1.0.1.md) | The v1.0.1 review update (superseded for the 2026 claim/paper) |
 | [`RELEASE_NOTES_v1.0.0.md`](RELEASE_NOTES_v1.0.0.md) | The historical v1.0.0 review release |
 | [`RELEASE_STATUS.md`](RELEASE_STATUS.md) | What is tagged, what is not, and the open public-release gate |
@@ -153,6 +155,12 @@ These are outputs, not editable sources:
 | [`../reports/holdout_baseline/pilot.md`](../reports/holdout_baseline/pilot.md) | yes | Same run; compact report |
 | [`../reports/model_ablation.json`](../reports/model_ablation.json) | yes | `python scripts/model_ablation.py` |
 | [`../reports/model_ablation.md`](../reports/model_ablation.md) | yes | Same run; readable table |
+| [`../reports/reliability_audit/pilot.json`](../reports/reliability_audit/pilot.json) | yes | `onboarding-audit pilot --config configs/reliability_audit.yaml --reliability-boot 100` |
+| [`../reports/reliability_audit/pilot.md`](../reports/reliability_audit/pilot.md) | yes | Same run; compact report |
+| [`../reports/reliability_audit/summary.json`](../reports/reliability_audit/summary.json) | yes | `python scripts/summarize_reliability_audit.py` |
+| [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) | yes | Same run; audit table |
+| [`../reports/case_reliability/report.json`](../reports/case_reliability/report.json) | yes | `onboarding-audit report` on `examples/case_log.csv`, `--out reports/case_reliability` |
+| [`../reports/case_reliability/report.md`](../reports/case_reliability/report.md) | yes | Same run; grade A memo |
 | [`../reports/propensity_sensitivity.md`](../reports/propensity_sensitivity.md) | yes | `onboarding-audit sensitivity` |
 | `reports/pilot_rows.parquet` | no | `onboarding-audit pilot` |
 | `reports/sample_report/` | no | `onboarding-audit report` |

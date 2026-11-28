@@ -1,14 +1,15 @@
 # Validation Report — V1
 
-**Status:** V1 validation record, updated 2026-11-26.
-**Subject:** `onboarding-audit` v1.0.1, the decision-reliability review update
+**Status:** V1 validation record, updated 2026-11-28.
+**Subject:** `onboarding-audit` v1.1.0, the Decision Reliability pre-release
 (evidence baseline v1.0.0).
 **Verdict:** Level 2 (review-ready). Level 3 (partner pilot) is not claimed.
 
-> **Release status (2026-11-26):** `v1.0.0` is a **review release**. The
-> public-release gate — two external readers or a documented fallback — is still
-> open. See [`RELEASE_STATUS.md`](RELEASE_STATUS.md). This report records the
-> evidence at the tag; [`CLAIMS.md`](CLAIMS.md) is the live claim ledger.
+> **Release status (2026-11-28):** `v1.1.0` is a Decision Reliability pre-release;
+> the public-release gate — two external readers or a documented fallback — is
+> still open. See
+> [`RELEASE_STATUS.md`](RELEASE_STATUS.md). This report records the evidence at
+> the tag; [`CLAIMS.md`](CLAIMS.md) is the live claim ledger.
 
 This report is the reviewer's index to the evidence. It does not replace the
 claim ledger, the model card, or the generated artifacts; it states what was
@@ -35,7 +36,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **101 passed** in the current tree (92 at the `v1.0.0` tag) |
+| Test result | **115 passed** in the current tree (92 at the `v1.0.0` tag) |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12; run 44918141562 green |
 
@@ -56,6 +57,7 @@ The CI workflow runs the tests, the demo, the claim check, and the link check.
 | Double robustness | `scripts/double_robustness.py`, `tests/test_double_robustness.py` | pass |
 | Temporal stability | `scripts/temporal_stability.py`, `reports/temporal_stability.json` | pass (both months) |
 | Bounds widen with the `P0` standard error | `tests/test_estimators.py` | pass |
+| Decision reliability profile | `tests/test_reliability.py`, `tests/test_report.py`; memo §4.2 | pass |
 | F5 fields in the summary | `tests/test_metrics.py` | pass |
 
 ## 4. Identification gate
@@ -175,7 +177,7 @@ hash and the per-score column hashes, is in
 
 | Gate | Status |
 |---|---|
-| Tests pass | **pass** (101 in the current tree; 92 at the tag) |
+| Tests pass | **pass** (115 in the current tree; 92 at the tag) |
 | Link check | **pass** (0) |
 | Identification gate integrated and tested | **pass** |
 | Observation sweep committed | **pass** |

@@ -29,3 +29,7 @@ def test_case_study_flips_the_naive_ranking(tmp_path):
     assert comp["p_candidate_better"] >= 0.95
     assert comp["decision"] == "prefer candidate"
     assert comp["regret_candidate"] < comp["regret_incumbent"]
+    profile = result.diagnostics["reliability"]["profile"]
+    assert profile["grade"].startswith("A")
+    assert profile["dimensions"]["statistical_stability"]["status"] == "strong"
+    assert profile["dimensions"]["cost_stress"]["status"] == "strong"

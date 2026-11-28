@@ -109,6 +109,11 @@ def test_report_runs_and_dr_beats_naive(tmp_path):
     assert Path(result.report_path).exists()
     memo = Path(result.memo_path).read_text(encoding="utf-8")
     assert "Measured" in memo
+    reliability = result.diagnostics["reliability"]
+    assert reliability["bootstrap"]["available"]
+    assert reliability["calibration"]["available"]
+    assert reliability["profile"]["grade"]
+    assert "Decision reliability profile" in memo
 
     truth = _true_p0(df, candidate, y, amount, capacity=0.10)
     naive_err = abs(result.estimates["naive"]["value"] - truth)

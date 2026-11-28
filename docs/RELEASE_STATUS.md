@@ -1,27 +1,29 @@
 # Release Status
 
-**Current tag:** `v1.0.2`, 2026-11-27.
-**Previous tags:** `v1.0.1` (2026-11-26) and `v1.0.0` (2026-11-22).
+**Current tag:** `v1.1.0`, 2026-11-28.
+**Previous tags:** `v1.0.2` (2026-11-27), `v1.0.1` (2026-11-26), and `v1.0.0` (2026-11-22).
 **Public-release gate:** **NOT MET.**
-**Publication decision:** published to GitHub as `v1.0.2` by owner decision on
-2026-11-27. The gate is **waived, not met**; this is not an externally validated
+**Publication decision:** published to GitHub as `v1.1.0` by owner decision on
+2026-11-28. The gate is **waived, not met**; this is not an externally validated
 release.
 
-**Supersession:** `v1.0.1` contained the false “no peer-reviewed” claim and the
-uncited paper. `v1.0.2` corrects those artifacts; cite `v1.0.2`, not `v1.0.1`,
-for the literature claim and the paper.
+**Supersession:** `v1.0.2` corrected the false “no peer-reviewed” claim and the
+uncited paper. `v1.1.0` adds the Decision Reliability Profile and the refocused
+paper. Cite `v1.1.0` for the reliability method; cite `v1.0.2` only for the
+correction history.
 
 ---
 
 ## 1. What is released
 
-`v1.0.2` is a **corrective pre-release**: a reproducible research artifact and a
-review-ready package. It is not an externally validated release, a production
-system, or an audit opinion.
+`v1.1.0` is a **Decision Reliability pre-release**: a reproducible research
+artifact and a review-ready package. It is not an externally validated release, a
+production system, or an audit opinion.
 
-The release notes are in [`RELEASE_NOTES_v1.0.2.md`](RELEASE_NOTES_v1.0.2.md).
+The release notes are in [`RELEASE_NOTES_v1.1.0.md`](RELEASE_NOTES_v1.1.0.md).
 The previous releases are in
-[`RELEASE_NOTES_v1.0.1.md`](RELEASE_NOTES_v1.0.1.md) and
+[`RELEASE_NOTES_v1.0.2.md`](RELEASE_NOTES_v1.0.2.md),
+[`RELEASE_NOTES_v1.0.1.md`](RELEASE_NOTES_v1.0.1.md), and
 [`RELEASE_NOTES_v1.0.0.md`](RELEASE_NOTES_v1.0.0.md).
 The V1 plan and its definition of done are in [`V1/README.md`](V1/README.md).
 
@@ -29,16 +31,17 @@ The V1 plan and its definition of done are in [`V1/README.md`](V1/README.md).
 
 | Gate | Status | Evidence |
 |---|---|---|
-| Tests pass | **pass** (101 at `v1.0.2`; 92 at `v1.0.0`) | `pytest -q` |
+| Tests pass | **pass** (115 at `v1.1.0`; 101 at `v1.0.2`; 92 at `v1.0.0`) | `pytest -q` |
 | Claim checks | **pass** (43/43) | `python scripts/check_claims.py` |
 | Link check | **pass** (0 missing) | `python scripts/check_links.py` |
 | Benchmark hash reproduced | **pass** | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) |
 | Observation sweep | **pass** | [`V1/EXPERIMENTS.md`](V1/EXPERIMENTS.md) |
 | F5 recorded | **pass** (narrow fail, widened pass) | [`VALIDATION_REPORT.md`](VALIDATION_REPORT.md) §6 |
 | Identification gate | **pass** | `tests/test_gates.py` |
+| Reliability audit | **pass** (post-hoc) | 2/60 A/B released, both correct, 0 false certifications, 97% withheld from release; [`../reports/reliability_audit/summary.md`](../reports/reliability_audit/summary.md) |
 | Reviewer packet | **ready** | [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md); no reader recorded yet |
 | Two external readers | **open** | none recorded |
-| Public release | **published as review update** | owner decision; external validation gate remains open |
+| Public release | **published as pre-release** | owner decision; external validation gate remains open |
 
 ## 3. Why the tag exists before external review
 
@@ -46,29 +49,33 @@ The project's own definition of done requires two external readers. The tag was
 created to freeze the reproducible artifact so reviewers can inspect a stable
 commit. It is not a claim that the external review happened.
 
-A hostile reviewer is right to ask why a `1.0.x` tag exists before the gate is
-met. The honest answer is: **the tags are review candidates, and the public
-release has not happened.** Do not describe `v1.0.1` as externally validated.
+A hostile reviewer is right to ask why a `1.0.x`/`1.1.0` tag exists before the
+gate is met. The honest answer is: **the tags are review candidates, and the
+public release has not happened.** Do not describe `v1.1.0` as externally
+validated.
 
-## 4. What v1.0.2 adds over v1.0.1
+## 4. What v1.1.0 adds over v1.0.2
 
-`v1.0.2` corrects the 2026 research-gap claim, adds the closest-work citations,
-rebuilds the paper, and adds the data-readiness and red-flag audit. It retains
-the `v1.0.1` full-policy decision check:
+`v1.1.0` makes decision reliability the product spine:
 
-- a sharp partial-identification bound on the candidate-vs-incumbent difference
-  over the unobserved reject margin;
-- a break-even rejected-fraud rate under a stated common-rate assumption;
-- a memo warning when the `P0` recommendation does not survive the reject margin.
+- a Decision Reliability Profile (`reliability.py`): paired bootstrap decision
+  stability, outcome/propensity calibration, 3×3 cost stress, full-policy
+  fragility, and operational readiness, summarized as an A–D grade;
+- `validate` reports reliability readiness; `report` returns the grade in memo
+  §4.2 and `diagnostics.reliability`; `pilot --reliability-boot` records
+  per-replication grades;
+- A/B require a directional point decision; C/D are not released; a failed gate
+  is D;
+- a 60-replication reliability audit (`reports/reliability_audit/`): 2/60 A/B
+  directional decisions released, both correct, 0 false certifications, 97%
+  withheld decisions;
+- the paper is refocused on Decision Reliability for Financial ML and remains
+  6 body pages plus references.
 
-It also adds the action-weighted baseline (`reports/baseline_sensitivity/`), the
-observational segment diagnostic, and the reviewer packet. These are review
-update changes; the public-release gate is unchanged.
-
-**Post-release evidence on `main` (not in the `v1.0.2` tag):** the
-label-holdout baseline (`reports/holdout_baseline/`) and the model/score
-ablation (`reports/model_ablation.*`). See `RESULTS.md` §5.2–5.3. Issue a
-`v1.1.0`/`v1.0.3` if these need to be in a tagged release.
+It retains the `v1.0.2` correction, the `v1.0.1` full-policy decision check, the
+sharp reject-margin bound, the break-even, the action-weighted baseline, the
+segment diagnostic, and the reviewer packet. These are pre-release changes; the
+public-release gate is unchanged.
 
 ## 5. Next release rule
 
@@ -89,4 +96,4 @@ Do not announce a public `1.0` release until:
 - External review log: [`EXTERNAL_REVIEW.md`](EXTERNAL_REVIEW.md)
 - Reviewer packet: [`REVIEWER_PACKET.md`](REVIEWER_PACKET.md)
 - Red-flag audit: [`RED_FLAG_AUDIT.md`](RED_FLAG_AUDIT.md)
-- Release notes: [`RELEASE_NOTES_v1.0.2.md`](RELEASE_NOTES_v1.0.2.md)
+- Release notes: [`RELEASE_NOTES_v1.1.0.md`](RELEASE_NOTES_v1.1.0.md)

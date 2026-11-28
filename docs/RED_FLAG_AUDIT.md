@@ -431,7 +431,7 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
   `README.md` (pre-fix).
 - **Credibility impact:** high before the fix; now lower.
 - **Resolution:** corrected the validation report, test counts, statuses, claim
-  counts, and links; added a release status page; 101 tests/43 checks/0 links.
+  counts, and links; added a release status page; 106 tests/43 checks/0 links.
 - **Status:** **Partial.** Residual: a consistency check in CI would prevent
   recurrence.
 
@@ -502,15 +502,17 @@ addressed, residual remains; **Disclosed** = explicitly stated, not resolved;
 
 | Check | Command | Result |
 |---|---|---|
-| Unit tests | `pytest -q` | **101 passed** |
+| Unit tests | `pytest -q` | **115 passed** |
 | Claim checks | `python scripts/check_claims.py` | **43/43** |
 | Link check | `python scripts/check_links.py` | **0 missing** |
 | Paper build | `tectonic paper/main.tex` | PDF written; 6 body + references; citations present |
 | Label holdout | `onboarding-audit pilot --config configs/holdout_baseline.yaml` | Naive >100%; action-weighted/DR ≤6%; ranking unstable |
 | Model ablation | `python scripts/model_ablation.py` | Candidate AUC 0.8829 vs 0.8733; HistGB 0.8773 vs logistic 0.8754 |
+| Reliability profile | `tests/test_reliability.py`, `tests/test_report.py` | Bootstrap/calibration/cost-stress tests pass; case A, demo C |
+| Reliability audit | `python scripts/summarize_reliability_audit.py` | 2/60 A/B released, both correct; 0 false certifications; 97% withheld from release |
 | False claim removed | `grep "No peer-reviewed"` on current docs | Only the audit log/review quote it |
 | 2026 citations | PDF text search | OSCAR/Beyond Holdout/DOiT/Kuroki/Bhola/Hong present |
-| Release | GitHub | `main` + `v1.0.1` pre-release |
+| Release | GitHub | `main` + `v1.1.0` pre-release |
 
 **Not verified:** primary BSP 1213 PDF (403 to fetcher); exact 25 vs 30 June date;
 AFASA/NPC primary texts; vendor implementation details; real-log audit/legal

@@ -142,9 +142,12 @@ structural rules listed in §5.
 - `amount >= 0`;
 - `decision_time >= application_time` when both are present.
 
-The validator also reports which estimators the log can support and what is
-missing. It does not prove the observation model is correct; it only checks the
-schema.
+The validator also reports which estimators the log can support, what is
+missing, and a **reliability readiness** profile: identification, statistical
+stability, calibration, structural reject margin, operational readiness, and the
+segment diagnostic. A `no` means the log cannot support that dimension; the
+report marks it unavailable or grades down. It does not prove the observation
+model is correct; it only checks the schema.
 
 ## 6. Example row
 

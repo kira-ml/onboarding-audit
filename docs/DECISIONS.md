@@ -641,3 +641,84 @@ PII request without DPA → decline. Holdout baseline collapses the effect →
 narrow the claim. Upgrade to C only with a warm partner, a log, a DPA/sandbox,
 legal/ops review, an agreed cost matrix, and a respected time cap. Upgrade to D
 only after a reader says the paper is competitive and it is venue-trimmed.
+
+---
+
+## D17 — Decision Reliability Profile is the product spine
+
+**Date:** 2026-11-28.
+**Status:** Implemented; shipped in the `v1.1.0` pre-release. No external validation.
+
+**Context:** The project already had an identification gate, a `P0`/reject-margin
+split, a full-policy break-even, and a decision layer. Those are reliability
+ingredients but not a reliability product: the memo still led with a point
+estimate and treated stability, calibration, and cost stress as separate
+diagnostics.
+
+**Options:**
+1. Keep the existing gate + decision layer; add no new reliability metrics.
+2. Add more estimators or scenarios.
+3. Make decision reliability the product spine: a profile with identification,
+   bootstrap decision stability, calibration, cost-stress stability, structural
+   reject-margin reliability, operational readiness, and an explicit A–D grade.
+
+**Decision:** Option 3. Add `reliability.py`, integrate it into `report.py` and
+the memo (§4.2), and make the README/docs describe the specialization. No new
+estimators or simulation scenarios.
+
+**Why:**
+- The specialization is Decision Reliability for Financial ML; the product
+  should measure the reliability of the decision, not just the estimate.
+- The existing assets (gate, full-policy check, action-weighted/holdout
+  baselines) are the foundation; the profile unifies them.
+- The new metrics are testable and reproducible: bootstrap stability,
+  Brier/ECE, observed/expected, cost-stress share, grade rules.
+- Adding more estimators would optimize a non-bottleneck.
+
+**Expected outcome:** A memo that a risk team can read as a decision-reliability
+report: grade first, dimensions second, point estimate conditional. The profile
+refuses to call a decision A when the gate, stability, calibration, cost stress,
+or structural dimension is weak.
+
+**Assumptions:** The grade thresholds are conventions; the bootstrap fixes
+nuisance models; calibration is observed-label only; the cost grid is local.
+
+**Review date:** 2026-12-15.
+**Kill criteria:** The profile is decorative (always A/B, never C/D) → tighten
+thresholds or remove the grade. The bootstrap is too slow for a 100k log →
+optimize or reduce `n_boot`. A risk team finds the grade misleading → rename it
+to a profile and drop the letter grade.
+
+## D18 — Publish v1.1.0 as a pre-release, not a validated 1.0
+
+**Date:** 2026-11-28.
+**Status:** Accepted; owner decision. Public-release gate remains **not met**.
+
+**Context:** The Decision Reliability Profile is implemented and tested, and the
+paper is refocused. Two external readers have not reviewed the package. The
+choice is to hold the artifact, tag it as a pre-release, or call it a public 1.0.
+
+**Options:**
+1. Hold all tags until two external readers finish.
+2. Tag `v1.1.0` as a pre-release and keep the gate open.
+3. Publish as `1.0` and treat the tag as validation.
+
+**Decision:** Option 2.
+
+**Why:**
+- Reviewers need a stable commit to inspect; an untagged `main` moves.
+- The release notes, README, and `RELEASE_STATUS.md` state that the gate is
+  waived, not met, so the tag cannot be mistaken for external validation.
+- Option 3 would repeat the overclaim the audit removed.
+
+**Expected outcome:** A frozen Decision Reliability artifact with an explicit
+open gate; no claim of production or external validation.
+
+**Assumptions:** The owner accepts the reputational cost of another pre-1.0 tag.
+The reliability audit is post-hoc and small.
+
+**Review date:** 2026-12-15.
+**Kill criteria:** A reviewer finds the profile misleading, the audit
+irreproducible, or the paper's reliability claims unsupported → deprecate the
+tag, issue a corrective release, and record the finding in `CLAIMS.md` and
+`EXTERNAL_REVIEW.md`.

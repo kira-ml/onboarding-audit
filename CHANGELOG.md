@@ -2,17 +2,47 @@
 
 **Status:** Canonical version history.
 
-## [Unreleased] — post-v1.0.2 evidence
+## [1.1.0] — 2026-11-28
+
+Decision Reliability for Financial ML release. The product spine is now the
+reliability of the decision, not the point estimate.
 
 ### Added
 
+- Decision Reliability Profile (`reliability.py`, memo §4.2): bootstrap
+  decision stability, outcome/propensity calibration, 3×3 cost-stress stability,
+  and an A–D grade combining identification, statistical, structural, model,
+  cost, and operational dimensions.
+- `report --reliability-boot` and a decision-reliability line in the CLI/memo;
+  `validate` reports reliability readiness; `pilot --reliability-boot` writes
+  per-replication grades.
+- Reliability audit (`configs/reliability_audit.yaml`,
+  `reports/reliability_audit/summary.*`): 2/60 A/B decisions released, both
+  correct, 0 false certifications, 97% of decisions withheld from release.
 - Label-holdout baseline (`configs/holdout_baseline.yaml`,
   `reports/holdout_baseline/`): the correction survives a disjoint label half;
   the ranking remains unstable.
 - Model/score ablation (`scripts/model_ablation.py`,
   `reports/model_ablation.*`): candidate AUC 0.8829 vs 0.8733; retrained HistGB
   0.8773 vs logistic 0.8754.
-- Paper robustness paragraph; still 6 pages of body + references.
+- Paper refocused on Decision Reliability for Financial ML: decision reliability
+  formulation, profile/gate, reliability audit, and accuracy--reliability gap.
+- Paper robustness paragraph; 6 pages of body + references.
+
+### Fixed
+
+- Grade A/B now require every measured dimension to be strong or moderate:
+  weak or unavailable calibration and operational readiness block release, and
+  a full-policy direction that conflicts with the `P0` decision is a blocking
+  conflict, not a pass. A log with no rejected rows marks the structural
+  dimension `not_applicable`.
+- Reliability readiness in `validate` no longer requires a propensity column
+  (it can be estimated) and no longer reports a fake missing feature name.
+
+### Verification
+
+- 115 tests, 43/43 claim checks, 0 missing links, paper at 6 body pages plus
+  references; the 60-replication audit is unchanged after the grading fix.
 
 ## [1.0.2] — 2026-11-27
 
