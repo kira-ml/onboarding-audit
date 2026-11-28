@@ -31,8 +31,8 @@ called decision-grade.
 `--include-protected` is legacy-only. The legacy configs still reproduce the
 unsafe scores for the v1.1.0 record.
 
-**Why it matters:** a new user following the default path reproduces the
-ethically weaker model. Disclosure in the paper does not fix the default.
+**Why it matters:** a new user following a legacy config can still reproduce the
+ethically weaker model. The default preparation path is now safe.
 
 **Status: Partially fixed.** Default preparation is safe; legacy configs are
 labeled; the full restricted rerun of every paper experiment is not done.
