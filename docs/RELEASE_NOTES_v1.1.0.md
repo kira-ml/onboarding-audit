@@ -44,7 +44,8 @@ replicates each:
 | **Overall** | **60** | 1 A, 1 B, 38 C, 20 D | **2** | **100%** | **0** | **97%** |
 
 The profile is deliberately conservative. The cost of caution is decision
-volume, not a confident wrong decision. The audit is small and post-hoc.
+volume, not a confident wrong decision. The audit is small and post-hoc. The
+zero false-certification cell is 0 of 2 releases; its 95% upper bound is 78%.
 
 ### Research paper
 
@@ -66,8 +67,8 @@ The manuscript is refocused on Decision Reliability for Financial ML:
   ranking remains unstable.
 - Model/score ablation: candidate AUC 0.8829 vs 0.8733; retrained HistGB 0.8773
   vs logistic 0.8754; the better-model premise is modest.
-- Reliability audit: 2/60 A/B decisions released, both P0-correct; 0 false
-  certifications; 9 of 11 directional decisions withheld (82%).
+- Reliability audit: 2/60 A/B decisions released, both P0-correct; 0 of 2 false certifications
+  (95% upper bound 78%); 9 of 11 directional decisions withheld (82%).
 
 ## 3. What this release does not fix
 
@@ -83,7 +84,7 @@ The manuscript is refocused on Decision Reliability for Financial ML:
 
 ```bash
 pip install -e ".[dev,baf]"
-pytest -q                     # 118 passed
+pytest -q                     # 119 passed
 python scripts/check_claims.py  # 62/62
 python scripts/check_links.py   # 0 missing
 onboarding-audit demo --out reports/demo_reliability

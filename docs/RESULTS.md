@@ -21,7 +21,7 @@ production estimate, not a Philippine bank, not a causal deployment effect.
    are different objects.
 2. **The reliability profile is decision-grade and conservative.** Across a
    60-replication audit, only **2/60** A/B directional decisions were released;
-   both were P0-correct, with **0 false certifications** and **9 of 11
+   both were P0-correct, with **no false certification observed** (0/2; 95% upper bound 78%) and **9 of 11
    directional decisions withheld (82%)**. A clear case is grade **A**; the
    near-tie demo is grade **C**. The profile refuses close calls rather than
    issuing a confident wrong decision.
@@ -459,7 +459,7 @@ replicates per replication (`reports/reliability_audit/`). A decision is
 | **Overall** | **60** | 1 A, 1 B, 38 C, 20 D | **2** | **100%** | **0** | **97%** |
 
 **Read:** the profile is conservative. It released only 2 of 60 decisions, both
-P0-correct, and made no false certifications. The no-A/B-release rate is 97%;
+P0-correct, and observed no false certification (0/2; 95% upper bound 78%). The no-A/B-release rate is 97%;
 among the 11 directional decisions, 9 were withheld (82%), and 4 of 7
 identified directional decisions were P0-correct (57%). Including the four
 gate-failed D diagnostics, 5 of 11 were P0-correct (45%). This is a safety-first
@@ -484,7 +484,7 @@ headline. The pre-registered H1–H6 remain the primary verdicts.
 
 ## 13. Negative controls
 
-`pytest -q`: **118 passed** in the current tree (92 at the v1.0.0 tag), including:
+`pytest -q`: **119 passed** in the current tree (92 at the v1.0.0 tag), including:
 
 - full-observation identity (IPW/DR equal the full mean when `e=1`);
 - full-audit identity (audit-only equals the approved mean);

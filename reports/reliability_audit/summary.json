@@ -36,7 +36,8 @@
     "identified_directional_accuracy": 0.5714285714285714,
     "abstention_rate": 0.9666666666666667,
     "false_certification_n": 0,
-    "false_certification_rate": 0.0
+    "false_certification_rate": 0.0,
+    "false_certification_upper95": 0.7763932022500211
   },
   "by_scenario": {
     "e001": {
@@ -68,7 +69,8 @@
       "identified_directional_accuracy": null,
       "abstention_rate": 1.0,
       "false_certification_n": 0,
-      "false_certification_rate": null
+      "false_certification_rate": null,
+      "false_certification_upper95": null
     },
     "frej_050": {
       "n": 20,
@@ -100,7 +102,8 @@
       "identified_directional_accuracy": 1.0,
       "abstention_rate": 0.95,
       "false_certification_n": 0,
-      "false_certification_rate": 0.0
+      "false_certification_rate": 0.0,
+      "false_certification_upper95": 0.95
     },
     "main": {
       "n": 20,
@@ -133,7 +136,8 @@
       "identified_directional_accuracy": 0.25,
       "abstention_rate": 0.95,
       "false_certification_n": 0,
-      "false_certification_rate": 0.0
+      "false_certification_rate": 0.0,
+      "false_certification_upper95": 0.95
     }
   }
 }

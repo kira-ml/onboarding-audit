@@ -26,7 +26,7 @@
 | Decision layer | **Done** | P(candidate cheaper), expected regret, recommendation | None |
 | Case study | **Done** | 20k-row reproducible case; naive flips the ranking; report prefers the candidate | None |
 | Temporal stability | **Done** | Month 5 vs 6: naive 230%/255%, DR 0.89%/0.43%, naive P(best) 0%/0% | None |
-| CI/tests | **Done** | 118 tests pass in the current tree (92 at v1.0.0); GitHub Actions green | None |
+| CI/tests | **Done** | 119 tests pass in the current tree (92 at v1.0.0); GitHub Actions green | None |
 | External review | **Not started** | Reviewer packet; 10-person shortlist; log in `../EXTERNAL_REVIEW.md` | Calendar |
 | Release | **Review tag** | v1.0.0 tagged 2026-11-22; public-release gate open | External review |
 

@@ -18,7 +18,7 @@ committed description.
 | Fraud rate | 1.2576% (`fraud_bool=1`) |
 | SHA-256 | `f5efd6781431f229685df6c154f1a6e124849a323e3c45d258a09cf10f331593` |
 | Source | BAF (Jesus et al., NeurIPS 2022), processed by the archived V2 pipeline |
-| License | BAF CC BY 4.0; see the BAF repository |
+| License | BAF **CC BY-NC-SA 4.0** (non-commercial); see [`DATA_SOURCES.md`](DATA_SOURCES.md) |
 
 The file is a **scored evaluation frame**, not a raw BAF download. It contains
 the V2 model scores and the `amount_proxy` used by the pilot.

@@ -168,7 +168,7 @@ with the same code path. That is the point of the profile.
 
 The per-replication audit (`reports/reliability_audit/`, 20 reps per scenario,
 100 bootstrap replicates) released only **2 of 60** A/B directional decisions;
-both were P0-correct, with **zero false certifications** and **9 of 11
+both were P0-correct, with **no false certification observed** (0/2; 95% upper bound 78%) and **9 of 11
 directional decisions withheld (82%)**. Main: 1 B, 19 C. Lowest label rate: 20 D.
 High false-reject cost: 1 A, 19 C. Identified directional accuracy was 4/7
 (57%), or 5/11 (45%) if the gate-failed D diagnostics are included. The

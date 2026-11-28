@@ -20,6 +20,9 @@ data/*.csv
 data/raw/
 data/processed/
 data/interim/
+Base.csv
+Variant*.csv
+Variant*.parquet
 
 # Generated outputs: keep the report and the small JSON evidence file;
 # the large row-level parquet is reproducible and stays local.

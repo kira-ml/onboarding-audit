@@ -8,7 +8,7 @@
 |---|---|
 | Name | Bank Account Fraud (BAF) `Base.csv` |
 | Source | Jesus et al., NeurIPS 2022, arXiv:2211.13358; Feedzai BAF repository |
-| License | CC BY 4.0 (see the BAF repository for the current terms) |
+| License | **CC BY-NC-SA 4.0** (dataset; non-commercial). See [`DATA_SOURCES.md`](DATA_SOURCES.md) |
 | Unit | Online bank account application |
 | Raw rows | 1,000,000 |
 | Raw features | 32 |
@@ -37,6 +37,7 @@ Every column, its role, and its limitations are in
 | `p_fraud_lgbm` | V2 LightGBM score (candidate) |
 | `p_fraud_rf` | V2 random-forest score (diagnostic) |
 | Other columns | BAF application features |
+| Protected attributes | `customer_age`, `employment_status`, `income`; all three are currently used in the feature set. This is a research-only conflict under review; see [`DATA_USE_PLAN.md`](DATA_USE_PLAN.md) §6. |
 
 The file is derived from the archived V2 pipeline. The scores were trained on
 months 0–2 with fixed hyperparameters; months 3–4 are held out but are not used
@@ -100,7 +101,7 @@ verified rebuild record is in
 ## 5. Ethical and legal notes
 
 - The data is public and synthetic; no PII is included.
-- The open-source examples use synthetic or public data only.
+- The examples use synthetic or public data only; BAF is not redistributed.
 - A production deployment must comply with the Data Privacy Act (RA 10173), NPC
   Advisory 2024-04, BSP Circular 1170 (eKYC), and BSP Circular 1213 (logging and
   audit).

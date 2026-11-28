@@ -44,7 +44,7 @@ python -c "import onboarding_audit; print(onboarding_audit.__version__)"
 pytest -q
 ```
 
-Expected: the version string and **118 passed** in the current tree (92 at the v1.0.0 tag).
+Expected: the version string and **119 passed** in the current tree (92 at the v1.0.0 tag).
 
 ## 3. Data
 

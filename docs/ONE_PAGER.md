@@ -83,7 +83,7 @@ new policy is estimated on the subset the incumbent policy produced.
   candidate. Fully reproducible; see `CASE_STUDY.md`.
 - **Reliability audit:** 60 replications across main, low-label, and high
   false-reject-cost scenarios. Only **2/60** A/B directional decisions were
-  released; both were P0-correct; **0 false certifications**; **9 of 11 directional decisions withheld (82%)**.
+  released; both were P0-correct; **0 of 2 false certifications** (95% upper bound 78%); **9 of 11 directional decisions withheld (82%)**.
   The profile is conservative; the cost of caution is decision volume.
 - **Propensity sensitivity:** with estimated action-level `e`, DR stays within
   **1.43%** with **93.5%** coverage; IPW **2.92% / 92.0%**. Under

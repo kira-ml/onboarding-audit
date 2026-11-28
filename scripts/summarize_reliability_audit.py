@@ -60,6 +60,9 @@ def summarize(rows: list[dict]) -> dict:
         "false_certification_rate": (
             len(false_cert) / len(released) if released else None
         ),
+        "false_certification_upper95": (
+            1.0 - 0.05 ** (1.0 / len(released)) if released else None
+        ),
     }
 
 
@@ -131,6 +134,12 @@ def main() -> None:
         (
             "- false certifications (released A/B and wrong): "
             f"**{overall['false_certification_n']}**"
+            + (
+                f" of **{overall['released_n']}**; 95% upper bound "
+                f"**{overall['false_certification_upper95']:.0%}**"
+                if overall["released_n"]
+                else ""
+            )
         ),
         (
             "- no A/B release (not a directional-decision rate): "

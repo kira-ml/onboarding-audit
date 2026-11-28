@@ -136,7 +136,7 @@ public synthetic data**, not a production estimate.
 | DR with a wrong outcome model but correct `e` | **+0.14%** | `reports/double_robustness.json` |
 | DR with a wrong `e` but correct outcome model | **+0.36%** | `reports/double_robustness.json` |
 | Temporal stability, month 5 / month 6 | naive **230% / 255%**; DR **0.89% / 0.43%**; naive P(best) **0% / 0%** | `reports/temporal_stability.json` |
-| Decision reliability audit (20 reps/scenario) | **2/60** A/B directional decisions released, both P0-correct; **0** false certifications; **9/11** directional decisions withheld (82%) | `reports/reliability_audit/summary.json` |
+| Decision reliability audit (20 reps/scenario) | **2/60** A/B directional decisions released, both P0-correct; **0/2** false certifications (95% UB 78%); **9/11** directional decisions withheld (82%) | `reports/reliability_audit/summary.json` |
 | Covariate propensity model under covariate-dependent observation | DR **2.48% / 89.5%**; IPW **1.97% / 91.5%** | `reports/propensity_sensitivity.json` |
 
 ### 7.3 Where it fails
@@ -176,7 +176,13 @@ intervals**, not confidence intervals.
    labels and only a provided propensity is calibration-checked; the cost grid is
    a local stress test. A grade of A does not prove the observation model, cost
    matrix, or audit design.
-9. **Single maintainer.** Bus factor 1.
+9. **Protected-attribute disclosure.** The current BAF feature set includes
+   `customer_age`, `employment_status`, and `income`, which are protected
+   attributes in the BAF datasheet. The model is research-only; a
+   restricted-feature rerun or an explicit, reviewed exception is required
+   before any deployment or fairness claim. See
+   [`DATA_USE_PLAN.md`](DATA_USE_PLAN.md) §6.
+10. **Single maintainer.** Bus factor 1.
 
 ## 9. Ethical and privacy considerations
 

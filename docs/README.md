@@ -68,6 +68,7 @@ disagree, the precedence in §5 applies.
 |---|---|
 | [`DATA.md`](DATA.md) | The data card: provenance, split, limitations |
 | [`DATA_SOURCES.md`](DATA_SOURCES.md) | Dataset licensing, privacy, permitted use, and go/no-go |
+| [`DATA_USE_PLAN.md`](DATA_USE_PLAN.md) | The operational compliance, security, ethics, and publication rules for BAF |
 | [`BENCHMARK_PROVENANCE.md`](BENCHMARK_PROVENANCE.md) | The verified benchmark rebuild: hashes, split, parameters, leakage controls |
 | [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) | Every column in the processed test frame |
 | [`SCHEMA.md`](SCHEMA.md) | The decision-log schema and validation rules |

@@ -9,10 +9,15 @@ state is the last entry.
 **CC BY-NC-SA 4.0**; the Feedzai repository code is Apache-2.0 with a separate
 commercial-use contact. The dataset is synthetic and privacy-preserving.
 
-**Decision:** D19 — use BAF for non-commercial research/portfolio only; keep raw
+**Decision:** D19 — use BAF for non-commercial research only; keep raw
 files local; cite the source; do not call it external validation; no commercial
-pilot without permission. Added `docs/DATA_SOURCES.md` and recorded the missing
-Kaggle version pin in `BENCHMARK_PROVENANCE.md`.
+pilot without permission. Added `docs/DATA_SOURCES.md` and
+`docs/DATA_USE_PLAN.md`; recorded the missing Kaggle version pin in
+`BENCHMARK_PROVENANCE.md`; corrected `DATA.md` and `DATA_DICTIONARY.md` from
+CC BY 4.0 to CC BY-NC-SA 4.0. Flagged the protected-attribute conflict
+(`customer_age`, `employment_status`, `income`) as a blocker for the BAF-suite
+audit; the suite is on hold pending a restricted-feature rerun. Added a
+data-hygiene test and a license carve-out (`NOTICE`).
 
 ## 2026-11-28 — Reliability review corrections
 
@@ -35,7 +40,7 @@ term the code uses; (vii) 0.94% is labeled as the maximum absolute bias (mean
 accuracy from 5/11 including gate-failed diagnostics; (ix) the audit JSON records
 `n_boot`; (x) `check_claims.py` now covers the audit, case, and demo numbers.
 
-**Verification:** 118 tests, 62/62 claim checks, 0 missing links; paper 6 body
+**Verification:** 119 tests, 62/62 claim checks, 0 missing links; paper 6 body
 pages plus references; audit counts unchanged.
 
 ## 2026-11-28 — Decision Reliability end-to-end, audit, and v1.1.0
@@ -48,7 +53,7 @@ contract and the end-to-end pipeline diagram to `RELIABILITY.md`.
 
 **Audit:** 60 replications (main, `e001`, `frej_050`), 100 bootstrap replicates
 each. Grades: 1 A, 1 B, 38 C, 20 D. Released A/B directional decisions: 2/60,
-both P0-correct; false certifications: 0; 9/11 directional decisions withheld
+both P0-correct; false certifications: 0/2 (95% UB 78%); 9/11 directional decisions withheld
 (82%). Identified directional accuracy: 4/7; 5/11 including gate-failed D.
 
 **Corrected:** the grade rule now matches the documented contract. A weak or
@@ -56,7 +61,7 @@ unavailable calibration or operational-readiness dimension blocks A/B; any
 unavailable dimension forces C. A log with no rejected rows marks the structural
 dimension `not_applicable` instead of penalizing it. Added regression tests.
 
-**Verification:** 118 tests pass, 62/62 claim checks, 0 missing links, paper
+**Verification:** 119 tests pass, 62/62 claim checks, 0 missing links, paper
 compiles to 6 body pages + references. Audit numbers are unchanged after the
 grade-rule fix.
 

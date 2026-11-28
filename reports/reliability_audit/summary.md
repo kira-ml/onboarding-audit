@@ -15,7 +15,7 @@ necessarily that the point estimate was inconclusive).
 - directional decisions withheld: **9** of **11** (82%)
 - identified directional accuracy (excluding gate-failed D): **4**/**7** (57%)
 - all directional decisions, including gate-failed D: **11**, P0-correct **5** (45%)
-- false certifications (released A/B and wrong): **0**
+- false certifications (released A/B and wrong): **0** of **2**; 95% upper bound **78%**
 - no A/B release (not a directional-decision rate): **97%**
 
 ## By scenario

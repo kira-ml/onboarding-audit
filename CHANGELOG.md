@@ -47,7 +47,7 @@ reliability of the decision, not the point estimate.
 
 ### Verification
 
-- 118 tests, 62/62 claim checks, 0 missing links, paper at 6 body pages plus
+- 119 tests, 62/62 claim checks, 0 missing links, paper at 6 body pages plus
   references; the 60-replication audit is unchanged after the grading fix.
 
 ## [1.0.2] — 2026-11-27

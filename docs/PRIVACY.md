@@ -78,6 +78,8 @@ Do not post the data in an issue, a pull request, or a chat.
 
 - Schema: [`SCHEMA.md`](SCHEMA.md)
 - Data card: [`DATA.md`](DATA.md)
+- Data sources and license: [`DATA_SOURCES.md`](DATA_SOURCES.md)
+- Data use plan: [`DATA_USE_PLAN.md`](DATA_USE_PLAN.md)
 - Audit design: [`AUDIT_DESIGN.md`](AUDIT_DESIGN.md)
 - BSP/AFASA/NPC mapping: [`BSP_MAPPING.md`](BSP_MAPPING.md)
 - Report usage: [`REPORT_USAGE.md`](REPORT_USAGE.md)

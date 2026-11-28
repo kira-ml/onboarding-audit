@@ -13,7 +13,7 @@ correction that cannot pass a known-truth identity is not evidence.
 pytest -q
 ```
 
-Expected: **118 passed** in the current tree (92 at the v1.0.0 tag). The suite uses only synthetic or
+Expected: **119 passed** in the current tree (92 at the v1.0.0 tag). The suite uses only synthetic or
 small in-memory data; it does not require `data/scored_test.parquet`.
 
 The headline numbers are also checked directly against the committed JSON:
@@ -125,8 +125,13 @@ They protect the implementation, not the external validity of the simulation.
 | `test_covariate_propensity_model_varies_within_action` | The covariate model recovers a known within-action gradient |
 | `test_report_covariate_propensity_model_runs` | The covariate report path writes the memo and exposes the model |
 
-### `tests/test_reliability.py`
+### `tests/test_data_hygiene.py`
 
+| Test | What it proves |
+|---|---|
+| `test_no_raw_data_files_are_tracked` | Raw BAF, processed frames, and parquet outputs are not committed |
+
+### `tests/test_reliability.py`
 | Test | What it proves |
 |---|---|
 | `test_bootstrap_decision_clear_winner` | A dominant candidate yields $P=1$, stability 1, and a degenerate interval |

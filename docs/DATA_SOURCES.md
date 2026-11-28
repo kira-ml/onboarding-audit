@@ -9,16 +9,19 @@ rules; a commercial deployment needs its own legal review.
 
 ## 1. Decision
 
-**The BAF suite is usable now for non-commercial research and portfolio work.**
-It is **not** usable for a commercial pilot or a product claim without separate
-permission.
+**The BAF suite may be usable for non-commercial research after the gates in
+[`DATA_USE_PLAN.md`](DATA_USE_PLAN.md) are closed.** It is **not** usable for a
+commercial pilot or a product claim without separate permission. Current use is
+on hold because the protected-attribute conflict and Kaggle version pin are
+unresolved.
 
 | Question | Answer |
 |---|---|
 | Openly published? | **Yes** — public Kaggle release and official Feedzai repository |
 | OSI “open source”? | **No** — this is data, not software. The dataset license is **CC BY-NC-SA 4.0**, which is openly licensed but **non-commercial** |
-| Legal for this project? | **Yes, for non-commercial research**, with attribution and share-alike compliance |
+| Legal for this project? | **Conditionally, for non-commercial research only**, with attribution and share-alike compliance; current use is on hold pending the plan gates |
 | Legal for a commercial pilot? | **No, not under this license**; obtain permission or a commercial license |
+| Employment-directed portfolio? | **Ambiguous; treat as hold** until counsel or the dataset owner clarifies |
 | Contains PII? | **No PII in the released data**; it is synthetic, generated from anonymized data with privacy-preserving methods |
 | Safe to redistribute? | **Do not redistribute raw files**; keep `data/` local and publish only aggregate results |
 | Required attribution | Cite the BAF paper and the Kaggle dataset; retain the license notice |
@@ -38,6 +41,19 @@ permission.
 
 The dataset and the repository are **separate licenses**: the code is Apache-2.0;
 the dataset is CC BY-NC-SA 4.0. Do not cite the code license as the data license.
+
+### Citation
+
+```bibtex
+@article{jesus2022baf,
+  title={Turning the Tables: Biased, Imbalanced, Dynamic Tabular Datasets for ML Evaluation},
+  author={Jesus, S{\'e}rgio and Pombal, Jos{\'e} and Alves, Duarte and Cruz, Andr{\'e} and Saleiro, Pedro and Ribeiro, Rita P. and Gama, Jo{\~a}o and Bizarro, Pedro},
+  journal={Advances in Neural Information Processing Systems},
+  year={2022}
+}
+```
+
+License: <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 ## 3. What the license allows
 
@@ -77,9 +93,12 @@ pilot, treat it as commercial and get permission.
 
 ## 6. Go / no-go
 
+The operational rules are in [`DATA_USE_PLAN.md`](DATA_USE_PLAN.md).
+
 | Use | Decision |
 |---|---|
-| Research paper, portfolio, non-commercial benchmark | **GO** |
+| Research paper, non-commercial benchmark | **GO after plan gates** |
+| Employment-directed portfolio | **HOLD** — counsel/permission first |
 | Public redistribution of raw BAF data | **NO** |
 | Commercial pilot or product claim | **NO-GO without separate permission** |
 | Claim that BAF is a real bank log | **NO** — it is synthetic |

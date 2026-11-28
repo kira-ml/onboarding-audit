@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/kira-ml/onboarding-audit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-118%20passed-2ea44f?style=flat-square)](tests/)
+[![Tests](https://img.shields.io/badge/tests-119%20passed-2ea44f?style=flat-square)](tests/)
 [![Version](https://img.shields.io/badge/version-1.1.0-6f42c1?style=flat-square)](CHANGELOG.md)
 [![Status](https://img.shields.io/badge/status-review%20release-f59e0b?style=flat-square)](docs/ROADMAP.md)
 
@@ -25,7 +25,7 @@ full-policy fragility, and operational readiness, with an explicit A–D grade.
 
 ---
 
-> **Status:** `v1.1.0` Decision Reliability pre-release. **118 tests pass.** The
+> **Status:** `v1.1.0` Decision Reliability pre-release. **119 tests pass.** The
 > documentation is research-ready; the revised IEEEtran draft is in
 > [`paper/main.pdf`](paper/main.pdf). This is a simulation on public
 > synthetic data — **not** a production system, **not** a Philippine bank
@@ -42,7 +42,7 @@ full-policy fragility, and operational readiness, with an explicit A–D grade.
 > Profile the product spine. `validate` reports reliability readiness; `report`
 > returns an A–D grade in the memo and JSON; `pilot --reliability-boot` records
 > per-replication grades. The 60-replication audit released only 2/60 A/B
-> directional decisions, both P0-correct, with **0 false certifications**; **9 of
+> directional decisions, both P0-correct, with **no false certification observed** (0/2; 95% upper bound 78%); **9 of
 > 11 directional decisions were withheld (82%)**. The paper is refocused on decision reliability and
 > remains 6 body pages plus references. See
 > [`docs/RELEASE_NOTES_v1.1.0.md`](docs/RELEASE_NOTES_v1.1.0.md),
@@ -113,7 +113,7 @@ which is which.
 | **Audit design** | Random post-hoc verification of approved applications + shadow scoring |
 | **Decision reliability** | Bootstrap P(better)/stability, calibration, cost-stress stability, full-policy grade |
 | **Interface** | Python package + `pilot`, `report`, `sensitivity`, `validate` CLI |
-| **Status** | v1.1.0 Decision Reliability pre-release · 118 tests · external review open · not production |
+| **Status** | v1.1.0 Decision Reliability pre-release · 119 tests · external review open · not production |
 
 ## Headline results
 
@@ -127,7 +127,7 @@ Monte Carlo intervals are in [`docs/RESULTS.md`](docs/RESULTS.md).
 
 | Finding | Result | Reading |
 |---|---|---|
-| Reliability audit | 2/60 A/B decisions released, both P0-correct; **0 false certifications**; 9/11 directional decisions withheld (82%) | safety-first profile; the cost is decision volume |
+| Reliability audit | 2/60 A/B decisions released, both P0-correct; **no false certification observed** (0/2; 95% upper bound 78%); 9/11 directional decisions withheld (82%) | safety-first profile; the cost is decision volume |
 | Naive evaluation bias | **+111.6% to +278.5%** main; **+7.8% to +538.5%** sweep (max across policies) | relative bias; **12/12** cells >5% for at least one policy; incumbent **1.5–218%**, 11/12 |
 | Naive ranking | **1.00 / 0%** main; **0.00 / 100%** at `frej_050` | mean pairwise inversions / P(select true best); ranking is cost-dependent |
 | Action-weighted baseline | main **2.9% / 62%**; `frej_050` **2.4% / 58%** | max relative bias / P(select true best); the naive gap is not just an unweighted-mean artifact |
@@ -205,7 +205,11 @@ reports **“Not identified”** and withholds the point estimates.
 
 ### Reproduce the benchmark
 
-The BAF test file is **local and gitignored** (see [`docs/DATA.md`](docs/DATA.md)):
+The BAF test file is **local and gitignored** (see [`docs/DATA.md`](docs/DATA.md)).
+BAF is **synthetic** and licensed **CC BY-NC-SA 4.0**; it is not redistributed,
+and the project's use is non-commercial research only (see
+[`docs/DATA_USE_PLAN.md`](docs/DATA_USE_PLAN.md)). The BAF-suite expansion is on
+hold pending that plan's gates and a restricted-feature review.
 
 ```bash
 # ~19 min CPU, ~31 min wall-clock on the reference machine
@@ -276,7 +280,7 @@ onboarding-audit/
 ├── configs/pilot.yaml     # pre-registered pilot configuration
 ├── docs/                  # research, methods, schema, audit, engineering
 ├── reports/               # committed pilot and sensitivity outputs
-├── tests/                 # 118 tests, including negative controls
+├── tests/                 # 119 tests, including negative controls
 ├── examples/              # synthetic log + CLI walkthrough
 ├── paper/                 # research notes; not a paper draft
 ├── data/                  # local processed BAF file (gitignored)
@@ -330,7 +334,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Decision reliability profile | **Implemented** | Bootstrap stability, calibration, cost stress, full-policy, A–D grade in memo §4.2 and JSON |
 | Reliability audit | **Implemented** | Per-replication grades, false certifications, abstention; `configs/reliability_audit.yaml` |
 | Documentation set | **Implemented** | Methods, results, claims, threats, decisions, reproducibility, architecture, testing |
-| Test suite | **Implemented** | 118 tests, including negative controls |
+| Test suite | **Implemented** | 119 tests, including negative controls |
 | FiFAR capacity/analyst layer | **Planned** | Richer review-queue and analyst model |
 | Real bank / Philippine log | **Planned** | Partner needed; the public benchmark is the current evidence |
 | Bootstrap / randomization inference | **Planned** | Heavy-tail coverage in the covariate scenarios |
@@ -345,6 +349,7 @@ discipline, not a new estimator. The closest work is mapped in
 | Limitation | What it means |
 |---|---|
 | **Simulation on BAF** | Public synthetic data; the results are a benchmark, not a production estimate |
+| **Protected attributes in feature set** | `customer_age`, `employment_status`, and `income` are included; the model is research-only and needs a restricted-feature rerun or reviewed exception before any deployment or fairness claim |
 | **No Philippine bank data** | The local hook is motivational; the cost, capacity, and delay parameters are not calibrated to a specific institution |
 | **Cost matrix is assumed** | Normalized and sensitivity-tested, not a bank's accounting |
 | **Reject margin is bounded** | Not point-identified; the bounds are **not** confidence intervals |
@@ -373,7 +378,7 @@ onboarding-audit demo --out reports/demo_reliability
 python scripts/check_claims.py
 ```
 
-Expected: **118 passed**, the demo memo, and **62/62** claim checks.
+Expected: **119 passed**, the demo memo, and **62/62** claim checks.
 
 ## Documentation
 
@@ -400,6 +405,7 @@ Expected: **118 passed**, the demo memo, and **62/62** claim checks.
 | [`docs/REVIEWER_PACKET.md`](docs/REVIEWER_PACKET.md) | The cover note, shortlist, agenda, and outreach tracker |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
 | [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) | BAF licensing, privacy, permitted use, and the go/no-go |
+| [`docs/DATA_USE_PLAN.md`](docs/DATA_USE_PLAN.md) | The BAF data-use, security, ethics, and publication protocol |
 | [`docs/DATA_READINESS.md`](docs/DATA_READINESS.md) | Whether a real log can support the audit, and when to stop |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`docs/REPORT_USAGE.md`](docs/REPORT_USAGE.md) | How to run and read the arbitrary-log report |
@@ -465,7 +471,12 @@ If you use this project, cite the software via [`CITATION.cff`](CITATION.cff):
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+MIT covers the source code authored in this repository. See [`LICENSE`](LICENSE).
+
+The **BAF dataset is not included** and is not MIT-licensed. It is
+**CC BY-NC-SA 4.0** and used for non-commercial research only. BAF-derived
+figures and reports are handled under the dataset terms; see [`NOTICE`](NOTICE)
+and [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md).
 
 ## Acknowledgements
 

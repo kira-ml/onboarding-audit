@@ -726,7 +726,8 @@ tag, issue a corrective release, and record the finding in `CLAIMS.md` and
 ## D19 — Use BAF only for non-commercial research; no raw redistribution
 
 **Date:** 2026-11-28.
-**Status:** Accepted for the research artifact. Not a legal opinion.
+**Status:** Proposed; use is blocked pending the gates in `DATA_USE_PLAN.md`.
+Not a legal opinion.
 
 **Context:** The BAF suite is the project's primary public benchmark. The Kaggle
 metadata states **CC BY-NC-SA 4.0**; the Feedzai repository code is Apache-2.0
@@ -743,13 +744,17 @@ non-commercial.
 **Decision:** Option 2.
 
 **Rules:**
-- Use BAF for research, portfolio, and non-commercial evaluation only.
+- Use BAF for non-commercial research only; do not assume “portfolio” or
+  “internal evaluation” is non-commercial without counsel or permission.
 - Do not redistribute raw BAF files; `data/` stays local.
 - Publish aggregate results, code, and derived diagnostics, not applicant rows.
 - Cite the BAF paper and Kaggle dataset; retain the license notice.
 - Pin the Kaggle version and raw SHA before a public release.
 - Call BAF **synthetic**; never a real bank log or external validation.
 - A commercial pilot requires separate permission or licensed data.
+- Do not run the BAF-suite audit until the protected-attribute conflict
+  (`customer_age`, `employment_status`, `income`) in `DATA_USE_PLAN.md` §6.1 is
+  resolved and recorded.
 
 **Why:** It preserves the strongest public benchmark while avoiding the two
 credibility failures: a license violation and a synthetic-to-real overclaim.

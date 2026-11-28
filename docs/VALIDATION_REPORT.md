@@ -36,7 +36,7 @@ run, what passed, what failed, and what remains unverified.
 | OS | Windows 11 (local run) |
 | Package | `pip install -e ".[dev,baf]"` |
 | Test command | `pytest -q` |
-| Test result | **118 passed** in the current tree (92 at the `v1.0.0` tag) |
+| Test result | **119 passed** in the current tree (92 at the `v1.0.0` tag) |
 | Link check | `python scripts/check_links.py` → **0 missing links** |
 | CI | `.github/workflows/ci.yml`, Python 3.10–3.12; run 44918141562 green |
 
@@ -177,7 +177,7 @@ hash and the per-score column hashes, is in
 
 | Gate | Status |
 |---|---|
-| Tests pass | **pass** (118 in the current tree; 92 at the tag) |
+| Tests pass | **pass** (119 in the current tree; 92 at the tag) |
 | Link check | **pass** (0) |
 | Identification gate integrated and tested | **pass** |
 | Observation sweep committed | **pass** |
