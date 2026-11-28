@@ -54,7 +54,12 @@ file:
 
 ```bash
 pip install -e ".[baf]"
-python scripts/prepare_baf.py --raw /path/to/Base.csv --include-protected --verify
+# New restricted-feature frame
+python scripts/prepare_baf.py --raw /path/to/Base.csv \
+  --out data/scored_test_restricted.parquet
+# Legacy archived hash
+python scripts/prepare_baf.py --raw /path/to/Base.csv \
+  --include-protected --out data/scored_test.parquet --verify
 ```
 
 The script:

@@ -223,6 +223,9 @@ hold pending that plan's gates and a restricted-feature review.
 > attributes by default.
 
 ```bash
+# Build the restricted-feature frame (default excludes protected attributes)
+python scripts/prepare_baf.py --raw Base.csv --out data/scored_test_restricted.parquet
+
 # ~19 min CPU, ~31 min wall-clock on the reference machine
 onboarding-audit pilot --config configs/pilot_restricted.yaml --out reports
 

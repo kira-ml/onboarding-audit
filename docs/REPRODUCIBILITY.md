@@ -64,7 +64,13 @@ file from `Base.csv`:
 
 ```bash
 pip install -e ".[baf]"
-python scripts/prepare_baf.py --raw /path/to/Base.csv --include-protected --verify
+# New restricted-feature frame (default excludes protected attributes)
+python scripts/prepare_baf.py --raw /path/to/Base.csv \
+  --out data/scored_test_restricted.parquet
+
+# Legacy protected-feature reproduction; verifies the archived hash
+python scripts/prepare_baf.py --raw /path/to/Base.csv \
+  --include-protected --out data/scored_test.parquet --verify
 ```
 
 The script:

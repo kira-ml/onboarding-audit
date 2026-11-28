@@ -10,7 +10,7 @@ frame byte-for-byte from the public raw file, and pin the hashes and versions.
 
 | Item | Value |
 |---|---|
-| Command | `python scripts/prepare_baf.py --raw Base.csv --include-protected --verify` |
+| Command | `python scripts/prepare_baf.py --raw Base.csv --include-protected --out data/scored_test.parquet --verify` |
 | Default behavior | Protected attributes are excluded; `--include-protected` is legacy-only |
 | Raw input | BAF `Base.csv` |
 | Raw Kaggle version | **not recorded**; the current public release is version 2 (2023-11-29). Pin this before a public release. |

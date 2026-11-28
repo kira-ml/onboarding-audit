@@ -246,7 +246,7 @@ def main() -> int:
     parser.add_argument("--raw", required=True, type=Path, help="Path to Base.csv")
     parser.add_argument(
         "--out",
-        default=Path("data/scored_test.parquet"),
+        default=Path("data/scored_test_restricted.parquet"),
         type=Path,
         help="Output parquet path",
     )

@@ -176,3 +176,17 @@ reviewer has reproduced it.
 5. “Show me the independent reproduction.” — **M4**.
 
 Those five must be answered before any new release or submission.
+
+## 6. Blocked tasks
+
+These cannot be completed from the repository alone:
+
+| Task | Owner | Why blocked |
+|---|---|---|
+| Two external readers | Owner | Requires reviewer names, consent, and time |
+| One real-log/schema conversation | Owner | Requires a bank or fintech contact |
+| Legal/counsel on portfolio/commercial use | Owner | Requires counsel or dataset-owner permission |
+| Independent reproduction of 13/13 | External reviewer | Requires a second implementation/reviewer |
+| Kaggle v2 raw-hash confirmation | Owner | Requires the exact Kaggle download/version |
+
+No automated agent should fabricate these outcomes.
