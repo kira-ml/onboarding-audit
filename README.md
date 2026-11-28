@@ -399,6 +399,7 @@ Expected: **118 passed**, the demo memo, and **62/62** claim checks.
 | [`docs/RELEASE_STATUS.md`](docs/RELEASE_STATUS.md) | What is tagged, what is not, and the open public-release gate |
 | [`docs/REVIEWER_PACKET.md`](docs/REVIEWER_PACKET.md) | The cover note, shortlist, agenda, and outreach tracker |
 | [`docs/SCHEMA.md`](docs/SCHEMA.md) | The decision-log schema |
+| [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) | BAF licensing, privacy, permitted use, and the go/no-go |
 | [`docs/DATA_READINESS.md`](docs/DATA_READINESS.md) | Whether a real log can support the audit, and when to stop |
 | [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) | The compliant audit design and sample-size guidance |
 | [`docs/REPORT_USAGE.md`](docs/REPORT_USAGE.md) | How to run and read the arbitrary-log report |

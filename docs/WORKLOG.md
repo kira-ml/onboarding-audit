@@ -3,6 +3,17 @@
 **Status:** Historical state log; past entries are not updated. The current
 state is the last entry.
 
+## 2026-11-28 — BAF license and privacy verification
+
+**Verified:** Kaggle metadata states the BAF dataset suite is
+**CC BY-NC-SA 4.0**; the Feedzai repository code is Apache-2.0 with a separate
+commercial-use contact. The dataset is synthetic and privacy-preserving.
+
+**Decision:** D19 — use BAF for non-commercial research/portfolio only; keep raw
+files local; cite the source; do not call it external validation; no commercial
+pilot without permission. Added `docs/DATA_SOURCES.md` and recorded the missing
+Kaggle version pin in `BENCHMARK_PROVENANCE.md`.
+
 ## 2026-11-28 — Reliability review corrections
 
 **Review:** independent read-only review of the reliability code, tests, paper,

@@ -722,3 +722,41 @@ The reliability audit is post-hoc and small.
 irreproducible, or the paper's reliability claims unsupported → deprecate the
 tag, issue a corrective release, and record the finding in `CLAIMS.md` and
 `EXTERNAL_REVIEW.md`.
+
+## D19 — Use BAF only for non-commercial research; no raw redistribution
+
+**Date:** 2026-11-28.
+**Status:** Accepted for the research artifact. Not a legal opinion.
+
+**Context:** The BAF suite is the project's primary public benchmark. The Kaggle
+metadata states **CC BY-NC-SA 4.0**; the Feedzai repository code is Apache-2.0
+with a separate commercial-use contact. The dataset is synthetic and
+privacy-preserving, but it is not a real bank log and the license is
+non-commercial.
+
+**Options:**
+1. Treat “public” as unrestricted and use BAF for any purpose.
+2. Use BAF for non-commercial research, keep raw data local, cite the source,
+   and obtain separate permission for commercial use.
+3. Stop using BAF entirely.
+
+**Decision:** Option 2.
+
+**Rules:**
+- Use BAF for research, portfolio, and non-commercial evaluation only.
+- Do not redistribute raw BAF files; `data/` stays local.
+- Publish aggregate results, code, and derived diagnostics, not applicant rows.
+- Cite the BAF paper and Kaggle dataset; retain the license notice.
+- Pin the Kaggle version and raw SHA before a public release.
+- Call BAF **synthetic**; never a real bank log or external validation.
+- A commercial pilot requires separate permission or licensed data.
+
+**Why:** It preserves the strongest public benchmark while avoiding the two
+credibility failures: a license violation and a synthetic-to-real overclaim.
+
+**Assumptions:** The Kaggle license metadata is authoritative for the dataset;
+the code license does not relicense the data. This note is not legal advice.
+
+**Review date:** 2026-12-15.
+**Kill criteria:** The license changes, the raw version cannot be pinned, or a
+commercial use is proposed without permission → stop and re-review before use.

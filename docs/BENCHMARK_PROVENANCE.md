@@ -12,6 +12,8 @@ frame byte-for-byte from the public raw file, and pin the hashes and versions.
 |---|---|
 | Command | `python scripts/prepare_baf.py --raw Base.csv --verify` |
 | Raw input | BAF `Base.csv` |
+| Raw Kaggle version | **not recorded**; the current public release is version 2 (2023-11-29). Pin this before a public release. |
+| Data license | **CC BY-NC-SA 4.0**; see [`DATA_SOURCES.md`](DATA_SOURCES.md) |
 | Raw SHA-256 | `7bf10a37ce07e72e14c1b09e5efee3d27261baff4facc7da767b0474dcf9b809` |
 | Output | `data/scored_test.parquet` |
 | Output SHA-256 | `f5efd6781431f229685df6c154f1a6e124849a323e3c45d258a09cf10f331593` |
